@@ -1,0 +1,31 @@
+header{
+    display: flex;
+    background-color:#f3f2ef;
+    position: relative;
+    align-items: baseline;
+}
+#img-logo {
+    width: 8vw;
+    height: 8vh rem;
+    margin: 2rem;
+    border-radius: 10%;
+ 
+}
+.input-group {
+    width: 30vw;
+    height: 5vh;
+    margin-left: 8rem;
+   
+    
+
+}
+.nav {
+    display: flex;
+    justify-content: flex-end;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+}
+nav-item {
+    color: black;
+}
