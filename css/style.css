@@ -15,4 +15,27 @@ html {
     background: #f3f2ef
 
   }
+
+  .formulario {
+    margin-top: 80px;
+  }
    
+  h2{
+    margin-bottom: 30px;
+    border: 1px solid black;
+  }
+
+.formulario input,
+.formulario textarea {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 6px 12px;
+}
+
+.form-registro{
+  border: 1px solid black;
+}
+
+.form-group form-check{
+margin-top: 5px;
+}
