@@ -2,28 +2,26 @@
 primary #f3f2ef;
 secundary: #eae2f3; */
 
-@import url(./header.css);
-
 html {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    justify-content: f;
-    
-  }
-   body{
-    background: #f3f2ef
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  justify-content: f;
 
-  }
+}
 
-  .formulario {
-    margin-top: 80px;
-  }
-   
-  h2{
-    margin-bottom: 30px;
-    border: 1px solid black;
-  }
+body {
+  background: #f3f2ef
+}
+
+.formulario {
+  margin-top: 80px;
+}
+
+h2 {
+  margin-bottom: 30px;
+  border: 1px solid black;
+}
 
 .formulario input,
 .formulario textarea {
@@ -32,10 +30,14 @@ html {
   padding: 6px 12px;
 }
 
-.form-registro{
+.form-registro {
   border: 1px solid black;
 }
 
-.form-group form-check{
-margin-top: 5px;
+.form-group form-check {
+  margin-top: 5px;
+}
+
+.error {
+  color: red;
 }
