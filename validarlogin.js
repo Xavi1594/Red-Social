@@ -58,14 +58,14 @@ function validarLogin() {
                 usuarioEncontrado = true;
                 window.location.href = "perfil.html";
                 return;
+            } else {
+                // Mostrar mensaje de error para contraseña incorrecta
+                document.getElementById("mensaje-de-error").innerHTML = "La contraseña no es correcta.";
+                document.getElementById("mensaje-de-error").style.color = "red";
+                return;
             }
-            break;
-        } else {
-            // Mostrar mensaje de error
-            document.getElementById("mensaje-de-error").innerHTML = "El nombre de usuario/correo electrónico o la contraseña no son correctos.";
-            document.getElementById("mensaje-de-error").style.color = "red";
-            return;
         }
+
     }
     if (!usuarioEncontrado) {
         document.getElementById("mensaje-de-error").innerHTML = "El nombre de usuario/correo electrónico o la contraseña no existen.";

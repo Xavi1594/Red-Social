@@ -46,7 +46,7 @@ submitButton.addEventListener('click', (event) => {
             document.getElementById('email').setCustomValidity('');
         }
 
-        //Valkidar perfil de Linkedin
+        //Validar perfil de Linkedin
         const linkedinRegex = /^https?:\/\/[\w\-]+(\.[\w\-]+)+[/#?]?.*$/i;;
         if (!linkedinRegex.test(linkedinProfile)) {
             document.getElementById('linkedin-profile').setCustomValidity('Ingrese un URL válido');
