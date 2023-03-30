@@ -47,11 +47,11 @@ submitButton.addEventListener('click', (event) => {
         }
 
         //Validar perfil de Linkedin
-        const linkedinRegex = /^https?:\/\/[\w\-]+(\.[\w\-]+)+[/#?]?.*$/i;;
-        if (!linkedinRegex.test(linkedinProfile)) {
-            document.getElementById('linkedin-profile').setCustomValidity('Ingrese un URL válido');
-            const errorElement = document.getElementById('linkedin-error');
-            errorElement.innerHTML = 'El URL ingresado no es válido';
+        // const linkedinRegex = /^https?:\/\/[\w\-]+(\.[\w\-]+)+[/#?]?.*$/i;;
+        // if (!linkedinRegex.test(linkedinProfile)) {
+        //     document.getElementById('linkedin-profile').setCustomValidity('Ingrese un URL válido');
+        //     const errorElement = document.getElementById('linkedin-error');
+        //     errorElement.innerHTML = 'El URL ingresado no es válido';
         } else {
             document.getElementById('linkedin-profile').setCustomValidity('');
         }
