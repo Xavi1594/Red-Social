@@ -1,6 +1,7 @@
 const submitButton = document.getElementById('submit-button');
 
 submitButton.addEventListener('click', (event) => {
+  
     event.preventDefault();
 
     const profilePic = document.getElementById('profile-pic').value;
@@ -98,4 +99,5 @@ submitButton.addEventListener('click', (event) => {
             window.location.href = "index.html";
         }, 2000);
     }
+
 });

@@ -47,7 +47,10 @@ function validarLogin() {
     var nombreDeUsuarioOCorreo = document.getElementById("nombre-de-usuario-o-correo").value;
     var contraseña = document.getElementById("contraseña").value;
 
+
     var usuarioEncontrado = false;
+
+
 
     for (var i = 0; i < usuarios.length; i++) {
         var usuario = usuarios[i];
