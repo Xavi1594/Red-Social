@@ -13,7 +13,7 @@ html {
 body {
   background: #f3f2ef
 }
-
+/* 
 .formulario {
   margin-top: 80px;
 }
@@ -30,12 +30,18 @@ h2 {
   padding: 6px 12px;
 }
 
-.form-registro {
-  border: 1px solid black;
-}
+
 
 .form-group form-check {
   margin-top: 5px;
+} */
+.form-registro {
+  box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+
+}
+
+.form-group label {
+  margin-left: 1rem;
 }
 
 .error {
