@@ -19,52 +19,43 @@ submitButton.addEventListener('click', (event) => {
     const termsAndConditions = document.getElementById('terms-and-conditions').checked;
 
     // Validar la contraseña y confirmar la contraseña
-        if (password !== confirmPassword) {
-            document.getElementById('confirm-password').setCustomValidity('Las contraseñas no coinciden');
-            const errorElement = document.getElementById('confirm-password-error');
-            errorElement.innerHTML = 'Las contraseñas no coinciden';
-        } else {
-            document.getElementById('confirm-password').setCustomValidity('');
-        }
+    if (password !== confirmPassword) {
+        document.getElementById('confirm-password').setCustomValidity('Las contraseñas no coinciden');
+        const errorElement = document.getElementById('confirm-password-error');
+        errorElement.innerHTML = 'Las contraseñas no coinciden';
+    } else {
+        document.getElementById('confirm-password').setCustomValidity('');
+    }
 
-        // Validar la edad
-        if (isNaN(age) || age === '') {
-            document.getElementById('age').setCustomValidity('Ingrese una edad válida');
-            const errorElement = document.getElementById('edad-error');
-            errorElement.innerHTML = 'La edad ingresada no es válida';
-        } else {
-            document.getElementById('age').setCustomValidity('');
-        }
+    // Validar el correo electrónico
+    const emailRegex = /^\S+@\S+\.\S+$/;
+    if (!emailRegex.test(email)) {
+        document.getElementById('email').setCustomValidity('Ingrese un correo electrónico válido');
+        const errorElement = document.getElementById('email-error');
+        errorElement.innerHTML = 'El email ingresado no es válido';
+    } else {
+        document.getElementById('email').setCustomValidity('');
+    }
 
-        // Validar el correo electrónico
-        const emailRegex = /^\S+@\S+\.\S+$/;
-        if (!emailRegex.test(email)) {
-            document.getElementById('email').setCustomValidity('Ingrese un correo electrónico válido');
-            const errorElement = document.getElementById('email-error');
-            errorElement.innerHTML = 'El email ingresado no es válido';
-        } else {
-            document.getElementById('email').setCustomValidity('');
-        }
+    //Validar perfil de Linkedin
+    const linkedinRegex = /^https?:\/\/[\w\-]+(\.[\w\-]+)+[/#?]?.*$/i;;
+    if (!linkedinRegex.test(linkedinProfile)) {
+        document.getElementById('linkedin-profile').setCustomValidity('Ingrese un URL válido');
+        const errorElement = document.getElementById('linkedin-error');
+        errorElement.innerHTML = 'El URL ingresado no es válido';
+    } else {
+        document.getElementById('linkedin-profile').setCustomValidity('');
+    }
 
-        //Validar perfil de Linkedin
-        const linkedinRegex = /^https?:\/\/[\w\-]+(\.[\w\-]+)+[/#?]?.*$/i;;
-        if (!linkedinRegex.test(linkedinProfile)) {
-            document.getElementById('linkedin-profile').setCustomValidity('Ingrese un URL válido');
-            const errorElement = document.getElementById('linkedin-error');
-            errorElement.innerHTML = 'El URL ingresado no es válido';
-        } else {
-            document.getElementById('linkedin-profile').setCustomValidity('');
-        }
+    // Validar la aceptación de términos y condiciones
+    if (!termsAndConditions) {
+        document.getElementById('terms-and-conditions').setCustomValidity('Debe aceptar los términos y condiciones');
+        const errorElement = document.getElementById('terms-error');
+        errorElement.innerHTML = 'Debe aceptar los términos y condiciones';
+    } else {
+        document.getElementById('terms-and-conditions').setCustomValidity('');
+    }
 
-        // Validar la aceptación de términos y condiciones
-        if (!termsAndConditions) {
-            document.getElementById('terms-and-conditions').setCustomValidity('Debe aceptar los términos y condiciones');
-            const errorElement = document.getElementById('terms-error');
-            errorElement.innerHTML = 'Debe aceptar los términos y condiciones';
-        } else {
-            document.getElementById('terms-and-conditions').setCustomValidity('');
-        }
-    
     // Si todos los campos son válidos, guardar la cuenta localmente
     if (document.getElementById('profile-pic').checkValidity() &&
         document.getElementById('username').checkValidity() &&
@@ -98,7 +89,13 @@ submitButton.addEventListener('click', (event) => {
         // Guardar la cuenta localmente en el almacenamiento del navegador
         localStorage.setItem('account', JSON.stringify(account));
 
-        // Redirigir a la página de inicio de sesión
-        window.location.href = 'index.html';
+
+        // Mostrar mensaje de confirmación
+        document.getElementById("mensaje-confirmacion").classList.remove("oculto");
+
+        // Redirigir a la página deseada después de un breve retraso (por ejemplo, 2 segundos)
+        setTimeout(function () {
+            window.location.href = "index.html";
+        }, 2000);
     }
 });

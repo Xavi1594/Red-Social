@@ -48,6 +48,9 @@
             <div class="col-md-6 offset-md-3">
                 <h2 class="text-center">Formulario de Registro</h2>
                 <form class="form-registro" onsubmit="return validateForm()">
+                    <div id="mensaje-confirmacion" class="oculto">
+                        <p class="mensaje-registro">¡Registro exitoso!</p>
+                    </div>
                     <div class="form-group">
                         <label for="foto">Foto de perfil</label>
                         <input type="file" class="form-control-file" id="profile-pic">
@@ -117,6 +120,7 @@
             </div>
         </div>
     </div>
-<script src="./registro.js"></script>
+    <script src="./registro.js"></script>
 </body>
+
 </html>

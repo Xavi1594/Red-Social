@@ -33,3 +33,22 @@ idiomas.textContent = usuario.idiomas.join(", ");
 linkedin.textContent = usuario.perfilLinkedIn
 linkedin.setAttribute("href", usuario.perfilLinkedIn);
 hobbies.textContent = usuario.hobbies.join(", ");
+
+// Agregar evento de clic al botón de eliminar cuenta
+document.getElementById("eliminar-cuenta").addEventListener("click", function () {
+    var confirmacion = confirm("¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer.");
+
+    if (confirmacion) {
+        // Eliminar cuenta y datos asociados
+        usuario = null;
+        document.getElementById("nombre-completo").innerHTML = "";
+        document.getElementById("pais").innerHTML = "";
+        document.getElementById("ciudad").innerHTML = "";
+        document.getElementById("edad").innerHTML = "";
+        document.getElementById("estudios").innerHTML = "";
+        document.getElementById("idiomas").innerHTML = "";
+        document.getElementById("linkedin").innerHTML = "";
+        document.getElementById("hobbies").innerHTML = "";
+        document.getElementById("mensaje-confirmacion").classList.remove("oculto");
+    }
+});
