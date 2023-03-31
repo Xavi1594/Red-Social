@@ -3,7 +3,7 @@ const commentsList = document.getElementById("comments-list");
 fetch("https://jsonplaceholder.typicode.com/comments")
   .then(response => response.json())
   .then(data => {
-    data.forEach(comment => {
+    data.slice(0, 20).forEach(comment => { 
       const li = document.createElement("li");
       li.classList.add("list-group-item", "d-flex", "align-items-center", "p-2", "shadow");
       li.innerHTML = `
@@ -17,7 +17,7 @@ fetch("https://jsonplaceholder.typicode.com/comments")
       `;
       commentsList.appendChild(li);
 
-      // eevento me gusta 
+      // evento me gusta 
       const likeButtons = document.querySelectorAll(".like-btn");
 
       likeButtons.forEach(button => {
@@ -27,7 +27,7 @@ fetch("https://jsonplaceholder.typicode.com/comments")
           // Incrementa el contador
           likeCount++;
 
-          // actualizo el me gusta
+          // actualiza el contador de me gusta
           const likeCountElement = button.nextElementSibling;
           likeCountElement.textContent = likeCount;
         });
