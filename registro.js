@@ -4,7 +4,7 @@ submitButton.addEventListener('click', (event) => {
   
     event.preventDefault();
 
-    const profilePic = document.getElementById('profile-pic').value;
+    // const profilePic = document.getElementById('profile-pic').value;
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
     const confirmPassword = document.getElementById('confirm-password').value;
