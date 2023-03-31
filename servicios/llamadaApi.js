@@ -12,7 +12,25 @@ fetch("https://jsonplaceholder.typicode.com/comments")
           <strong>${comment.name}</strong>
           <p class="m-0">${comment.body}</p>
         </div>
+        <button class="btn btn-outline-primary btn-sm ms-auto like-btn">❤</button>
+        <span class="ms-2 like-count">0</span>
       `;
       commentsList.appendChild(li);
+
+      // eevento me gusta 
+      const likeButtons = document.querySelectorAll(".like-btn");
+
+      likeButtons.forEach(button => {
+        let likeCount = 0;
+
+        button.addEventListener("click", () => {
+          // Incrementa el contador
+          likeCount++;
+
+          // actualizo el me gusta
+          const likeCountElement = button.nextElementSibling;
+          likeCountElement.textContent = likeCount;
+        });
+      });
     });
   });
