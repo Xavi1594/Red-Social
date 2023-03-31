@@ -60,6 +60,7 @@ function validarLogin() {
                 // Iniciar sesión y redirigir al usuario a la página correspondiente
                 usuarioEncontrado = true;
                 window.location.href = "perfil.html";
+                alert("Bienvenido " +  nombreDeUsuarioOCorreo );
                 return;
             } else {
                 // Mostrar mensaje de error para contraseña incorrecta

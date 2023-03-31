@@ -14,4 +14,6 @@
   <img align="center" alt="HTML" title="HTML 5" height="50" width="60" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/html5/html5-original.svg">
   <img align="center" alt="CSS" title="CSS 3" height="50" width="60" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/css3/css3-original.svg">
   <img align="center" alt="Bootstrap" title="Bootstrap" height="50" width="80" src="https://cdn-icons-png.flaticon.com/512/5968/5968672.png">
+  <img align="center" alt="Javascript" title="Javascript" height="50" width="80" src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Unofficial_JavaScript_logo_2.svg/320px-Unofficial_JavaScript_logo_2.svg.png">
+
 </div>

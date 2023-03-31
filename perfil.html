@@ -16,7 +16,7 @@
 </head>
 
 <body>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top  ">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
     <div class="container">
       <a href="/" class="navbar-brand">Socialy</a>
       <i class="bi bi-wechat"></i>
@@ -25,14 +25,20 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <form class="d-flex my-2 my-lg-0 ms-auto">
+          <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Buscar">
+          <button class="btn btn-outline-success" type="submit">
+            <i class="bi bi-search"></i>
+          </button>
+        </form>
+        <ul class="navbar-nav mb-2 mb-lg-0">
           <li class="nav-item">
-            <a href="./perfil.html" class="nav-link active" aria-current="page">
-              Hoja de vida
+            <a href="./dashboard.html" class="nav-link " aria-current="page">
+              Inicio
             </a>
           </li>
           <li class="nav-item">
-            <a href="./perfil.html" class="nav-link"> inicio </a>
+            <a href="./perfil.html" class="nav-link active"> Hoja de vida </a>
           </li>
           <li class="nav-item">
             <a href="./red.html" class="nav-link">Amplía tu red </a>
@@ -44,10 +50,11 @@
       </div>
     </div>
   </nav>
+  
 
   <div class="container my-5 ">
 
-    <div class="row justify-content-center">
+    <div class="row justify-content-center ">
       <div class="col-6 col-md-4">
         <img src="./img/2021031202544061e0e3f25c3041f849de6b510817fb34.jpg" class="img-fluid rounded-circle mt-3"
           width="200" alt="Foto de perfil">
@@ -112,7 +119,7 @@
   </div>
   <div id="usuario-info"></div>
   <script src="./datosperfil.js"></script>
-  <footer class="container-fluid bg-dark  text-center text-light fixed-bottom ">
+  <footer class="container-fluid bg-dark  text-center text-light fixed-bottom  ">
     <span class="h5">&copy; Socialy 2023</span>
   </footer>
 </body>
