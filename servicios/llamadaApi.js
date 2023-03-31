@@ -1,56 +1,18 @@
-const url = "https://jsonplaceholder.typicode.com/posts";
-const postList = document.getElementById("post-list");
-const likesMap = {};
+const commentsList = document.getElementById("comments-list");
 
-fetch(url)
+fetch("https://jsonplaceholder.typicode.com/comments")
   .then(response => response.json())
-  .then(posts => {
-    posts.forEach(post => {
+  .then(data => {
+    data.forEach(comment => {
       const li = document.createElement("li");
+      li.classList.add("list-group-item", "d-flex", "align-items-center", "p-2", "shadow");
       li.innerHTML = `
-        <h2>${post.title}</h2>
-        <p>${post.body}</p>
-        <p>
-          <button class="btn btn btn-like" data-id="${post.id}">
-           <i class="bi bi-heart-fill text-danger"></i> <span class="like-count">${likesMap[post.id] || post.likes || 0}</span>
-          </button>
-        </p>
+        <img  src="https://picsum.photos/50" alt="Imagen del autor" class="rounded-circle me-2">
+        <div>
+          <strong>${comment.name}</strong>
+          <p class="m-0">${comment.body}</p>
+        </div>
       `;
-      postList.appendChild(li);
-
-      const likeButton = li.querySelector(".btn-like");
-      likeButton.addEventListener("click", () => {
-        likePost(post.id)
-          .then(likes => {
-            likesMap[post.id] = likes;
-            const likeCount = li.querySelector(".like-count");
-            likeCount.textContent = likesMap[post.id] || post.likes || 0;
-          })
-          .catch(error => console.log(error));
-      });
+      commentsList.appendChild(li);
     });
-  })
-  .catch(error => console.log(error));
-
-function likePost(postId) {
-  return new Promise((resolve, reject) => {
-    const url = `https://jsonplaceholder.typicode.com/posts/${postId}`;
-    fetch(url)
-      .then(response => response.json())
-      .then(post => {
-        const likes = (likesMap[postId] || post.likes || 0) + 1;
-        likesMap[postId] = likes;
-        const updatedPost = { ...post, likes };
-        const options = {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(updatedPost)
-        };
-        fetch(url, options)
-          .then(response => response.json())
-          .then(updatedPost => resolve(updatedPost.likes))
-          .catch(error => reject(error));
-      })
-      .catch(error => reject(error));
   });
-}

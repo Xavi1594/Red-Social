@@ -1,12 +1,12 @@
 const cardRow = document.getElementById("card-row");
 
-fetch("https://randomuser.me/api/?results=20")
+fetch("https://randomuser.me/api/?results=50")
   .then((response) => response.json())
   .then((data) => {
     let cardCount = 0;
     let cardRow = document.createElement("div");
     cardRow.classList.add("row");
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 50; i++) {
       const cardColumn = document.createElement("div");
       cardColumn.classList.add("col-md-3", "my-3");
       const card = document.createElement("div");
@@ -35,11 +35,11 @@ fetch("https://randomuser.me/api/?results=20")
         "w-100"
       );
       const acceptButton = document.createElement("button");
-      acceptButton.classList.add("btn", "btn-success", "mx-2");
+      acceptButton.classList.add("btn", "btn-success", "mx-2", "col-6");
       acceptButton.textContent = "Aceptar";
 
       const rejectButton = document.createElement("button");
-      rejectButton.classList.add("btn", "btn-danger", "mx-2");
+      rejectButton.classList.add("btn", "btn-danger", "mx-2", "col-6");
       rejectButton.textContent = "Rechazar";
 
       buttonContainer.appendChild(acceptButton);
