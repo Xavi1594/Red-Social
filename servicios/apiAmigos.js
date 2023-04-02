@@ -1,12 +1,12 @@
 const cardRow = document.getElementById("card-row");
 
-fetch("https://randomuser.me/api/?results=25")
+fetch("https://randomuser.me/api/?results=32")
   .then((response) => response.json())
   .then((data) => {
     let cardCount = 0;
     let cardRow = document.createElement("div");
     cardRow.classList.add("row");
-    for (let i = 0; i < 25; i++) {
+    for (let i = 0; i < 32; i++) {
       const cardColumn = document.createElement("div");
       cardColumn.classList.add("col-md-3", "my-3");
       const card = document.createElement("div");
