@@ -29,21 +29,23 @@ fetch("https://randomuser.me/api/?results=25")
       cardImage.setAttribute("src", `${data.results[i].picture.large}`);
       cardImage.setAttribute("alt", "Foto de perfil");
       const buttonContainer = document.createElement("div");
-      buttonContainer.classList.add(
-        "d-flex",
-        "justify-content-center",
-        "w-100"
-      );
-      const acceptButton = document.createElement("button");
-      acceptButton.classList.add("btn", "btn-success", "mx-2", "col-6");
-      acceptButton.textContent = "Aceptar";
+buttonContainer.classList.add(
+  "d-flex",
+  "justify-content-center",
+  "w-100",
+  "btn-container"
+);
+const acceptButton = document.createElement("button");
+acceptButton.classList.add("btn", "btn-success", "mx-2", "col-6");
+acceptButton.textContent = "Aceptar";
 
-      const rejectButton = document.createElement("button");
-      rejectButton.classList.add("btn", "btn-danger", "mx-2", "col-6");
-      rejectButton.textContent = "Rechazar";
+const rejectButton = document.createElement("button");
+rejectButton.classList.add("btn", "btn-danger", "mx-2", "col-6");
+rejectButton.textContent = "Rechazar";
 
-      buttonContainer.appendChild(acceptButton);
-      buttonContainer.appendChild(rejectButton);
+buttonContainer.appendChild(acceptButton);
+buttonContainer.appendChild(rejectButton);
+
       cardBody.appendChild(cardTitle);
       cardBody.appendChild(cardSubtitle);
       cardBody.appendChild(cardImage);
