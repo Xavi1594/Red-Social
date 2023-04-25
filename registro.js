@@ -1,103 +1,109 @@
-const submitButton = document.getElementById('submit-button');
+const registroForm = document.querySelector('#form-registro');
+const errorDiv = document.querySelector('.error');
+const successDiv = document.querySelector('.success');
 
-submitButton.addEventListener('click', (event) => {
-  
+const regexEmail = /^\S+@\S+\.\S+$/; // Expresión regular para validar el formato de email
+const regexLinkedIn = /^(https?:\/\/)?([\w\d]+\.)?linkedin\.com\/.+$/; // Expresión regular para validar el formato de LinkedIn URL
+
+registroForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
-    // const profilePic = document.getElementById('profile-pic').value;
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
-    const confirmPassword = document.getElementById('confirm-password').value;
-    const email = document.getElementById('email').value;
-    const fullName = document.getElementById('full-name').value;
-    const country = document.getElementById('country').value;
-    const city = document.getElementById('city').value;
-    const age = document.getElementById('age').value;
-    const university = document.getElementById('university').value;
-    const languages = document.getElementById('languages').value;
-    const linkedinProfile = document.getElementById('linkedin-profile').value;
-    const hobbies = document.getElementById('hobbies').value;
-    const termsAndConditions = document.getElementById('terms-and-conditions').checked;
+    // Get form data
+    const formData = new FormData(registroForm);
+    const username = formData.get('username');
+    const password = formData.get('password');
+    const confirmPassword = formData.get('confirm-password');
+    const email = formData.get('email');
+    const fullname = formData.get('fullname');
+    const city = formData.get('city');
+    const country = formData.get('country');
+    const age = formData.get('age');
+    const university = formData.get('university');
+    const languages = formData.get('languages');
+    const linkedin = formData.get('linkedin');
+    const hobbies = formData.get('hobbies');
+    const terms = formData.get('terms');
 
-    // Validar la contraseña y confirmar la contraseña
+    // Validations
     if (password !== confirmPassword) {
-        document.getElementById('confirm-password').setCustomValidity('Las contraseñas no coinciden');
-        const errorElement = document.getElementById('confirm-password-error');
-        errorElement.innerHTML = 'Las contraseñas no coinciden';
-    } else {
-        document.getElementById('confirm-password').setCustomValidity('');
+        errorDiv.innerHTML = 'Las contraseñas no coinciden';
+        successDiv.style.display = 'none';
+        errorDiv.style.display = 'block';
+        return;
     }
 
-    // Validar el correo electrónico
-    const emailRegex = /^\S+@\S+\.\S+$/;
-    if (!emailRegex.test(email)) {
-        document.getElementById('email').setCustomValidity('Ingrese un correo electrónico válido');
-        const errorElement = document.getElementById('email-error');
-        errorElement.innerHTML = 'El email ingresado no es válido';
-    } else {
-        document.getElementById('email').setCustomValidity('');
+    if (password.length < 6 || password.length > 16) {
+        errorDiv.innerHTML = 'La contraseña debe tener entre 6 y 16 caracteres';
+        successDiv.style.display = 'none';
+        errorDiv.style.display = 'block';
+        return;
     }
 
-    //Validar perfil de Linkedin
-    const linkedinRegex = /^https?:\/\/[\w\-]+(\.[\w\-]+)+[/#?]?.*$/i;;
-    if (!linkedinRegex.test(linkedinProfile)) {
-        document.getElementById('linkedin-profile').setCustomValidity('Ingrese un URL válido');
-        const errorElement = document.getElementById('linkedin-error');
-        errorElement.innerHTML = 'El URL ingresado no es válido';
-    } else {
-        document.getElementById('linkedin-profile').setCustomValidity('');
+    if (!regexEmail.test(email)) {
+        errorDiv.innerHTML = 'Ingrese un correo electrónico válido';
+        successDiv.style.display = 'none';
+        errorDiv.style.display = 'block';
+        return;
     }
 
-    // Validar la aceptación de términos y condiciones
-    if (!termsAndConditions) {
-        document.getElementById('terms-and-conditions').setCustomValidity('Debe aceptar los términos y condiciones');
-        const errorElement = document.getElementById('terms-error');
-        errorElement.innerHTML = 'Debe aceptar los términos y condiciones';
-    } else {
-        document.getElementById('terms-and-conditions').setCustomValidity('');
+    if (linkedin && !regexLinkedIn.test(linkedin)) {
+        errorDiv.innerHTML = 'Ingrese una URL de LinkedIn válida';
+        successDiv.style.display = 'none';
+        errorDiv.style.display = 'block';
+        return;
     }
 
-    // Si todos los campos son válidos, guardar la cuenta localmente
-    if (document.getElementById('profile-pic').checkValidity() &&
-        document.getElementById('username').checkValidity() &&
-        document.getElementById('confirm-password').checkValidity() &&
-        document.getElementById('email').checkValidity() &&
-        document.getElementById('full-name').checkValidity() &&
-        document.getElementById('country').checkValidity() &&
-        document.getElementById('city').checkValidity() &&
-        document.getElementById('age').checkValidity() &&
-        document.getElementById('university').checkValidity() &&
-        document.getElementById('languages').checkValidity() &&
-        document.getElementById('linkedin-profile').checkValidity() &&
-        document.getElementById('hobbies').checkValidity() &&
-        termsAndConditions) {
-
-        const account = {
-            profilePic: profilePic,
-            username: username,
-            password: password,
-            email: email,
-            fullName: fullName,
-            country: country,
-            city: city,
-            age: age,
-            university: university,
-            languages: languages,
-            linkedinProfile: linkedinProfile,
-            hobbies: hobbies
-        };
-
-        // Guardar la cuenta localmente en el almacenamiento del navegador
-        localStorage.setItem('account', JSON.stringify(account));
-
-
-        // Mostrar mensaje de confirmación
-        document.getElementById("mensaje-confirmacion").classList.remove("oculto");
-
-        // Redirigir a la página deseada después de un breve retraso (por ejemplo, 2 segundos)
-        setTimeout(function () {
-            window.location.href = "index.html";
-        }, 2000);
+    if (!terms) {
+        errorDiv.innerHTML = 'Debe aceptar los términos y condiciones';
+        successDiv.style.display = 'none';
+        errorDiv.style.display = 'block';
+        return;
     }
 
+    if (!/^[a-zA-Z\s]+$/.test(fullname)) {
+        errorDiv.innerHTML = 'Ingrese un nombre válido (solo letras)';
+        successDiv.style.display = 'none';
+        errorDiv.style.display = 'block';
+        return;
+    }
+
+    const data = {
+        username,
+        password,
+        email,
+        fullname,
+        city,
+        country,
+        age,
+        university,
+        languages,
+        linkedin,
+        hobbies,
+    };
+
+    try {
+        const response = await fetch('/registro', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+
+        const responseData = await response.json();
+
+        if (response.ok) {
+            successDiv.innerHTML = responseData.message;
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'block';
+        } else {
+            errorDiv.innerHTML = responseData.message;
+            successDiv.style.display = 'none';
+            errorDiv.style.display = 'block';
+        }
+    } catch (error) {
+        errorDiv.innerHTML = 'Ha ocurrido un error en el servidor. Por favor, intenta más tarde.';
+        successDiv.style.display = 'none';
+        errorDiv.style.display = 'block';
+    }
 });
