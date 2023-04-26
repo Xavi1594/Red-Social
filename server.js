@@ -2,7 +2,6 @@ const express = require('express');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const mysql = require('mysql2');
-const bcrypt = require('bcrypt');
 
 
 const app = express();
@@ -23,6 +22,7 @@ db.connect((err) => {
     }
     console.log('Conexión a la base de datos establecida');
 });
+//////////////////////////////////////////REGISTRO//////////////////////////////////////////////////////////////////////////////////
 
 // Configuración del middleware body-parser para obtener los datos del formulario
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -79,38 +79,144 @@ app.post('/registro', (req, res) => {
     })
 });
 
-//Configurar la ruta para validar el inicio de sesión
-// Configurar ruta de inicio de sesión
-app.post('/login', function (req, res) {
-    const usuario = req.body.usuario;
+/////////////////////////////////////////////LOGIN/////////////////////////////////////////////////////////////////
+
+// Configurar sesión
+const connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'frank',
+    password: 'grupo13',
+    database: 'grupo13'
+});
+
+connection.connect();
+
+if (connection) { console.log('base de datos a login establecido') }
+
+app.use(
+    session({
+        secret: "secret",
+        resave: true,
+        saveUninitialized: true,
+    })
+);
+
+// Configurar ruta para la página de login
+app.get("/dashboard.html", (req, res) => {
+    if (req.session.loggedin) {
+        res.sendFile(path.join(__dirname, "dashboard.html"));
+    } else {
+        res.redirect("/");
+    }
+});
+
+// Configurar ruta para el proceso de login
+app.post("/login", (req, res) => {
+    const username = req.body.username;
     const password = req.body.password;
 
-    // Consultar la base de datos para encontrar el usuario correspondiente
-    db.query(`SELECT * FROM usuarios WHERE username = ? OR email = ?`, [usuario, usuario], function (error, results) {
-        if (error) throw error;
-
-        if (results.length === 0) {
-            // Si no hay resultados, el usuario no existe en la base de datos
-            res.status(401).send('El usuario no existe');
-        } else {
-            // Comprobar si la contraseña es correcta
-            const hash = results[0].password;
-            bcrypt.compare(password, hash, function (error, result) {
-                if (error) throw error;
-
-                if (result) {
-                    // La contraseña es correcta, iniciar sesión
-                    res.redirect('/dashboard.html');
+    if (username && password) {
+        connection.query(
+            `SELECT * FROM usuarios WHERE (username = ? OR email = ?) AND password = ?`,
+            [username, username, password],
+            (error, results, fields) => {
+                if (results.length > 0) {
+                    req.session.loggedin = true;
+                    req.session.username = results[0].username;
+                    res.redirect("/dashboard.html");
                 } else {
-                    // La contraseña es incorrecta
-                    res.status(401).send('Contraseña incorrecta');
+                    res.send("Usuario o contraseña incorrectos.");
                 }
-            });
+                res.end();
+            }
+        );
+    } else {
+        res.send("Por favor, introduce tu nombre de usuario y contraseña.");
+        res.end();
+    }
+});
+
+// Configurar middleware para validar sesión en todas las rutas excepto login
+app.use((req, res, next) => {
+    if (req.path === "/" || req.path === "/login") {
+        next();
+    } else if (req.session.loggedin) {
+        next();
+    } else {
+        res.redirect("/");
+    }
+});
+
+// Configurar ruta para el dashboard
+app.get("/dashboard.html", (req, res) => {
+    res.sendFile(path.join(__dirname, "dashboard.html"));
+});
+
+// Configurar ruta para cerrar sesión
+app.get("/logout", (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.redirect("/");
         }
     });
 });
 
-// Inicio del servidor
+////////////////////////////////////////////////////DATOS DE PERFIL//////////////////////////////////////////////////////////////////////
+
+app.use(session({
+    secret: 'my-secret-key',
+    resave: false,
+    saveUninitialized: false
+}));
+
+const connection1 = mysql.createConnection({
+    host: 'localhost',
+    user: 'frank',
+    password: 'grupo13',
+    database: 'grupo13'
+});
+
+connection1.connect();
+
+if (connection) { console.log('base de datos a perfil establecido') }
+
+app.get('/datosperfil', function (req, res) {
+    const username = req.session.username; // Obtenemos el nombre de usuario de la sesión
+
+    if (username) {
+        // Hacemos una consulta a la base de datos para obtener los datos del usuario
+        connection1.query(
+            'SELECT fullname, city, country, age, university, languages, linkedin, hobbies FROM usuarios WHERE username = ?',
+            [username],
+            function (error, results, fields) {
+                if (error) {
+                    console.log(error);
+                    res.status(500).send('Error al obtener los datos del usuario');
+                } else {
+                    // Si la consulta se ejecutó correctamente, enviamos los datos al cliente
+                    const datosPerfil = {
+                        nombre: results[0].fullname,
+                        city: results[0].city,
+                        country: results[0].country,
+                        age: results[0].age,
+                        university: results[0].university,
+                        languages: results[0].languages,
+                        linkedin: results[0].linkedin,
+                        hobbies: results[0].hobbiesresponse
+                    };
+                    res.send(JSON.stringify(datosPerfil));
+                }
+            }
+        );
+    } else {
+        res.status(401).send('No se ha iniciado sesión');
+    }
+});
+
+/////////////////////////////////////////////// Inicio del servidor////////////////////////////////////////////////////////////////////////
+
 app.listen(4000, () => {
     console.log('Servidor iniciado en el puerto 4000');
 });
