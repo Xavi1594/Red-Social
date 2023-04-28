@@ -4,25 +4,23 @@ const bodyParser = require('body-parser');
 const mysql = require('mysql2');
 const path = require('path');
 const fs = require('fs');
+require('dotenv').config();
 
 const app = express();
 app.use('/css', express.static(__dirname + '/css'));
 
 // Configuración de la conexión a la base de datos
 const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'frank',
-    password: 'grupo13',
-    database: 'grupo13'
-});
-
-// Conexión a la base de datos
-db.connect((err) => {
-    if (err) {
-        throw err;
-    }
-    console.log('Conexión a la base de datos establecida');
-});
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME
+  });
+  
+  db.connect((err) => {
+    if (err) throw err;
+    console.log('Conexión establecida con la base de datos');
+  });
 //////////////////////////////////////////REGISTRO//////////////////////////////////////////////////////////////////////////////////
 
 // Configuración del middleware body-parser para obtener los datos del formulario
@@ -84,15 +82,16 @@ app.post('/registro', (req, res) => {
 
 // Configurar sesión
 const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'frank',
-    password: 'grupo13',
-    database: 'grupo13'
-});
-
-connection.connect();
-
-if (connection) { console.log('base de datos a login establecido') }
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME
+  });
+  
+  connection.connect((err) => {
+    if (err) throw err;
+    console.log('Conexión establecida con la base de datos a login');
+  });
 
 app.use(
     session({
@@ -173,15 +172,16 @@ app.use(session({
 }));
 
 const connection1 = mysql.createConnection({
-    host: 'localhost',
-    user: 'frank',
-    password: 'grupo13',
-    database: 'grupo13'
-});
-
-connection1.connect();
-
-if (connection) { console.log('base de datos a perfil establecido') }
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME
+  });
+  
+  connection1.connect((err) => {
+    if (err) throw err;
+    console.log('Conexión establecida con la base de datosa perfil');
+  });
 
 app.get('/datosperfil', function (req, res) {
     const username = req.session.username;
@@ -241,6 +241,8 @@ app.delete('/eliminar-cuenta', function (req, res) {
 
 /////////////////////////////////////////////// Inicio del servidor////////////////////////////////////////////////////////////////////////
 
-app.listen(4000, () => {
-    console.log('Servidor iniciado en el puerto 4000');
-});
+const port = process.env.PORT || 4000;
+
+app.listen(port, () => {
+    console.log(`Servidor iniciado en el puerto ${port}`);
+  });
