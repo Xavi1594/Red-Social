@@ -2,7 +2,8 @@ const express = require('express');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const mysql = require('mysql2');
-
+const path = require('path');
+const fs = require('fs');
 
 const app = express();
 app.use('/css', express.static(__dirname + '/css'));
@@ -183,10 +184,9 @@ connection1.connect();
 if (connection) { console.log('base de datos a perfil establecido') }
 
 app.get('/datosperfil', function (req, res) {
-    const username = req.session.username; // Obtenemos el nombre de usuario de la sesión
+    const username = req.session.username;
 
     if (username) {
-        // Hacemos una consulta a la base de datos para obtener los datos del usuario
         connection1.query(
             'SELECT fullname, city, country, age, university, languages, linkedin, hobbies FROM usuarios WHERE username = ?',
             [username],
@@ -195,18 +195,42 @@ app.get('/datosperfil', function (req, res) {
                     console.log(error);
                     res.status(500).send('Error al obtener los datos del usuario');
                 } else {
-                    // Si la consulta se ejecutó correctamente, enviamos los datos al cliente
                     const datosPerfil = {
-                        nombre: results[0].fullname,
+                        fullname: results[0].fullname,
                         city: results[0].city,
                         country: results[0].country,
                         age: results[0].age,
                         university: results[0].university,
                         languages: results[0].languages,
                         linkedin: results[0].linkedin,
-                        hobbies: results[0].hobbiesresponse
+                        hobbies: results[0].hobbies
                     };
-                    res.send(JSON.stringify(datosPerfil));
+                    res.json(datosPerfil);
+                }
+            }
+        );
+    } else {
+        res.status(401).send('No se ha iniciado sesión');
+    }
+});
+
+/////////////////////////////////////////////// Borrar Cuenta /////////////////////////////////////////////////////////////////////////////
+
+app.delete('/eliminar-cuenta', function (req, res) {
+    const username = req.session.username;
+
+    if (username) {
+        connection1.query(
+            'DELETE FROM usuarios WHERE username = ?',
+            [username],
+            function (error, results, fields) {
+                if (error) {
+                    console.log(error);
+                    res.status(500).send('Error al eliminar la cuenta');
+                } else {
+                    console.log('La cuenta ha sido eliminada');
+                    req.session.destroy(); // Destruir la sesión del usuario
+                    res.send('La cuenta ha sido eliminada');
                 }
             }
         );
