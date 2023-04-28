@@ -1,5 +1,18 @@
 const commentsList = document.getElementById("comments-list");
 
+// función para verificar si el usuario ya ha dado un like al comentario
+function hasUserLikedComment(commentId) {
+  const likedComments = JSON.parse(localStorage.getItem("likedComments")) || [];
+  return likedComments.includes(commentId);
+}
+
+// función para agregar el comentario al array de comentarios que le gustan al usuario
+function addUserLike(commentId) {
+  const likedComments = JSON.parse(localStorage.getItem("likedComments")) || [];
+  likedComments.push(commentId);
+  localStorage.setItem("likedComments", JSON.stringify(likedComments));
+}
+
 fetch("https://jsonplaceholder.typicode.com/comments")
   .then(response => response.json())
   .then(data => {
@@ -12,8 +25,8 @@ fetch("https://jsonplaceholder.typicode.com/comments")
           <strong>${comment.name}</strong>
           <p class="m-0">${comment.body}</p>
         </div>
-        <button class="btn btn-outline-primary btn-sm ms-auto like-btn">❤</button>
-        <span class="ms-2 like-count">0</span>
+        <button class="btn btn-outline-primary btn-sm ms-auto like-btn" data-comment-id="${comment.id}">❤</button>
+        <span class="ms-2 like-count">${comment.likeCount || 0}</span>
       `;
       commentsList.appendChild(li);
 
@@ -21,15 +34,26 @@ fetch("https://jsonplaceholder.typicode.com/comments")
       const likeButtons = document.querySelectorAll(".like-btn");
 
       likeButtons.forEach(button => {
-        let likeCount = 0;
+        const commentId = button.getAttribute("data-comment-id");
+
+        if (hasUserLikedComment(commentId)) {
+          // deshabilita el botón de me gusta si el usuario ya ha dado like
+          button.disabled = true;
+        }
 
         button.addEventListener("click", () => {
-          // Incrementa el contador
-          likeCount++;
+          if (!hasUserLikedComment(commentId)) {
+            // incrementa el contador de me gusta
+            const likeCountElement = button.nextElementSibling;
+            const likeCount = parseInt(likeCountElement.textContent) + 1;
+            likeCountElement.textContent = likeCount;
 
-          // actualiza el contador de me gusta
-          const likeCountElement = button.nextElementSibling;
-          likeCountElement.textContent = likeCount;
+            // agrega el comentario al array de comentarios que le gustan al usuario
+            addUserLike(commentId);
+
+            // deshabilita el botón de me gusta
+            button.disabled = true;
+          }
         });
       });
     });
