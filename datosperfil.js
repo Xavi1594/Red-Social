@@ -1,6 +1,5 @@
 // Obtener los datos del perfil del usuario
 window.onload = function () {
-  // Obtener los datos del perfil del usuario
   fetch('/datosperfil')
     .then(function (response) {
       if (!response.ok) {
@@ -10,7 +9,6 @@ window.onload = function () {
     })
     .then(function (datosPerfil) {
       // Actualizar los elementos del HTML con los datos del perfil
-      console.log(response);
       document.getElementById('nombre-completo').textContent = datosPerfil.fullname;
       document.getElementById('ciudad').textContent = datosPerfil.city;
       document.getElementById('pais').textContent = datosPerfil.country;
@@ -21,27 +19,29 @@ window.onload = function () {
       document.getElementById('hobbies').textContent = datosPerfil.hobbies;
     })
     .catch(function (error) {
-      console.log('Error al recuperar los datos del perfil:');
+      console.error('Error al recuperar los datos del perfil:', error);
     });
 };
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-// Agregar evento de clic al botón de eliminar cuenta
-document.getElementById("eliminar-cuenta").addEventListener("click", function () {
-  var confirmacion = confirm("¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer.");
+// Agregar funcion de eliminar cuenta
 
-  if (confirmacion) {
-    // Eliminar cuenta y datos asociados
-    usuario = null;
-    document.getElementById("nombre-completo").innerHTML = "";
-    document.getElementById("pais").innerHTML = "";
-    document.getElementById("ciudad").innerHTML = "";
-    document.getElementById("edad").innerHTML = "";
-    document.getElementById("estudios").innerHTML = "";
-    document.getElementById("idiomas").innerHTML = "";
-    document.getElementById("linkedin").innerHTML = "";
-    document.getElementById("hobbies").innerHTML = "";
-    document.getElementById("mensaje-confirmacion").classList.remove("oculto");
-  }
+document.getElementById('eliminar-cuenta').addEventListener('click', function () {
+  fetch('/eliminar-cuenta', {
+    method: 'DELETE',
+  })
+    .then(function (response) {
+      if (!response.ok) {
+        throw Error(response.statusText);
+      }
+      return response.text();
+    })
+    .then(function (text) {
+      console.log(text);
+      window.location.href = '/index.html'; // Redireccionar a la página de inicio de sesión
+    })
+    .catch(function (error) {
+      console.error('Error al eliminar la cuenta:', error);
+    });
 });

@@ -101,6 +101,12 @@ registroForm.addEventListener('submit', async (event) => {
             successDiv.style.display = 'none';
             errorDiv.style.display = 'block';
         }
+
+        // Redirigir a la página deseada después de un breve retraso (por ejemplo, 2 segundos)
+        setTimeout(function () {
+            window.location.href = "index.html";
+        }, 2000);
+
     } catch (error) {
         errorDiv.innerHTML = 'Ha ocurrido un error en el servidor. Por favor, intenta más tarde.';
         successDiv.style.display = 'none';
