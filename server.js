@@ -4,6 +4,8 @@ const bodyParser = require('body-parser');
 const mysql = require('mysql2');
 const path = require('path');
 const fs = require('fs');
+const http = require('http');
+const ejs = require('ejs');
 require('dotenv').config();
 
 const app = express();
@@ -15,12 +17,12 @@ const db = mysql.createConnection({
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME
-  });
-  
-  db.connect((err) => {
+});
+
+db.connect((err) => {
     if (err) throw err;
     console.log('Conexión establecida con la base de datos');
-  });
+});
 //////////////////////////////////////////REGISTRO//////////////////////////////////////////////////////////////////////////////////
 
 // Configuración del middleware body-parser para obtener los datos del formulario
@@ -36,7 +38,6 @@ app.use(express.static(__dirname, {
     },
 }));
 
-
 // Configuración de la ruta para el archivo HTML
 app.get('/registro', (req, res) => {
     res.sendFile(__dirname + '/registro.html');
@@ -44,7 +45,7 @@ app.get('/registro', (req, res) => {
 
 // Configuración de la ruta para manejar el registro de usuarios
 app.post('/registro', (req, res) => {
-    const { username, password, confirm_password, email, fullname, city, country, age, university, languages, linkedin, hobbies } = req.body;
+    const { username, password, email, fullname, city, country, age, university, languages, linkedin, hobbies } = req.body;
 
     // Validación: nombre de usuario y correo electrónico únicos
     const checkUserSql = 'SELECT * FROM usuarios WHERE username = ? OR email = ?';
@@ -86,12 +87,12 @@ const connection = mysql.createConnection({
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME
-  });
-  
-  connection.connect((err) => {
+});
+
+connection.connect((err) => {
     if (err) throw err;
     console.log('Conexión establecida con la base de datos a login');
-  });
+});
 
 app.use(
     session({
@@ -176,12 +177,12 @@ const connection1 = mysql.createConnection({
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME
-  });
-  
-  connection1.connect((err) => {
+});
+
+connection1.connect((err) => {
     if (err) throw err;
     console.log('Conexión establecida con la base de datosa perfil');
-  });
+});
 
 app.get('/datosperfil', function (req, res) {
     const username = req.session.username;
@@ -239,10 +240,79 @@ app.delete('/eliminar-cuenta', function (req, res) {
     }
 });
 
+////////////////////////////////////////////////generar los usuarios///////////////////////////////////////////////////////////////////////
+
+app.use(session({
+    secret: 'my-secret-key',
+    resave: false,
+    saveUninitialized: false
+}));
+
+
+// Crea una conexión a la base de datos
+const db6 = mysql.createConnection({
+    host: 'localhost',
+    user: 'frank',
+    password: 'grupo13',
+    database: 'grupo13'
+  });
+  
+// Conectar a la base de datos
+db6.connect((err) => {
+    if (err) {
+      console.log('Error connecting to database:', err);
+    } else {
+      console.log('Connected to database!');
+    }
+  });
+  
+  const server = http.createServer((req, res) => {
+    const parsedUrl = url.parse(req.url);
+    const path = parsedUrl.pathname;
+    const query = querystring.parse(parsedUrl.query);
+  
+    if (path === '/amigos') {
+      // Obtener amigos de la base de datos
+      db6.query('SELECT * FROM amigos', (err, result) => {
+        if (err) {
+          console.log('Error getting friends from database:', err);
+          res.writeHead(500);
+          res.end('Internal server error');
+        } else {
+          // Devolver respuesta HTML con los amigos
+          let amigosHTML = '';
+          result.forEach((amigo) => {
+            amigosHTML += `
+              <div class="card">
+                <h2>${amigo.name}</h2>
+                <p>${amigo.age} años</p>
+              </div>
+            `;
+          });
+          res.writeHead(200, {'Content-Type': 'text/html'});
+          res.end(`
+            <!DOCTYPE html>
+            <html>
+              <head>
+                <title>Amigos</title>
+              </head>
+              <body>
+                ${amigosHTML}
+              </body>
+            </html>
+          `);
+        }
+      });
+    } else {
+      res.writeHead(404);
+      res.end('Not found');
+    }
+  });
+
 /////////////////////////////////////////////// Inicio del servidor////////////////////////////////////////////////////////////////////////
 
 const port = process.env.PORT || 4000;
 
 app.listen(port, () => {
     console.log(`Servidor iniciado en el puerto ${port}`);
-  });
+});
