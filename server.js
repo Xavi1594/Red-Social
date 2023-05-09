@@ -255,59 +255,25 @@ const db6 = mysql.createConnection({
     user: 'frank',
     password: 'grupo13',
     database: 'grupo13'
-  });
-  
-// Conectar a la base de datos
-db6.connect((err) => {
-    if (err) {
-      console.log('Error connecting to database:', err);
-    } else {
-      console.log('Connected to database!');
-    }
-  });
-  
-  const server = http.createServer((req, res) => {
-    const parsedUrl = url.parse(req.url);
-    const path = parsedUrl.pathname;
-    const query = querystring.parse(parsedUrl.query);
-  
-    if (path === '/amigos') {
-      // Obtener amigos de la base de datos
-      db6.query('SELECT * FROM amigos', (err, result) => {
+});
+
+app.get('/amigos', function (req, res) {
+    // Obtenemos el usuario logueado de la sesión
+    var usuarioLogueado = req.session.usuario;
+
+    // Consultamos todos los amigos excepto el usuario logueado
+    pool.query('SELECT * FROM usuarios WHERE username != ?', [usuarioLogueado], function (err, result) {
         if (err) {
-          console.log('Error getting friends from database:', err);
-          res.writeHead(500);
-          res.end('Internal server error');
-        } else {
-          // Devolver respuesta HTML con los amigos
-          let amigosHTML = '';
-          result.forEach((amigo) => {
-            amigosHTML += `
-              <div class="card">
-                <h2>${amigo.name}</h2>
-                <p>${amigo.age} años</p>
-              </div>
-            `;
-          });
-          res.writeHead(200, {'Content-Type': 'text/html'});
-          res.end(`
-            <!DOCTYPE html>
-            <html>
-              <head>
-                <title>Amigos</title>
-              </head>
-              <body>
-                ${amigosHTML}
-              </body>
-            </html>
-          `);
+            console.log('Error al obtener amigos de la base de datos', err);
+            res.status(500).send('Error al obtener amigos de la base de datos');
+            return;
         }
-      });
-    } else {
-      res.writeHead(404);
-      res.end('Not found');
-    }
-  });
+
+        // Enviamos los amigos en formato JSON
+        res.setHeader('Content-Type', 'application/json');
+        res.send(JSON.stringify(result));
+    });
+});
 
 /////////////////////////////////////////////// Inicio del servidor////////////////////////////////////////////////////////////////////////
 

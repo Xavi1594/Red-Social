@@ -46,13 +46,6 @@ registroForm.addEventListener('submit', async (event) => {
         return;
     }
 
-    if (age >= 120) {
-        errorDiv.innerHTML = 'Ingrese una edad valida';
-        successDiv.style.display = 'none';
-        errorDiv.style.display = 'block';
-        return;
-    }
-
     if (!regexEmail.test(email)) {
         errorDiv.innerHTML = 'Ingrese un correo electrónico válido';
         successDiv.style.display = 'none';

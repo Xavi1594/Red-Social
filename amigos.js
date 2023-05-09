@@ -1,27 +1,36 @@
-function amigos() {
-    function getFriends() {
-      fetch('http://localhost:4000/amigos')
-        .then(response => {
-          return response.json();
-        })
-        .then(data => {
-          const amigosDiv = document.getElementById('usuarios');
-          amigosDiv.innerHTML = data.map(friend => `
-            <div class="card">
-              <h2><strong>${friend.username}</strong></h2>
-              <p>${friend.fullname}</p>
-              <p>${friend.email}</p>
-              <p>${friend.age}</p>
-            </div>
-          `).join('');
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    }
-  
-    return {
-      getFriends: getFriends
-    };
-  }
-  
+function mostrarAmigos(amigos) {
+  var amigosContainer = document.getElementById('amigos');
+  amigosContainer.innerHTML = '';
+
+  amigos.forEach(function (amigo) {
+    var amigoCard = document.createElement('div');
+    amigoCard.classList.add('amigo-card');
+
+    var nombreUsuario = document.createElement('h2');
+    nombreUsuario.classList.add('nombre-usuario');
+    nombreUsuario.innerHTML = '<strong>' + amigo.username + '</strong>';
+    amigoCard.appendChild(nombreUsuario);
+
+    var detalles = document.createElement('div');
+    detalles.classList.add('detalles');
+
+    var nombreCompleto = document.createElement('p');
+    nombreCompleto.classList.add('nombre-completo');
+    nombreCompleto.innerHTML = amigo.fullname;
+    detalles.appendChild(nombreCompleto);
+
+    var edad = document.createElement('p');
+    edad.classList.add('edad');
+    edad.innerHTML = amigo.age + ' años';
+    detalles.appendChild(edad);
+
+    var pais = document.createElement('p');
+    pais.classList.add('pais');
+    pais.innerHTML = amigo.country;
+    detalles.appendChild(pais);
+
+    amigoCard.appendChild(detalles);
+
+    amigosContainer.appendChild(amigoCard);
+  });
+}
