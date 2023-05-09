@@ -5,8 +5,12 @@ const mysql = require('mysql2');
 const path = require('path');
 const fs = require('fs');
 const http = require('http');
-const ejs = require('ejs');
+// const ejs = require('ejs');
 require('dotenv').config();
+// const cors = require('cors');
+
+// app.use(cors());
+
 
 const app = express();
 app.use('/css', express.static(__dirname + '/css'));
@@ -109,8 +113,19 @@ app.get("/dashboard.html", (req, res) => {
     } else {
         res.redirect("/");
     }
-});
-
+});app.get('/post', (req, res) => {
+    console.log('Solicitud a /post recibida'); // Agregar un mensaje de consola aquí
+    db.query('SELECT * FROM post', (err, results) => {
+      if (err) {
+        console.error('Error al obtener los posts:', err);
+        res.status(500).json({ message: 'Ha ocurrido un error al obtener los posts. Por favor, intenta más tarde.' });
+        return;
+      }
+      console.log('Resultados de la consulta:', results); // Agregar un mensaje de consola aquí
+      res.json(results);
+    });
+  });
+  
 // Configurar ruta para el proceso de login
 app.post("/login", (req, res) => {
     const username = req.body.username;
@@ -276,6 +291,21 @@ app.get('/amigos', function (req, res) {
 });
 
 /////////////////////////////////////////////// Inicio del servidor////////////////////////////////////////////////////////////////////////
+
+
+
+app.get('/posts', (req, res) => {
+    db.query('SELECT * FROM posts', (err, results) => {
+      if (err) {
+        console.error('Error al obtener los posts:', err);
+        res.status(500).json({ message: 'Ha ocurrido un error al obtener los posts. Por favor, intenta más tarde.' });
+        return;
+      }
+      res.json(results);
+    });
+  });
+  
+
 
 const port = process.env.PORT || 4000;
 
