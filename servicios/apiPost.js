@@ -1,36 +1,35 @@
-const commentsList = document.getElementById("comments-list");
+// posts.js
+async function fetchPosts() {
+  try {
+    const response = await fetch('http://localhost:4000/post');
+    const posts = await response.json();
 
-fetch("https://jsonplaceholder.typicode.com/comments")
-  .then(response => response.json())
-  .then(data => {
-    data.slice(0, 20).forEach(comment => { 
-      const li = document.createElement("li");
-      li.classList.add("list-group-item", "d-flex", "align-items-center", "p-2", "shadow");
-      li.innerHTML = `
-        <img  src="https://picsum.photos/50" alt="Imagen del autor" class="rounded-circle me-2">
-        <div>
-          <strong>${comment.name}</strong>
-          <p class="m-0">${comment.body}</p>
-        </div>
-        <button class="btn btn-outline-primary btn-sm ms-auto like-btn">❤</button>
-        <span class="ms-2 like-count">0</span>
-      `;
-      commentsList.appendChild(li);
+    console.log('Respuesta del servidor:', posts); // Agrega esta línea
 
-      // evento me gusta 
-      const likeButtons = document.querySelectorAll(".like-btn");
+    displayPosts(posts);
+  } catch (error) {
+    console.error('Error al obtener los posts:', error);
+  }
+}
 
-      likeButtons.forEach(button => {
-        let likeCount = 0;
+function displayPosts(posts) {
+  const postsContainer = document.getElementById('posts-container');
 
-        button.addEventListener("click", () => {
-          // Incrementa el contador
-          likeCount++;
+  posts.forEach((post) => {
+    const postElement = document.createElement('div');
+    postElement.className = 'post';
 
-          // actualiza el contador de me gusta
-          const likeCountElement = button.nextElementSibling;
-          likeCountElement.textContent = likeCount;
-        });
-      });
-    });
+    const titleElement = document.createElement('h2');
+    titleElement.textContent = post.title;
+
+    const contentElement = document.createElement('p');
+    contentElement.textContent = post.content;
+
+    postElement.appendChild(titleElement);
+    postElement.appendChild(contentElement);
+
+    postsContainer.appendChild(postElement);
   });
+}
+
+fetchPosts();
