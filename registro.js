@@ -22,7 +22,6 @@ registroForm.addEventListener('submit', async (event) => {
     const languages = formData.get('languages');
     const linkedin = formData.get('linkedin');
     const hobbies = formData.get('hobbies');
-    const terms = formData.get('terms');
 
     // Validations
     if (password !== confirmPassword) {
@@ -55,13 +54,6 @@ registroForm.addEventListener('submit', async (event) => {
 
     if (linkedin && !regexLinkedIn.test(linkedin)) {
         errorDiv.innerHTML = 'Ingrese una URL de LinkedIn válida';
-        successDiv.style.display = 'none';
-        errorDiv.style.display = 'block';
-        return;
-    }
-
-    if (!terms) {
-        errorDiv.innerHTML = 'Debe aceptar los términos y condiciones';
         successDiv.style.display = 'none';
         errorDiv.style.display = 'block';
         return;

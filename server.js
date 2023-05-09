@@ -248,7 +248,6 @@ app.use(session({
     saveUninitialized: false
 }));
 
-
 // Crea una conexión a la base de datos
 const db6 = mysql.createConnection({
     host: 'localhost',
@@ -259,10 +258,10 @@ const db6 = mysql.createConnection({
 
 app.get('/amigos', function (req, res) {
     // Obtenemos el usuario logueado de la sesión
-    var usuarioLogueado = req.session.usuario;
+    var usuarioLogueado = req.session.username;
 
     // Consultamos todos los amigos excepto el usuario logueado
-    pool.query('SELECT * FROM usuarios WHERE username != ?', [usuarioLogueado], function (err, result) {
+    db6.query('SELECT * FROM usuarios WHERE username != ?', [usuarioLogueado], function (err, result) {
         if (err) {
             console.log('Error al obtener amigos de la base de datos', err);
             res.status(500).send('Error al obtener amigos de la base de datos');
@@ -274,6 +273,42 @@ app.get('/amigos', function (req, res) {
         res.send(JSON.stringify(result));
     });
 });
+
+// Agregar amigo
+app.post('/agregar-amigo', function (req, res) {
+    const idUsuarioLogueado = req.session.iduser;
+    const usuarioLogueado = req.session.username;
+    const amigoId = req.body.amigoId;
+
+    const sql = `INSERT INTO amigos (iduser, usuario, amigo) VALUES (${idUsuarioLogueado}, '${usuarioLogueado}', '${amigoId}')`;
+
+    db6.query(sql, function (error, results, fields) {
+        if (error) {
+            console.log('Error al agregar amigo a la base de datos', error);
+            res.status(500).send('Error al agregar amigo a la base de datos');
+            return;
+        }
+        res.send('Amigo agregado exitosamente');
+    });
+});
+
+// Eliminar amigo
+app.post('/eliminar-amigo', function (req, res) {
+    const idUsuarioLogueado = req.session.iduser;
+    const amigo = req.body.amigo;
+
+    const sql = `DELETE FROM amigos WHERE iduser=${idUsuarioLogueado} AND amigo='${amigo}'`;
+
+    db6.query(sql, function (error, results, fields) {
+        if (error) {
+            console.log('Error al eliminar amigo de la base de datos', error);
+            res.status(500).send('Error al eliminar amigo de la base de datos');
+            return;
+        }
+        res.send('Amigo eliminado exitosamente');
+    });
+});
+
 
 /////////////////////////////////////////////// Inicio del servidor////////////////////////////////////////////////////////////////////////
 
