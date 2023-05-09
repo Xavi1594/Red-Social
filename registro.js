@@ -39,6 +39,13 @@ registroForm.addEventListener('submit', async (event) => {
         return;
     }
 
+    if (age < 16) {
+        errorDiv.innerHTML = 'No tiene edad suficiente para acceder a este sitio web';
+        successDiv.style.display = 'none';
+        errorDiv.style.display = 'block';
+        return;
+    }
+
     if (!regexEmail.test(email)) {
         errorDiv.innerHTML = 'Ingrese un correo electrónico válido';
         successDiv.style.display = 'none';
@@ -67,6 +74,20 @@ registroForm.addEventListener('submit', async (event) => {
         return;
     }
 
+    if (!/^[a-zA-Z\s]+$/.test(city)) {
+        errorDiv.innerHTML = 'Ingrese una ciudad válida (solo letras)';
+        successDiv.style.display = 'none';
+        errorDiv.style.display = 'block';
+        return;
+    }
+
+    if (!/^[a-zA-Z\s]+$/.test(country)) {
+        errorDiv.innerHTML = 'Ingrese un pais válido (solo letras)';
+        successDiv.style.display = 'none';
+        errorDiv.style.display = 'block';
+        return;
+    }
+
     const data = {
         username,
         password,
@@ -82,7 +103,7 @@ registroForm.addEventListener('submit', async (event) => {
     };
 
     try {
-        const response = await fetch('/registro', {
+        const response = await fetch('http://localhost:4000/registro', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

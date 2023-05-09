@@ -1,6 +1,6 @@
 // Obtener los datos del perfil del usuario
 window.onload = function () {
-  fetch('/datosperfil')
+  fetch('http://localhost:4000/datosperfil')
     .then(function (response) {
       if (!response.ok) {
         throw Error(response.statusText);
@@ -28,7 +28,7 @@ window.onload = function () {
 // Agregar funcion de eliminar cuenta
 
 document.getElementById('eliminar-cuenta').addEventListener('click', function () {
-  fetch('/eliminar-cuenta', {
+  fetch('http://localhost:4000/eliminar-cuenta', {
     method: 'DELETE',
   })
     .then(function (response) {
