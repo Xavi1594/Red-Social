@@ -113,19 +113,19 @@ app.get("/dashboard.html", (req, res) => {
     } else {
         res.redirect("/");
     }
-});app.get('/post', (req, res) => {
+}); app.get('/post', (req, res) => {
     console.log('Solicitud a /post recibida'); // Agregar un mensaje de consola aquí
     db.query('SELECT * FROM post', (err, results) => {
-      if (err) {
-        console.error('Error al obtener los posts:', err);
-        res.status(500).json({ message: 'Ha ocurrido un error al obtener los posts. Por favor, intenta más tarde.' });
-        return;
-      }
-      console.log('Resultados de la consulta:', results); // Agregar un mensaje de consola aquí
-      res.json(results);
+        if (err) {
+            console.error('Error al obtener los posts:', err);
+            res.status(500).json({ message: 'Ha ocurrido un error al obtener los posts. Por favor, intenta más tarde.' });
+            return;
+        }
+        console.log('Resultados de la consulta:', results); // Agregar un mensaje de consola aquí
+        res.json(results);
     });
-  });
-  
+});
+
 // Configurar ruta para el proceso de login
 app.post("/login", (req, res) => {
     const username = req.body.username;
@@ -265,10 +265,10 @@ app.use(session({
 
 // Crea una conexión a la base de datos
 const db6 = mysql.createConnection({
-    host: 'localhost',
-    user: 'frank',
-    password: 'grupo13',
-    database: 'grupo13'
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME
 });
 
 app.get('/amigos', function (req, res) {
@@ -289,25 +289,57 @@ app.get('/amigos', function (req, res) {
     });
 });
 
-// Agregar amigo
+//Agregar amigo
 app.post('/agregar-amigo', function (req, res) {
-    const idUsuarioLogueado = req.session.iduser;
-    const usuarioLogueado = req.session.username;
-    const amigoId = req.body.amigoId;
 
-    const sql = `INSERT INTO amigos (iduser, usuario, amigo) VALUES (${idUsuarioLogueado}, '${usuarioLogueado}', '${amigoId}')`;
+    const sqlUsuarioLogueado = `SELECT iduser FROM usuarios WHERE username="${req.session.username}"`;
+    const sqlAmigo = `SELECT iduser FROM usuarios WHERE username="${nombreAmigo}"`;
 
-    db6.query(sql, function (error, results, fields) {
-        if (error) {
-            console.log('Error al agregar amigo a la base de datos', error);
-            res.status(500).send('Error al agregar amigo a la base de datos');
+    db6.query(sqlUsuarioLogueado, function (errorUsuarioLogueado, resultsUsuarioLogueado, fieldsUsuarioLogueado) {
+        if (errorUsuarioLogueado) {
+            console.log('Error al obtener el usuario logueado de la base de datos', errorUsuarioLogueado);
+            res.status(500).send('Error al obtener el usuario logueado de la base de datos');
             return;
         }
-        res.send('Amigo agregado exitosamente');
+
+        if (!resultsUsuarioLogueado.length) {
+            console.log('No se encontró el usuario logueado en la base de datos');
+            res.status(404).send('No se encontró el usuario logueado en la base de datos');
+            return;
+        }
+
+        db6.query(sqlAmigo, function (errorAmigo, resultsAmigo, fieldsAmigo) {
+            if (errorAmigo) {
+                console.log('Error al obtener el amigo de la base de datos', errorAmigo);
+                res.status(500).send('Error al obtener el amigo de la base de datos');
+                return;
+            }
+
+            if (!resultsAmigo.length) {
+                console.log('No se encontró el amigo en la base de datos');
+                res.status(404).send('No se encontró el amigo en la base de datos');
+                return;
+            }
+
+            const idUsuarioLogueado = resultsUsuarioLogueado[0].iduser;
+            const idAmigo = resultsAmigo[0].iduser;
+
+            const sqlAgregarAmigo = `INSERT INTO amigos (iduser, idamigo) VALUES (${idUsuarioLogueado}, ${idAmigo})`;
+
+            db6.query(sqlAgregarAmigo, function (errorAgregarAmigo, resultsAgregarAmigo, fieldsAgregarAmigo) {
+                if (errorAgregarAmigo) {
+                    console.log('Error al agregar amigo a la base de datos', errorAgregarAmigo);
+                    res.status(500).send('Error al agregar amigo a la base de datos');
+                    return;
+                }
+
+                res.send('Amigo agregado exitosamente');
+            });
+        });
     });
 });
 
-// Eliminar amigo
+//Eliminar amigo
 app.post('/eliminar-amigo', function (req, res) {
     const idUsuarioLogueado = req.session.iduser;
     const amigo = req.body.amigo;
@@ -331,15 +363,15 @@ app.post('/eliminar-amigo', function (req, res) {
 
 app.get('/posts', (req, res) => {
     db.query('SELECT * FROM posts', (err, results) => {
-      if (err) {
-        console.error('Error al obtener los posts:', err);
-        res.status(500).json({ message: 'Ha ocurrido un error al obtener los posts. Por favor, intenta más tarde.' });
-        return;
-      }
-      res.json(results);
+        if (err) {
+            console.error('Error al obtener los posts:', err);
+            res.status(500).json({ message: 'Ha ocurrido un error al obtener los posts. Por favor, intenta más tarde.' });
+            return;
+        }
+        res.json(results);
     });
-  });
-  
+});
+
 
 
 const port = process.env.PORT || 4000;

@@ -33,7 +33,7 @@ function mostrarAmigos(amigos) {
     agregarAmigoBtn.classList.add('btn');
     agregarAmigoBtn.innerHTML = 'Agregar amigo';
     agregarAmigoBtn.addEventListener('click', function () {
-      agregarAmigo(usuarioLogueado.id, amigo.id);
+      agregarAmigo(amigo.id);
       agregarAmigoBtn.disabled = true;
       agregarAmigoBtn.innerHTML = 'Amigo agregado';
     });
@@ -75,14 +75,14 @@ fetch('http://localhost:4000/amigos', { credentials: 'include' })
     console.error('Ha ocurrido un error:', error.message);
   });
 
-function agregarAmigo(idUsuarioLogueado, idAmigo) {
+function agregarAmigo(idAmigo) {
   fetch('http://localhost:4000/agregar-amigo', {
     method: 'POST',
     credentials: 'include',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ amigo: idAmigo })
+    body: JSON.stringify({ amigoId: idAmigo })
   })
     .then(function (response) {
       if (response.ok) {
@@ -95,7 +95,6 @@ function agregarAmigo(idUsuarioLogueado, idAmigo) {
       console.error('Ha ocurrido un error:', error.message);
     });
 }
-
 
 function eliminarAmigo(idAmigo) {
   fetch('http://localhost:4000/eliminar-amigo', {
