@@ -264,13 +264,13 @@ app.use(session({
 }));
 
 
-// Crea una conexión a la base de datos
-const db6 = mysql.createConnection({
-    host: 'localhost',
-    user: 'frank',
-    password: 'grupo13',
-    database: 'grupo13'
-});
+// // Crea una conexión a la base de datos
+// const db6 = mysql.createConnection({
+//     host: 'localhost',
+//     user: 'frank',
+//     password: 'grupo13',
+//     database: 'grupo13'
+// });
 
 app.get('/amigos', function (req, res) {
     // Obtenemos el usuario logueado de la sesión
@@ -292,10 +292,8 @@ app.get('/amigos', function (req, res) {
 
 /////////////////////////////////////////////// Inicio del servidor////////////////////////////////////////////////////////////////////////
 
-
-
-app.get('/posts', (req, res) => {
-    db.query('SELECT * FROM posts', (err, results) => {
+app.get('/post', (req, res) => {
+    db.query('SELECT * FROM post', (err, results) => {
       if (err) {
         console.error('Error al obtener los posts:', err);
         res.status(500).json({ message: 'Ha ocurrido un error al obtener los posts. Por favor, intenta más tarde.' });
@@ -305,7 +303,23 @@ app.get('/posts', (req, res) => {
     });
   });
   
-
+  app.post('/post', (req, res) => {
+    const newPost = req.body;
+  
+    if (newPost.title && newPost.content) { 
+      db.query('INSERT INTO post SET ?', newPost, (err, results) => {
+        if (err) {
+          console.error('Error al crear el post:', err);
+          res.status(500).json({ message: 'Ha ocurrido un error al crear el post. Por favor, intenta más tarde.' });
+          return;
+        }
+        res.status(201).json(newPost);
+      });
+    } else {
+      res.status(400).send({ message: 'El post debe tener un título y un contenido.' });
+    }
+  });
+  
 
 const port = process.env.PORT || 4000;
 
