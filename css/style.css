@@ -3,15 +3,59 @@ primary #f3f2ef;
 secundary: #eae2f3; */
 @import url(./red.style.css);
 @import url(./registro.css);
+
 html {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
 
-
+.amigosContainer{
+  margin-top: 80px; /* ajusta la cantidad de margen que deseas agregar */
 }
 
 body {
   background: #f3f2ef
 }
 
+.amigo-card {
+  margin-top: 50px;
+  display: inline-block;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  width: 200px;
+  height: 300px;
+  margin: 20px;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+.amigo-card:hover {
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+}
+
+.nombre-usuario {
+  margin: 0;
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.detalles {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.nombre-completo,
+.edad,
+.pais {
+  margin: 10px 0;
+  font-size: 18px;
+  text-align: center;
+  color: #555;
+}
