@@ -1,5 +1,4 @@
 document.getElementById('new-post-form').addEventListener('submit', createPost);
-
 async function createPost(event) {
   event.preventDefault();
 
@@ -18,17 +17,19 @@ async function createPost(event) {
       body: JSON.stringify(post),
     });
 
-    if (!response.ok) {
+    if (response.ok) {
+      console.log('El post se ha creado correctamente:', post); 
+      document.getElementById('new-post-title').value = '';
+      document.getElementById('new-post-content').value = '';
+      await fetchPosts();
+    } else {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-
-    document.getElementById('new-post-title').value = '';
-    document.getElementById('new-post-content').value = '';
-    await fetchPosts();
   } catch (error) {
     console.error('Error al crear el post:', error);
   }
 }
+
 
 async function fetchPosts() {
   try {

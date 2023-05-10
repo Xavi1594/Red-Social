@@ -245,7 +245,7 @@ app.delete('/eliminar-cuenta', function (req, res) {
                     res.status(500).send('Error al eliminar la cuenta');
                 } else {
                     console.log('La cuenta ha sido eliminada');
-                    req.session.destroy(); // Destruir la sesión del usuario
+                    req.session.destroy(); 
                     res.send('La cuenta ha sido eliminada');
                 }
             }
@@ -272,10 +272,10 @@ const db6 = mysql.createConnection({
 });
 
 app.get('/amigos', function (req, res) {
-    // Obtenemos el usuario logueado de la sesión
+  
     var usuarioLogueado = req.session.username;
 
-    // Consultamos todos los amigos excepto el usuario logueado
+   
     db6.query('SELECT * FROM usuarios WHERE username != ?', [usuarioLogueado], function (err, result) {
         if (err) {
             console.log('Error al obtener amigos de la base de datos', err);
@@ -283,76 +283,9 @@ app.get('/amigos', function (req, res) {
             return;
         }
 
-        // Enviamos los amigos en formato JSON
+       
         res.setHeader('Content-Type', 'application/json');
         res.send(JSON.stringify(result));
-    });
-});
-
-//Agregar amigo
-app.post('/agregar-amigo', function (req, res) {
-
-    const sqlUsuarioLogueado = `SELECT iduser FROM usuarios WHERE username="${req.session.username}"`;
-    const sqlAmigo = `SELECT iduser FROM usuarios WHERE username="${nombreAmigo}"`;
-
-    db6.query(sqlUsuarioLogueado, function (errorUsuarioLogueado, resultsUsuarioLogueado, fieldsUsuarioLogueado) {
-        if (errorUsuarioLogueado) {
-            console.log('Error al obtener el usuario logueado de la base de datos', errorUsuarioLogueado);
-            res.status(500).send('Error al obtener el usuario logueado de la base de datos');
-            return;
-        }
-
-        if (!resultsUsuarioLogueado.length) {
-            console.log('No se encontró el usuario logueado en la base de datos');
-            res.status(404).send('No se encontró el usuario logueado en la base de datos');
-            return;
-        }
-
-        db6.query(sqlAmigo, function (errorAmigo, resultsAmigo, fieldsAmigo) {
-            if (errorAmigo) {
-                console.log('Error al obtener el amigo de la base de datos', errorAmigo);
-                res.status(500).send('Error al obtener el amigo de la base de datos');
-                return;
-            }
-
-            if (!resultsAmigo.length) {
-                console.log('No se encontró el amigo en la base de datos');
-                res.status(404).send('No se encontró el amigo en la base de datos');
-                return;
-            }
-
-            const idUsuarioLogueado = resultsUsuarioLogueado[0].iduser;
-            const idAmigo = resultsAmigo[0].iduser;
-
-            const sqlAgregarAmigo = `INSERT INTO amigos (iduser, idamigo) VALUES (${idUsuarioLogueado}, ${idAmigo})`;
-
-            db6.query(sqlAgregarAmigo, function (errorAgregarAmigo, resultsAgregarAmigo, fieldsAgregarAmigo) {
-                if (errorAgregarAmigo) {
-                    console.log('Error al agregar amigo a la base de datos', errorAgregarAmigo);
-                    res.status(500).send('Error al agregar amigo a la base de datos');
-                    return;
-                }
-
-                res.send('Amigo agregado exitosamente');
-            });
-        });
-    });
-});
-
-//Eliminar amigo
-app.post('/eliminar-amigo', function (req, res) {
-    const idUsuarioLogueado = req.session.iduser;
-    const amigo = req.body.amigo;
-
-    const sql = `DELETE FROM amigos WHERE iduser=${idUsuarioLogueado} AND amigo='${amigo}'`;
-
-    db6.query(sql, function (error, results, fields) {
-        if (error) {
-            console.log('Error al eliminar amigo de la base de datos', error);
-            res.status(500).send('Error al eliminar amigo de la base de datos');
-            return;
-        }
-        res.send('Amigo eliminado exitosamente');
     });
 });
 
@@ -372,7 +305,7 @@ app.get('/post', (req, res) => {
   
   app.post('/post', (req, res) => {
     const newPost = req.body;
-  
+    console.log('Nuevo post:', newPost);
     if (newPost.title && newPost.content) { 
       db.query('INSERT INTO post SET ?', newPost, (err, results) => {
         if (err) {

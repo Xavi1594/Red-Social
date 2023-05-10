@@ -4,7 +4,7 @@ function mostrarAmigos(amigos) {
 
   amigos.forEach(function (amigo) {
     var amigoCard = document.createElement('div');
-    amigoCard.classList.add('amigo-card');
+    amigoCard.classList.add('amigo-card', 'col-sm-6', 'col-md-4', 'col-lg-3', 'mx-auto');
 
     var nombreUsuario = document.createElement('h2');
     nombreUsuario.classList.add('nombre-usuario');
@@ -41,7 +41,7 @@ function mostrarAmigos(amigos) {
 
     var eliminarAmigoBtn = document.createElement('button');
     eliminarAmigoBtn.classList.add('btn');
-    eliminarAmigoBtn.innerHTML = 'Eliminar amigo';
+    eliminarAmigoBtn.innerHTML = 'Eliminar amigo';  //todavía sin implementar//
     eliminarAmigoBtn.addEventListener('click', function () {
       eliminarAmigo(amigo.id);
       agregarAmigoBtn.disabled = false;
@@ -74,49 +74,3 @@ fetch('http://localhost:4000/amigos', { credentials: 'include' })
     console.log(usuarioLogueado);
     console.error('Ha ocurrido un error:', error.message);
   });
-
-function agregarAmigo(idAmigo) {
-  fetch('http://localhost:4000/agregar-amigo', {
-    method: 'POST',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ amigoId: idAmigo })
-  })
-    .then(function (response) {
-      if (response.ok) {
-        console.log('Amigo agregado con éxito');
-      } else {
-        throw new Error('No se pudo agregar el amigo');
-      }
-    })
-    .catch(function (error) {
-      console.error('Ha ocurrido un error:', error.message);
-    });
-}
-
-function eliminarAmigo(idAmigo) {
-  fetch('http://localhost:4000/eliminar-amigo', {
-    method: 'POST',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ amigo: idAmigo })
-  })
-    .then(function (response) {
-      if (response.ok) {
-        return response.text();
-      }
-      throw new Error('No se pudo eliminar el amigo');
-    })
-    .then(function (message) {
-      console.log(message);
-    })
-    .catch(function (error) {
-      console.error('Ha ocurrido un error:', error.message);
-    });
-}
-
-
