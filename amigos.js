@@ -1,76 +1,111 @@
-function mostrarAmigos(amigos) {
-  var amigosContainer = document.getElementById('amigos');
-  amigosContainer.innerHTML = '';
+function mostrarUsuariosRegistrados(usuarios) {
+  var registradosSection = document.querySelector('.registrados-section');
+  registradosSection.innerHTML = '';
 
-  amigos.forEach(function (amigo) {
-    var amigoCard = document.createElement('div');
-    amigoCard.classList.add('amigo-card', 'col-sm-6', 'col-md-4', 'col-lg-3', 'mx-auto');
+  usuarios.forEach(function (usuario) {
+    var usuarioCard = document.createElement('div');
+    usuarioCard.classList.add('usuario-card', 'col-sm-6', 'col-md-4', 'col-lg-3', 'mx-auto');
 
     var nombreUsuario = document.createElement('h2');
     nombreUsuario.classList.add('nombre-usuario');
-    nombreUsuario.innerHTML = '<strong>' + amigo.username + '</strong>';
-    amigoCard.appendChild(nombreUsuario);
+    nombreUsuario.innerHTML = '<strong>' + usuario.username + '</strong>';
+    usuarioCard.appendChild(nombreUsuario);
 
     var detalles = document.createElement('div');
     detalles.classList.add('detalles');
 
     var nombreCompleto = document.createElement('p');
     nombreCompleto.classList.add('nombre-completo');
-    nombreCompleto.innerHTML = amigo.fullname;
+    nombreCompleto.innerHTML = usuario.fullname;
     detalles.appendChild(nombreCompleto);
 
     var edad = document.createElement('p');
     edad.classList.add('edad');
-    edad.innerHTML = amigo.age + ' años';
+    edad.innerHTML = usuario.age + ' años';
     detalles.appendChild(edad);
 
     var pais = document.createElement('p');
     pais.classList.add('pais');
-    pais.innerHTML = amigo.country;
+    pais.innerHTML = usuario.country;
     detalles.appendChild(pais);
 
+    // Verificar si el usuario actual es amigo del usuario en el bucle
     var agregarAmigoBtn = document.createElement('button');
     agregarAmigoBtn.classList.add('btn');
     agregarAmigoBtn.innerHTML = 'Agregar amigo';
     agregarAmigoBtn.addEventListener('click', function () {
-      agregarAmigo(amigo.id);
+      agregarAmigo(usuario.id, usuario.nombre);
       agregarAmigoBtn.disabled = true;
-      agregarAmigoBtn.innerHTML = 'Amigo agregado';
+      agregarAmigoBtn.innerHTML = 'Ya son amigos';
+      alert('Amigo agregado con éxito');
     });
-    detalles.appendChild(agregarAmigoBtn);
 
-    var eliminarAmigoBtn = document.createElement('button');
-    eliminarAmigoBtn.classList.add('btn');
-    eliminarAmigoBtn.innerHTML = 'Eliminar amigo';  //todavía sin implementar//
-    eliminarAmigoBtn.addEventListener('click', function () {
-      eliminarAmigo(amigo.id);
-      agregarAmigoBtn.disabled = false;
-      agregarAmigoBtn.innerHTML = 'Agregar amigo';
-      eliminarAmigoBtn.disabled = true;
-      alert('Amigo eliminado con éxito');
-    });
-    detalles.appendChild(eliminarAmigoBtn);
-    eliminarAmigoBtn.disabled = true;
+    // Verificar si el usuario actual es amigo del usuario en el bucle
+    if (!usuario.amigo) {
+      detalles.appendChild(agregarAmigoBtn);
+    }
 
-    amigoCard.appendChild(detalles);
-
-    amigosContainer.appendChild(amigoCard);
+    usuarioCard.appendChild(detalles);
+    registradosSection.appendChild(usuarioCard);
   });
 }
 
+function cargarUsuariosRegistrados(usuarioLogueadoId) {
+  fetch('http://localhost:4000/usuarios/registrados', { credentials: 'include' })
+    .then(function (response) {
+      if (response.ok) {
+        return response.json();
+      }
+      throw new Error('No se pudo obtener la lista de usuarios registrados');
+    })
+    .then(function (usuariosRegistrados) {
+      mostrarUsuariosRegistrados(usuariosRegistrados);
+    })
+    .catch(function (error) {
+      console.error('Ha ocurrido un error:', error.message);
+    });
+}
 
-fetch('http://localhost:4000/amigos', { credentials: 'include' })
-  .then(function (response) {
-    if (response.ok) {
-      return response.json();
-    }
-    throw new Error('No se pudo obtener la lista de amigos');
+window.addEventListener('load', function () {
+  cargarUsuariosRegistrados();
+});
+
+function agregarAmigo(idAmigo) {
+  fetch(`http://localhost:4000/amigos/agregar/${idAmigo}`, {
+    method: 'POST',
+    credentials: 'include'
   })
-  .then(function (amigos) {
-    mostrarAmigos(amigos);
+    .then(function (response) {
+      if (response.ok) {
+        return response.json();
+      }
+      throw new Error('No se pudo agregar al amigo');
+    })
+    .then(function (amigo) {
+      cargarUsuariosRegistrados();
+      alert('Amigo agregado con éxito');
+    })
+    .catch(function (error) {
+      console.error('Ha ocurrido un error:', error.message);
+    });
+}
+
+function eliminarAmigo(idAmigo) {
+  fetch(`http://localhost:4000/amigos/eliminar/${idAmigo}`, {
+    method: 'DELETE',
+    credentials: 'include'
   })
-  .catch(function (error) {
-    console.log(response);
-    console.log(usuarioLogueado);
-    console.error('Ha ocurrido un error:', error.message);
-  });
+    .then(function (response) {
+      if (response.ok) {
+        return response.json();
+      }
+      throw new Error('No se pudo eliminar al amigo');
+    })
+    .then(function (amigo) {
+      cargarUsuariosRegistrados();
+      alert('Amigo eliminado con éxito');
+    })
+    .catch(function (error) {
+      console.error('Ha ocurrido un error:', error.message);
+    });
+}
