@@ -1,19 +1,24 @@
 function validarLogin() {
-  const usernameOrEmail = document.getElementById("nombre-de-usuario-o-correo").value;
-  const password = document.getElementById("contraseña").value;
+  const usernameOrEmail = document.getElementById('nombre-de-usuario-o-correo').value;
+  const password = document.getElementById('contraseña').value;
 
   const xhr = new XMLHttpRequest();
   xhr.onreadystatechange = function () {
-    if (this.readyState === 4 && this.status === 200) {
-      const response = this.responseText;
-      if (response.startsWith("Usuario o contraseña incorrectos")) {
-        document.getElementById("mensaje-de-error").innerHTML = response;
+    if (this.readyState === 4) {
+      if (this.status === 200) {
+        const response = this.responseText;
+        const parsedResponse = JSON.parse(response);
+        if (parsedResponse.error) {
+          document.getElementById('mensaje-de-error').innerHTML = parsedResponse.message;
+        } else {
+          window.location.href = '/dashboard.html';
+        }
       } else {
-        window.location.href = "/dashboard.html";
+        document.getElementById('mensaje-de-error').innerHTML = 'Ha ocurrido un error en el servidor';
       }
     }
   };
-  xhr.open("POST", "/login", true);
-  xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-  xhr.send(`username=${usernameOrEmail}&password=${password}`);
+  xhr.open('POST', 'http://localhost:4000/login', true);
+  xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+  xhr.send(`username=${encodeURIComponent(usernameOrEmail)}&password=${encodeURIComponent(password)}`);
 }

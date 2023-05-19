@@ -7,7 +7,10 @@ const fs = require('fs');
 const http = require('http');
 // const ejs = require('ejs');
 require('dotenv').config();
+const jwt = require('jsonwebtoken');
 // const cors = require('cors');
+const bcrypt = require('bcrypt');
+const saltRounds = 10; // Número de rondas de hashing
 
 // app.use(cors());
 
@@ -48,12 +51,12 @@ app.get('/registro', (req, res) => {
 });
 
 // Configuración de la ruta para manejar el registro de usuarios
-app.post('/registro', (req, res) => {
+app.post('/registro', async (req, res) => {
     const { username, password, email, fullname, city, country, age, university, languages, linkedin, hobbies } = req.body;
 
     // Validación: nombre de usuario y correo electrónico únicos
     const checkUserSql = 'SELECT * FROM usuarios WHERE username = ? OR email = ?';
-    db.query(checkUserSql, [username, email], (checkUserErr, checkUserResult) => {
+    db.query(checkUserSql, [username, email], async (checkUserErr, checkUserResult) => {
         if (checkUserErr) {
             console.error('Error al buscar usuario:', checkUserErr);
             return res.status(500).json({ message: 'Ha ocurrido un error al validar el registro. Por favor, intenta más tarde.' });
@@ -69,106 +72,110 @@ app.post('/registro', (req, res) => {
             }
         }
 
-        const sql = 'INSERT INTO usuarios (username, password, email, fullname, city, country, age, university, languages, linkedin, hobbies) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-        db.query(sql, [username, password, email, fullname, city, country, age, university, languages, linkedin, hobbies], (err, result) => {
-            if (err) {
-                console.error('Error al insertar usuario:', err);
-                res.status(500).json({ message: 'Ha ocurrido un error al insertar el usuario en la base de datos. Por favor, intenta más tarde.' });
-                return;
-            }
-            console.log([username, password, email, fullname, city, country, age, university, languages, linkedin, hobbies]);
-            console.log('Usuario registrado correctamente');
-            res.json({ message: 'El usuario ha sido registrado correctamente.' });
-        });
-    })
-});
+        try {
+            const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-/////////////////////////////////////////////LOGIN/////////////////////////////////////////////////////////////////
-
-// Configurar sesión
-const connection = mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME
-});
-
-connection.connect((err) => {
-    if (err) throw err;
-    console.log('Conexión establecida con la base de datos a login');
-});
-
-app.use(
-    session({
-        secret: "secret",
-        resave: true,
-        saveUninitialized: true,
-    })
-);
-
-// Configurar ruta para la página de login
-app.get("/dashboard.html", (req, res) => {
-    if (req.session.loggedin) {
-        res.sendFile(path.join(__dirname, "dashboard.html"));
-    } else {
-        res.redirect("/");
-    }
-});
-
-// Configurar ruta para el proceso de login
-app.post("/login", (req, res) => {
-    const username = req.body.username;
-    const password = req.body.password;
-
-    if (username && password) {
-        connection.query(
-            `SELECT * FROM usuarios WHERE (username = ? OR email = ?) AND password = ?`,
-            [username, username, password],
-            (error, results, fields) => {
-                if (results.length > 0) {
-                    req.session.loggedin = true;
-                    req.session.username = results[0].username;
-                    req.session.usuarioId = results[0].id;
-                    res.redirect("/dashboard.html");
-                } else {
-                    res.send("Usuario o contraseña incorrectos.");
+            const sql = 'INSERT INTO usuarios (username, password, email, fullname, city, country, age, university, languages, linkedin, hobbies) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+            db.query(sql, [username, hashedPassword, email, fullname, city, country, age, university, languages, linkedin, hobbies], (err, result) => {
+                if (err) {
+                    console.error('Error al insertar usuario:', err);
+                    res.status(500).json({ message: 'Ha ocurrido un error al insertar el usuario en la base de datos. Por favor, intenta más tarde.' });
+                    return;
                 }
-                res.end();
-            }
-        );
-    } else {
-        res.send("Por favor, introduce tu nombre de usuario y contraseña.");
-        res.end();
-    }
-});
-
-// Configurar middleware para validar sesión en todas las rutas excepto login
-app.use((req, res, next) => {
-    if (req.path === "/" || req.path === "/login") {
-        next();
-    } else if (req.session.loggedin) {
-        next();
-    } else {
-        res.redirect("/");
-    }
-});
-
-// Configurar ruta para el dashboard
-app.get("/dashboard.html", (req, res) => {
-    res.sendFile(path.join(__dirname, "dashboard.html"));
-});
-
-// Configurar ruta para cerrar sesión
-app.get("/logout", (req, res) => {
-    req.session.destroy((err) => {
-        if (err) {
-            console.log(err);
-        } else {
-            res.redirect("/");
+                console.log([username, hashedPassword, email, fullname, city, country, age, university, languages, linkedin, hobbies]);
+                console.log('Usuario registrado correctamente');
+                res.json({ message: 'El usuario ha sido registrado correctamente.' });
+            });
+        } catch (error) {
+            console.error('Error al hashear la contraseña:', error);
+            res.status(500).json({ message: 'Ha ocurrido un error al hashear la contraseña. Por favor, intenta más tarde.' });
         }
     });
 });
 
+/////////////////////////////////////////////LOGIN/////////////////////////////////////////////////////////////////
+
+const connection = mysql.createConnection({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+  });
+  
+  connection.connect((err) => {
+    if (err) throw err;
+    console.log('Conexión establecida con la base de datos a login');
+  });
+  
+  app.use(session({
+    secret: 'kjT4#LP8dJz6@M!s',
+    resave: false,
+    saveUninitialized: false,
+  }));
+  
+  app.post('/login', (req, res) => {
+    const username = req.body.username;
+    const password = req.body.password;
+  
+    if (username && password) {
+      connection.query(
+        'SELECT * FROM usuarios WHERE (username = ? OR email = ?)',
+        [username, username],
+        async (error, results) => {
+          if (error) {
+            console.error('Error al buscar usuario:', error);
+            return res.status(500).json({ error: true, message: 'Ha ocurrido un error al validar el inicio de sesión. Por favor, intenta más tarde.' });
+          }
+  
+          if (results.length === 0) {
+            return res.status(400).json({ error: true, message: 'Usuario o contraseña incorrectos' });
+          }
+  
+          const user = results[0];
+          const passwordMatch = await bcrypt.compare(password, user.password);
+  
+          if (passwordMatch) {
+            const token = jwt.sign({ usuarioId: user.id }, 'kjT4#LP8dJz6@M!s', { expiresIn: '1h' });
+            return res.json({ success: true, token });
+          } else {
+            return res.json({ error: true, message: 'Usuario o contraseña incorrectos.' });
+          }
+        }
+      );
+    } else {
+      res.json({ error: true, message: 'Por favor, introduce tu nombre de usuario y contraseña.' });
+    }
+  });
+  
+  app.use((req, res, next) => {
+    if (req.path === '/' || req.path === '/login') {
+      next();
+    } else {
+      const token = req.headers.authorization;
+      if (!token) {
+        return res.status(401).json({ error: true, message: 'Token no proporcionado.' });
+      }
+  
+      jwt.verify(token, 'kjT4#LP8dJz6@M!s', (err, decoded) => {
+        if (err) {
+          return res.status(401).json({ error: true, message: 'Token inválido.' });
+        }
+  
+        req.usuarioId = decoded.usuarioId;
+        next();
+      });
+    }
+  });
+  
+  app.get("/dashboard.html", (req, res) => {
+    res.sendFile(path.join(__dirname, "dashboard.html"));
+  });
+  
+  app.get("/logout", (req, res) => {
+    req.usuarioId = null;
+    res.redirect("/");
+  });
+  
 ////////////////////////////////////////////////////DATOS DE PERFIL//////////////////////////////////////////////////////////////////////
 
 app.use(session({

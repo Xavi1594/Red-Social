@@ -74,7 +74,7 @@ registroForm.addEventListener('submit', async (event) => {
     }
 
     if (!/^[a-zA-Z\s]+$/.test(country)) {
-        errorDiv.innerHTML = 'Ingrese un pais válido (solo letras)';
+        errorDiv.innerHTML = 'Ingrese un país válido (solo letras)';
         successDiv.style.display = 'none';
         errorDiv.style.display = 'block';
         return;
