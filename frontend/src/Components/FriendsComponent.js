@@ -8,7 +8,7 @@ import React, { useEffect, useState } from 'react';
   }, []);
 
   const cargarUsuariosRegistrados = () => {
-    fetch('http://localhost:4000/usuarios/registrados', { credentials: 'include' })
+    fetch('http://localhost:3000/usuarios/registrados', { credentials: 'include' })
       .then((response) => {
         if (response.ok) {
           return response.json();
