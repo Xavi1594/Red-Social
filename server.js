@@ -5,6 +5,7 @@ const mysql = require('mysql2');
 const path = require('path');
 const fs = require('fs');
 const http = require('http');
+// const ejs = require('ejs');
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
 // const cors = require('cors');
@@ -15,25 +16,39 @@ const saltRounds = 10; // Número de rondas de hashing
 
 
 const app = express();
-const port = process.env.PORT || 3000;
+app.use('/css', express.static(__dirname + '/css'));
 
 // Configuración de la conexión a la base de datos
 const db = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME
 });
 
 db.connect((err) => {
-  if (err) throw err;
-  console.log('Conexión establecida con la base de datos');
+    if (err) throw err;
+    console.log('Conexión establecida con la base de datos');
 });
+//////////////////////////////////////////REGISTRO//////////////////////////////////////////////////////////////////////////////////
 
+// Configuración del middleware body-parser para obtener los datos del formulario
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(express.static(__dirname + '/css/style.css'));
 
-////////////////////////////////////////// REGISTRO /////////////////////////////////////////////////
+app.use(express.static(__dirname, {
+    setHeaders: (res, path, stat) => {
+        if (path.endsWith('.js')) {
+            res.setHeader('Content-Type', 'application/javascript');
+        }
+    },
+}));
+
+// Configuración de la ruta para el archivo HTML
+app.get('/registro', (req, res) => {
+    res.sendFile(__dirname + '/registro.html');
+});
 
 // Configuración de la ruta para manejar el registro de usuarios
 app.post('/registro', async (req, res) => {
@@ -164,7 +179,7 @@ const connection = mysql.createConnection({
 ////////////////////////////////////////////////////DATOS DE PERFIL//////////////////////////////////////////////////////////////////////
 
 app.use(session({
-    secret: 'my-secret-key',
+    secret: 'kjT4#LP8dJz6@M!s',
     resave: false,
     saveUninitialized: false
 }));
@@ -337,7 +352,6 @@ app.get('/amigos/agregados', function (req, res) {
         res.status(200).json(results);
     });
 });
-
 /////////////////////////////////////////////// Funcion de POST/////////////////////////////////////////////////////////////////////////////////////////////
 
 app.use(session({
@@ -382,127 +396,10 @@ app.post('/post', (req, res) => {
         res.status(400).send({ message: 'El post debe tener un título y un contenido.' });
     }
 });
-app.get('/usuarios/registrados', function (req, res) {
-  var userId = req.session.userId;
-  db.query('SELECT * FROM usuarios WHERE id != ?', [userId], function (error, results) {
-      if (error) {
-          console.error('Ha ocurrido un error:', error.message);
-          return res.status(500).json({ message: 'Ha ocurrido un error al obtener la lista de usuarios registrados' });
-      }
-      res.status(200).json(results);
-  });
-});
-
-// Obtener la lista de amigos
-app.get('/amigos', function (req, res) {
-  var userId = req.session.userId;
-  db.query('SELECT * FROM usuarios WHERE id != ? AND id NOT IN (SELECT idAmigo FROM amigos WHERE iduser = ?)', [userId, userId], function (error, results) {
-      if (error) {
-          console.error('Ha ocurrido un error:', error.message);
-          return res.status(500).json({ message: 'Ha ocurrido un error al obtener la lista de amigos' });
-      }
-      res.status(200).json(results);
-  });
-});
-
-// Agregar amigo
-app.post('/amigos/agregar/:idAmigo', function (req, res) {
-  var idAmigo = req.params.idAmigo;
-  var userId = req.session.userId;
-
-  db.query('SELECT * FROM amigos WHERE iduser = ? AND idAmigo = ?', [userId, idAmigo], function (error, results) {
-      if (error) {
-          console.error('Ha ocurrido un error:', error.message);
-          return res.status(500).json({ message: 'Ha ocurrido un error al agregar al amigo' });
-      }
-
-      if (results.length > 0) {
-          return res.status(400).json({ message: 'Ya son amigos' });
-      }
-
-      db.query('INSERT INTO amigos (iduser, idAmigo) VALUES (?, ?)', [userId, idAmigo], function (error, results) {
-          if (error) {
-              console.error('Ha ocurrido un error:', error.message);
-              return res.status(500).json({ message: 'Ha ocurrido un error al agregar al amigo' });
-          }
-
-          res.status(200).json({ message: 'Amigo agregado correctamente' });
-      });
-  });
-});
-
-// Eliminar amigo
-app.delete('/amigos/eliminar/:idAmigo', function (req, res) {
-  const idAmigo = req.params.idAmigo;
-  const userId = req.session.userId;
-
-  db.query('DELETE FROM amigos WHERE idAmigo = ? AND iduser = ?', [idAmigo, userId], function (error, results, fields) {
-      if (error) {
-          console.error(error);
-          return res.status(500).send('Ha ocurrido un error al eliminar al amigo');
-      }
-
-      if (results.affectedRows === 0) {
-          return res.status(404).send('No se encontró al amigo con el id especificado');
-      }
-
-      res.send('Amigo eliminado correctamente');
-  });
-});
-
-// Cargar amigos ya agregados
-app.get('/amigos/agregados', function (req, res) {
-  var userId = req.session.userId;
-
-  db.query('SELECT * FROM amigos WHERE iduser = ?', [userId], function (error, results) {
-      if (error) {
-          console.error('Ha ocurrido un error:', error.message);
-          return res.status(500).json({ message: 'Ha ocurrido un error al obtener la lista de amigos' });
-      }
-      res.status(200).json(results);
-  });
-});
-
-/////////////////////////////////////////////// Funcion de POST/////////////////////////////////////////////////////////////////////////////////////////////
-
-// routes
-app.get('/post', (req, res) => {
-  db.query('SELECT id, title, content, usuarioId, createdAt, updatedAt FROM post', (err, results) => {
-      if (err) {
-          console.error('Error al obtener los posts:', err);
-          res.status(500).json({ message: 'Ha ocurrido un error al obtener los posts. Por favor, intenta más tarde.' });
-          return;
-      }
-      res.json(results);
-  });
-});
-
-app.post('/post', (req, res) => {
-  const newPost = {
-      title: req.body.title,
-      content: req.body.content,
-      usuarioId: req.session.userId,
-      createdAt: new Date(),
-      updatedAt: new Date()
-  };
-
-  console.log('Nuevo post:', newPost);
-  if (newPost.title && newPost.content) {
-      db.query('INSERT INTO post (title, content, usuarioId, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?)', [newPost.title, newPost.content, newPost.usuarioId, newPost.createdAt, newPost.updatedAt], (err, results) => {
-          if (err) {
-              console.error('Error al crear el post:', err);
-              res.status(500).json({ message: 'Ha ocurrido un error al crear el post. Por favor, intenta más tarde.' });
-              return;
-          }
-          newPost.id = results.insertId;
-          res.status(201).json(newPost);
-      });
-  } else {
-      res.status(400).send({ message: 'El post debe tener un título y un contenido.' });
-  }
-});
 
 ////////////////////////////////Inicio de Servidor///////////////////////////////////////////////////
+
+const port = process.env.PORT || 4000;
 
 app.listen(port, () => {
     console.log(`Servidor iniciado en el puerto ${port}`);
