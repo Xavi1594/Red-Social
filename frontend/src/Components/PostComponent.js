@@ -49,12 +49,51 @@ export const PostComponent = () => {
     }
   };
 
+  const deletePost = async (postId) => {
+    try {
+      const response = await fetch(`http://localhost:3000/posts/${postId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        await fetchPosts();
+      } else {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+    } catch (error) {
+      console.error('Error al eliminar el post:', error);
+    }
+  };
+
+  const editPost = async (postId, updatedTitle, updatedContent) => {
+    try {
+      const response = await fetch(`http://localhost:3000/posts/${postId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: updatedTitle,
+          content: updatedContent,
+        }),
+      });
+
+      if (response.ok) {
+        await fetchPosts();
+      } else {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+    } catch (error) {
+      console.error('Error al editar el post:', error);
+    }
+  };
+
   return (
     <main className="container">
       <div className="row">
         <div className="col-12 col-lg-3 mt-5">
-          <div class="accordion mt-5" id="accordionExample">
-      
+          <div className="accordion mt-5" id="accordionExample">
+            {/* Contenido del panel izquierdo (si es necesario) */}
           </div>
         </div>
         <div className="col-12 col-lg-6 mt-5">
@@ -87,9 +126,23 @@ export const PostComponent = () => {
 
             <div className="mb-4" id="posts-container">
               {posts.map((post, index) => (
-                <div key={index} className="post card">
+                <div key={index} className="post card mb-3">
                   <h2 className="card-header">{post.title}</h2>
                   <p className="card-body">{post.content}</p>
+                  <div className="card-footer">
+                    <button
+                      className="btn btn-sm btn-primary mr-2"
+                      onClick={() => editPost(post.id, 'Nuevo título', 'Nuevo contenido')}
+                    >
+                      Editar
+                    </button>
+                    <button
+                      className="btn btn-sm btn-danger"
+                      onClick={() => deletePost(post.id)}
+                    >
+                      Eliminar
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>

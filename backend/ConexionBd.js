@@ -230,6 +230,27 @@ app.post('/posts', (req, res) => {
         res.status(400).send({ message: 'El post debe tener un título y un contenido.' });
     }
 });
+// Eliminar un post por su ID
+app.delete('/posts/:id', (req, res) => {
+    const postId = req.params.id;
+  
+    const sql = 'DELETE FROM post WHERE id = ?';
+    db.query(sql, [postId], (err, result) => {
+      if (err) {
+        console.error('Error al eliminar el post:', err);
+        res.status(500).json({ message: 'Ha ocurrido un error al eliminar el post. Por favor, intenta más tarde.' });
+        return;
+      }
+  
+      if (result.affectedRows === 0) {
+        res.status(404).json({ message: 'No se encontró el post con el ID especificado.' });
+        return;
+      }
+  
+      res.json({ message: 'El post ha sido eliminado correctamente.' });
+    });
+  });
+  
 app.use(session({
     secret: 'my-secret-key',
     resave: false,
