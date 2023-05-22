@@ -15,7 +15,7 @@ export const PostComponent = () => {
     const post = { title, content };
 
     try {
-      const response = await fetch('http://localhost:3000/post', {
+      const response = await fetch('http://localhost:3000/posts', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -41,7 +41,7 @@ export const PostComponent = () => {
 
   const fetchPosts = async () => {
     try {
-      const response = await fetch('http://localhost:3000/post');
+      const response = await fetch('http://localhost:3000/posts');
       const posts = await response.json();
       setPosts(posts);
     } catch (error) {

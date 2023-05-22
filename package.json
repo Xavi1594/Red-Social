@@ -24,7 +24,7 @@
   "name": "grupo13",
   "description": "Desarrollar una red social para los Teclers. La misma debe permitir:",
   "version": "1.0.0",
-  "main": "datosperfil.js",
+  "main": "App.js",
   "author": "",
   "license": "ISC"
 }

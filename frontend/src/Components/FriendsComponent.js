@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
- export const FriendsComponent = () => {
+export const FriendsComponent = () => {
   const [usuariosRegistrados, setUsuariosRegistrados] = useState([]);
 
   useEffect(() => {
@@ -24,7 +24,7 @@ import React, { useEffect, useState } from 'react';
   };
 
   const agregarAmigo = (idAmigo, nombreAmigo) => {
-    fetch(`http://localhost:4000/amigos/agregar/${idAmigo}`, {
+    fetch(`http://localhost:3000/amigos/agregar/${idAmigo}`, {
       method: 'POST',
       credentials: 'include'
     })
@@ -44,7 +44,7 @@ import React, { useEffect, useState } from 'react';
   };
 
   const eliminarAmigo = (idAmigo, nombreAmigo) => {
-    fetch(`http://localhost:4000/amigos/eliminar/${idAmigo}`, {
+    fetch(`http://localhost:3000/amigos/eliminar/${idAmigo}`, {
       method: 'DELETE',
       credentials: 'include'
     })
@@ -80,14 +80,23 @@ import React, { useEffect, useState } from 'react';
                 <p className="nombre-completo">{usuario.fullname}</p>
                 <p className="edad">{usuario.age} años</p>
                 <p className="pais">{usuario.country}</p>
-                {!usuario.amigo && (
+                {!usuario.amigo ? (
                   <button
                     className="btn"
                     onClick={() => {
-                      agregarAmigo(usuario.id, usuario.nombre);
+                      agregarAmigo(usuario.id, usuario.username);
                     }}
                   >
                     Agregar amigo
+                  </button>
+                ) : (
+                  <button
+                    className="btn"
+                    onClick={() => {
+                      eliminarAmigo(usuario.id, usuario.username);
+                    }}
+                  >
+                    Eliminar amigo
                   </button>
                 )}
               </div>
@@ -98,5 +107,3 @@ import React, { useEffect, useState } from 'react';
     </div>
   );
 };
-
-

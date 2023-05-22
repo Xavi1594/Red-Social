@@ -1,25 +1,37 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
- export const LoginFormComponent = () => {
+export const LoginFormComponent = () => {
   const [usernameOrEmail, setUsernameOrEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [loggedIn, setLoggedIn] = useState(false); // Variable de estado para controlar el inicio de sesión
+  const navigate = useNavigate();
 
-  const handleLogin = () => {
-    const xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function () {
-      if (this.readyState === 4 && this.status === 200) {
-        const response = this.responseText;
-        if (response.startsWith("Usuario o contraseña incorrectos")) {
-          setErrorMessage(response);
-        } else {
-          window.location.href = "/dashboard.html";
-        }
+  const handleLogin = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username: usernameOrEmail, password }),
+      });
+      
+      const data = await response.json();
+
+      if (response.status !== 200) {
+        setErrorMessage(data.error || 'Ha ocurrido un error, por favor intente nuevamente.');
+        return;
       }
-    };
-    xhr.open("POST", "/login", true);
-    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    xhr.send(`username=${usernameOrEmail}&password=${password}`);
+
+      // Establecer el estado de inicio de sesión antes de redireccionar
+      setLoggedIn(true);
+
+      navigate('/perfil');
+    } catch (error) {
+      setErrorMessage('Ha ocurrido un error, por favor intente nuevamente.');
+    }
   };
 
   return (
@@ -68,5 +80,3 @@ import React, { useState } from 'react';
     </div>
   );
 };
-
-

@@ -130,7 +130,7 @@ export const RegisterFormComponent = () => {
             }
 
             setTimeout(function () {
-                window.location.href = "index.html";
+                window.location.href = "/";
             }, 2000);
 
         } catch (error) {
