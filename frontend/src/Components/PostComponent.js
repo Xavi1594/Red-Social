@@ -4,6 +4,7 @@ export const PostComponent = () => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [posts, setPosts] = useState([]);
+  const [editedPost, setEditedPost] = useState({ id: null, title: '', content: '' });
 
   useEffect(() => {
     fetchPosts();
@@ -24,10 +25,6 @@ export const PostComponent = () => {
       });
 
       if (response.ok) {
-        const json = await response.json();
-        // Guardar el ID en el localStorage
-        localStorage.setItem('postId', json.id);
-
         setTitle('');
         setContent('');
         await fetchPosts();
@@ -65,7 +62,10 @@ export const PostComponent = () => {
     }
   };
 
-  const editPost = async (postId, updatedTitle, updatedContent) => {
+  const editPost = async (postId) => {
+    const updatedTitle = editedPost.title;
+    const updatedContent = editedPost.content;
+
     try {
       const response = await fetch(`http://localhost:3000/posts/${postId}`, {
         method: 'PUT',
@@ -75,17 +75,27 @@ export const PostComponent = () => {
         body: JSON.stringify({
           title: updatedTitle,
           content: updatedContent,
+          usuarioId: 'elIdDelUsuario', // Reemplaza 'elIdDelUsuario' con el ID correcto del usuario
         }),
       });
 
       if (response.ok) {
         await fetchPosts();
+        setEditedPost({ id: null, title: '', content: '' });
       } else {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
     } catch (error) {
       console.error('Error al editar el post:', error);
     }
+  };
+
+  const handleEditTitleChange = (event) => {
+    setEditedPost({ ...editedPost, title: event.target.value });
+  };
+
+  const handleEditContentChange = (event) => {
+    setEditedPost({ ...editedPost, content: event.target.value });
   };
 
   return (
@@ -127,15 +137,43 @@ export const PostComponent = () => {
             <div className="mb-4" id="posts-container">
               {posts.map((post, index) => (
                 <div key={index} className="post card mb-3">
-                  <h2 className="card-header">{post.title}</h2>
-                  <p className="card-body">{post.content}</p>
+                  {editedPost.id === post.id ? (
+                    <>
+                      <input
+                        type="text"
+                        className="form-control card-header"
+                        value={editedPost.title}
+                        onChange={handleEditTitleChange}
+                      />
+                      <textarea
+                        className="form-control card-body"
+                        rows="3"
+                        value={editedPost.content}
+                        onChange={handleEditContentChange}
+                      ></textarea>
+                    </>
+                  ) : (
+                    <>
+                      <h2 className="card-header">{post.title}</h2>
+                      <p className="card-body">{post.content}</p>
+                    </>
+                  )}
                   <div className="card-footer">
-                    <button
-                      className="btn btn-sm btn-primary mr-2"
-                      onClick={() => editPost(post.id, 'Nuevo título', 'Nuevo contenido')}
-                    >
-                      Editar
-                    </button>
+                    {editedPost.id === post.id ? (
+                      <button
+                        className="btn btn-sm btn-primary mr-2"
+                        onClick={() => editPost(post.id)}
+                      >
+                        Guardar
+                      </button>
+                    ) : (
+                      <button
+                        className="btn btn-sm btn-primary mr-2"
+                        onClick={() => setEditedPost({ id: post.id, title: post.title, content: post.content })}
+                      >
+                        Editar
+                      </button>
+                    )}
                     <button
                       className="btn btn-sm btn-danger"
                       onClick={() => deletePost(post.id)}

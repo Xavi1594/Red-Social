@@ -250,6 +250,33 @@ app.delete('/posts/:id', (req, res) => {
       res.json({ message: 'El post ha sido eliminado correctamente.' });
     });
   });
+  // Editar un post por su ID
+  app.put('/posts/:id', (req, res) => {
+    const postId = req.params.id;
+    const { title, content } = req.body;
+    const updatedAt = new Date();
+  
+    if (!title && !content) {
+      res.status(400).json({ message: 'Debes proporcionar al menos un campo (título o contenido) para editar el post.' });
+      return;
+    }
+  
+    const sql = 'UPDATE post SET title = ?, content = ?, updatedAt = ? WHERE id = ?';
+    db.query(sql, [title, content, updatedAt, postId], (err, result) => {
+      if (err) {
+        console.error('Error al editar el post:', err);
+        res.status(500).json({ message: 'Ha ocurrido un error al editar el post. Por favor, intenta más tarde.' });
+        return;
+      }
+  
+      if (result.affectedRows === 0) {
+        res.status(404).json({ message: 'No se encontró el post con el ID especificado.' });
+        return;
+      }
+  
+      res.json({ message: 'El post ha sido editado correctamente.' });
+    });
+  });
   
 app.use(session({
     secret: 'my-secret-key',
