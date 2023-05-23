@@ -3,6 +3,7 @@ const session = require('express-session');
 const bodyParser = require('body-parser');
 const mysql = require('mysql2');
 const cors = require('cors');
+const bcrypt = require('bcrypt');
 require('dotenv').config();
 const app = express();
 const port = process.env.PORT || 3000;
@@ -43,32 +44,39 @@ app.use(
 app.post('/registro', (req, res) => {
   const { username, password, email, fullname, city, country, age, university, languages, hobbies, linkedin } = req.body;
 
-  const checkUserSql = 'SELECT * FROM usuarios WHERE username = ? OR email = ?';
-  db.query(checkUserSql, [username, email], (checkUserErr, checkUserResult) => {
-    if (checkUserErr) {
-      console.error('Error al buscar usuario:', checkUserErr);
-      return res.status(500).json({ message: 'Ha ocurrido un error al validar el registro. Por favor, intenta más tarde.' });
-    }
-    if (checkUserResult.length > 0) {
-      const usernameExists = checkUserResult.some((user) => user.username === username);
-      const emailExists = checkUserResult.some((user) => user.email === email);
-      if (usernameExists) {
-        return res.status(400).json({ message: 'El nombre de usuario ya existe. Por favor, elige otro.' });
-      }
-      if (emailExists) {
-        return res.status(400).json({ message: 'El correo electrónico ya está registrado. Por favor, utiliza otro.' });
-      }
+  bcrypt.hash(password, 10, (err, hashedPassword) => {
+    if (err) {
+      console.error('Error al hashear la contraseña:', err);
+      return res.status(500).json({ message: 'Ha ocurrido un error al registrar el usuario. Por favor, intenta más tarde.' });
     }
 
-    const sql = 'INSERT INTO usuarios (username, password, email, fullname, city, country, age, university, languages, linkedin, hobbies) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-    db.query(sql, [username, password, email, fullname, city, country, age, university, languages, linkedin, hobbies], (err, result) => {
-      if (err) {
-        console.error('Error al insertar usuario:', err);
-        return res.status(500).json({ message: 'Ha ocurrido un error al insertar el usuario en la base de datos. Por favor, intenta más tarde.' });
+    const checkUserSql = 'SELECT * FROM usuarios WHERE username = ? OR email = ?';
+    db.query(checkUserSql, [username, email], (checkUserErr, checkUserResult) => {
+      if (checkUserErr) {
+        console.error('Error al buscar usuario:', checkUserErr);
+        return res.status(500).json({ message: 'Ha ocurrido un error al validar el registro. Por favor, intenta más tarde.' });
       }
-      console.log([username, password, email, fullname, city, country, age, university, languages, linkedin, hobbies]);
-      console.log('Usuario registrado correctamente');
-      res.json({ message: 'El usuario ha sido registrado correctamente.' });
+      if (checkUserResult.length > 0) {
+        const usernameExists = checkUserResult.some((user) => user.username === username);
+        const emailExists = checkUserResult.some((user) => user.email === email);
+        if (usernameExists) {
+          return res.status(400).json({ message: 'El nombre de usuario ya existe. Por favor, elige otro.' });
+        }
+        if (emailExists) {
+          return res.status(400).json({ message: 'El correo electrónico ya está registrado. Por favor, utiliza otro.' });
+        }
+      }
+
+      const sql = 'INSERT INTO usuarios (username, password, email, fullname, city, country, age, university, languages, linkedin, hobbies) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+      db.query(sql, [username, hashedPassword, email, fullname, city, country, age, university, languages, linkedin, hobbies], (err, result) => {
+        if (err) {
+          console.error('Error al insertar usuario:', err);
+          return res.status(500).json({ message: 'Ha ocurrido un error al insertar el usuario en la base de datos. Por favor, intenta más tarde.' });
+        }
+        console.log([username, hashedPassword, email, fullname, city, country, age, university, languages, linkedin, hobbies]);
+        console.log('Usuario registrado correctamente');
+        res.json({ message: 'El usuario ha sido registrado correctamente.' });
+      });
     });
   });
 });
@@ -80,17 +88,33 @@ app.post('/', (req, res) => {
 
   if (username && password) {
     db.query(
-      'SELECT * FROM usuarios WHERE (username = ? OR email = ?) AND password = ?',
-      [username, username, password],
+      'SELECT * FROM usuarios WHERE username = ? OR email = ?',
+      [username, username],
       (error, results, fields) => {
+        if (error) {
+          console.error('Error al buscar usuario:', error);
+          return res.status(500).json({ login: false, error: 'Ha ocurrido un error al iniciar sesión. Por favor, intenta más tarde.' });
+        }
         if (results.length > 0) {
-          req.session.loggedin = true;
-          req.session.username = results[0].username;
-          req.session.usuarioId = results[0].id;
-          res.json({ login: true, id: results[0].id });
+          const storedPassword = results[0].password;
+          bcrypt.compare(password, storedPassword, function(err, isMatch) {
+            if (err) {
+              console.error('Error al verificar la contraseña:', err);
+              return res.status(500).json({ login: false, error: 'Ha ocurrido un error al iniciar sesión. Por favor, intenta más tarde.' });
+            }
+            if (isMatch === true) {
+              req.session.loggedin = true;
+              req.session.username = results[0].username;
+              req.session.usuarioId = results[0].id;
+              res.json({ login: true, id: results[0].id });
+            } else {
+              res.status(400).json({ login: false, error: 'Usuario o contraseña incorrectos' });
+            }
+          });
         } else {
           res.status(400).json({ login: false, error: 'Usuario o contraseña incorrectos' });
         }
+        
       }
     );
   } else {
@@ -198,8 +222,6 @@ app.get('/amigos/agregados', function (req, res) {
     res.status(200).json(results);
   });
 });
-
-/////////////////////////////////////////////// Función de POST/////////////////////////////////////////////////////////////////////////////////////////////
 
 // Obtener la lista de posts
 app.get('/posts', (req, res) => {
@@ -310,6 +332,29 @@ app.get('/perfil', function (req, res) {
           res.json(datosPerfil);
         } else {
           res.status(404).send('Usuario no encontrado');
+        }
+      }
+    );
+  } else {
+    res.status(401).send('No se ha iniciado sesión');
+  }
+});
+
+app.delete('/eliminarcuenta', function (req, res) {
+  const username = req.session.username;
+
+  if (username) {
+    db.query(
+      'DELETE FROM usuarios WHERE username = ?',
+      [username],
+      function (error, results, fields) {
+        if (error) {
+          console.log(error);
+          res.status(500).send('Error al eliminar la cuenta');
+        } else {
+          console.log('La cuenta ha sido eliminada');
+          req.session.destroy();
+          res.send('La cuenta ha sido eliminada');
         }
       }
     );
