@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export const LoginFormComponent = () => {
+export const LoginFormComponent = ({ onLogin }) => { // Asegúrate de pasar onLogin como prop
   const [usernameOrEmail, setUsernameOrEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const [loggedIn, setLoggedIn] = useState(false); // Variable de estado para controlar el inicio de sesión
   const navigate = useNavigate();
 
   const handleLogin = async () => {
@@ -16,6 +15,7 @@ export const LoginFormComponent = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ username: usernameOrEmail, password }),
+        credentials: 'include',
       });
       
       const data = await response.json();
@@ -25,15 +25,17 @@ export const LoginFormComponent = () => {
         return;
       }
 
-      // Establecer el estado de inicio de sesión antes de redireccionar
-      setLoggedIn(true);
+      // Guardar el token en el almacenamiento local
+      localStorage.setItem('token', data.token);
+
+      // Llama a la función pasada a través de las props para establecer que el usuario ha iniciado sesión
+      onLogin(); 
 
       navigate('/perfil');
     } catch (error) {
       setErrorMessage('Ha ocurrido un error, por favor intente nuevamente.');
     }
   };
-
   return (
     <div className="container mt-4">
       <div className="row bt-5">

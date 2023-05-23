@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export const ProfileComponent = ({ loggedIn }) => {
+  const navigate = useNavigate();
   const [datosPerfil, setDatosPerfil] = useState({
     fullname: '',
     city: '',
@@ -13,7 +15,10 @@ export const ProfileComponent = ({ loggedIn }) => {
   });
 
   useEffect(() => {
-    if (!loggedIn) return; // Evitar la ejecución de la petición si el usuario no ha iniciado sesión
+    if (!loggedIn) {
+      navigate('/perfil'); // Redireccionar a la página de inicio si no se ha iniciado sesión
+      return;
+    }
 
     fetch('http://localhost:3000/perfil', { credentials: 'include' })
       .then((response) => {
@@ -28,7 +33,7 @@ export const ProfileComponent = ({ loggedIn }) => {
       .catch((error) => {
         console.error('Error al recuperar los datos del perfil:', error);
       });
-  }, [loggedIn]); // Ejecutar la petición cuando cambie el estado de loggedIn
+  }, [loggedIn, navigate]);
 
   const handleEliminarCuenta = () => {
     fetch('http://localhost:3000/eliminar-cuenta', {
@@ -43,7 +48,8 @@ export const ProfileComponent = ({ loggedIn }) => {
       })
       .then((text) => {
         console.log(text);
-        window.location.href = '/';
+        // Redireccionar a la página de inicio después de eliminar la cuenta
+        navigate('/perfil');
       })
       .catch((error) => {
         console.error('Error al eliminar la cuenta:', error);
@@ -52,7 +58,7 @@ export const ProfileComponent = ({ loggedIn }) => {
 
   return (
     <div className="container my-5">
-      {loggedIn ? ( // Mostrar el perfil solo si el usuario ha iniciado sesión
+      {loggedIn ? (
         <>
           <div className="row justify-content-center">
             <div className="col-6 col-md-4">
@@ -64,49 +70,49 @@ export const ProfileComponent = ({ loggedIn }) => {
               />
             </div>
           </div>
-    
+
           <div className="row my-3">
             <div className="col-3 col-md-2 text-muted">Nombre completo:</div>
             <div className="col-9 col-md-10">
               <p>{datosPerfil.fullname}</p>
             </div>
           </div>
-    
+
           <div className="row my-3">
             <div className="col-3 col-md-2 text-muted">Ciudad de residencia:</div>
             <div className="col-9 col-md-10">
               <p>{datosPerfil.city}</p>
             </div>
           </div>
-    
+
           <div className="row my-3">
             <div className="col-3 col-md-2 text-muted">País de residencia:</div>
             <div className="col-9 col-md-10">
               <p>{datosPerfil.country}</p>
             </div>
           </div>
-    
+
           <div className="row my-3">
             <div className="col-3 col-md-2 text-muted">Edad:</div>
             <div className="col-9 col-md-10">
               <p>{datosPerfil.age}</p>
             </div>
           </div>
-    
+
           <div className="row my-3">
             <div className="col-3 col-md-2 text-muted">Estudios:</div>
             <div className="col-9 col-md-10">
               <p>{datosPerfil.university}</p>
             </div>
           </div>
-    
+
           <div className="row my-3">
             <div className="col-3 col-md-2 text-muted">Idiomas:</div>
             <div className="col-9 col-md-10">
               <p>{datosPerfil.languages}</p>
             </div>
           </div>
-    
+
           <div className="row my-3">
             <div className="col-3 col-md-2 text-muted">Perfil de Linkedin:</div>
             <div className="col-9 col-md-10">
@@ -115,14 +121,14 @@ export const ProfileComponent = ({ loggedIn }) => {
               </p>
             </div>
           </div>
-    
+
           <div className="row my-3">
             <div className="col-3 col-md-2 text-muted">Hobbies:</div>
             <div className="col-9 col-md-10">
               <p>{datosPerfil.hobbies}</p>
             </div>
           </div>
-    
+
           <button id="eliminar-cuenta" onClick={handleEliminarCuenta}>
             Eliminar cuenta
           </button>
