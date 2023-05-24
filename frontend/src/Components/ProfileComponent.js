@@ -16,7 +16,7 @@ export const ProfileComponent = ({ loggedIn }) => {
 
   useEffect(() => {
     if (!loggedIn) {
-      navigate('/perfil'); // Redireccionar a la página de inicio si no se ha iniciado sesión
+      navigate('/'); // Redirigir a la página de inicio si no se ha iniciado sesión
       return;
     }
 
@@ -36,7 +36,7 @@ export const ProfileComponent = ({ loggedIn }) => {
   }, [loggedIn, navigate]);
 
   const handleEliminarCuenta = () => {
-    fetch('http://localhost:3000/eliminar-cuenta', {
+    fetch('http://localhost:3000/eliminarcuenta', {
       method: 'DELETE',
       credentials: 'include',
     })

@@ -10,10 +10,13 @@ export const PostComponent = () => {
     fetchPosts();
   }, []);
 
-  const createPost = async (event) => {
-    event.preventDefault();
+  const createPost = async (e) => {
+    e.preventDefault();
 
-    const post = { title, content };
+    const post = {
+      title: title,
+      content: content,
+    };
 
     try {
       const response = await fetch('http://localhost:3000/posts', {
@@ -22,17 +25,21 @@ export const PostComponent = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(post),
+        credentials: 'include',
       });
 
       if (response.ok) {
+        const newPost = await response.json();
+        console.log('Nuevo post creado:', newPost);
         setTitle('');
         setContent('');
         await fetchPosts();
       } else {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const error = await response.json();
+        console.error('Error al crear el post:', error.message);
       }
     } catch (error) {
-      console.error('Error al crear el post:', error);
+      console.error('Error al realizar la solicitud:', error);
     }
   };
 
@@ -75,7 +82,6 @@ export const PostComponent = () => {
         body: JSON.stringify({
           title: updatedTitle,
           content: updatedContent,
-          usuarioId: 'elIdDelUsuario', // Reemplaza 'elIdDelUsuario' con el ID correcto del usuario
         }),
       });
 
@@ -135,8 +141,8 @@ export const PostComponent = () => {
             </form>
 
             <div className="mb-4" id="posts-container">
-              {posts.map((post, index) => (
-                <div key={index} className="post card mb-3">
+              {posts.map((post) => (
+                <div key={post.id} className="post card mb-3">
                   {editedPost.id === post.id ? (
                     <>
                       <input
@@ -169,7 +175,13 @@ export const PostComponent = () => {
                     ) : (
                       <button
                         className="btn btn-sm btn-primary mr-2"
-                        onClick={() => setEditedPost({ id: post.id, title: post.title, content: post.content })}
+                        onClick={() =>
+                          setEditedPost({
+                            id: post.id,
+                            title: post.title,
+                            content: post.content,
+                          })
+                        }
                       >
                         Editar
                       </button>
