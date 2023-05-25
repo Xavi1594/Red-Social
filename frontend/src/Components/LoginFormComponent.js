@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+
+
+
 export const LoginFormComponent = ({ onLogin }) => { // Asegúrate de pasar onLogin como prop
   const [usernameOrEmail, setUsernameOrEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -37,19 +40,22 @@ export const LoginFormComponent = ({ onLogin }) => { // Asegúrate de pasar onLo
     }
   };
   return (
-    <div className="container mt-4">
-      <div className="row bt-5">
-        <div className="text-center">
-          <img src="./img/socialy.jpg" className="img-thumbnail mt-5" width="200" alt="..." />
+    <div className="container-fluid d-flex justify-content-center align-items-center vh-100">
+     <div className="card col-md-4 col-lg-6 col-10 p-0 d-flex flex-column justify-content-center align-items-center mx-auto">
+        <div className="text-center mt-5">
+          <h2 className="card-header text-center h2-animation">Inicia sesión en Socialy</h2>
+          <img src="socialy.jpg" className="img-thumbnail mt-5" width="200" alt="..." />
+
+
         </div>
         <div className="col-md-6 mx-auto mt-5">
           <form>
             <div className="mb-2">
-              <label htmlFor="email" className="form-label">Introduce tu nombre de usuario o email:</label>
+              <label htmlFor="email" className="form-label">Nombre de usuario o email:</label>
               <input
                 id="nombre-de-usuario-o-correo"
                 type="text"
-                className="form-control"
+                className="form-control input-slide"
                 placeholder="Introduce tu nombre de usuario o email"
                 required
                 value={usernameOrEmail}
@@ -60,7 +66,7 @@ export const LoginFormComponent = ({ onLogin }) => { // Asegúrate de pasar onLo
               <label htmlFor="password" className="form-label">Contraseña:</label>
               <input
                 type="password"
-                className="form-control"
+                className="form-control input-slide"
                 placeholder="Introduce tu contraseña"
                 required
                 id="contraseña"
@@ -68,7 +74,7 @@ export const LoginFormComponent = ({ onLogin }) => { // Asegúrate de pasar onLo
                 onChange={(e) => setPassword(e.target.value)}
               />
               <button
-                className="btn btn-primary w-100 mt-3"
+                className="btn btn-primary w-100 mt-3 button-animation"
                 type="button"
                 onClick={handleLogin}
               >
