@@ -12,6 +12,7 @@ export const ProfileComponent = ({ loggedIn }) => {
     languages: '',
     linkedin: '',
     hobbies: '',
+    extraknowledge: '',
   });
 
   useEffect(() => {
@@ -129,6 +130,12 @@ export const ProfileComponent = ({ loggedIn }) => {
             </div>
           </div>
 
+          <div className="row my-3">
+            <div className="col-3 col-md-2 text-muted">Conocimiento extra</div>
+            <div className="col-9 col-md-10">
+              <p>{datosPerfil.extraknowledge}</p>
+            </div>
+          </div>
           <button id="eliminar-cuenta" onClick={handleEliminarCuenta}>
             Eliminar cuenta
           </button>
