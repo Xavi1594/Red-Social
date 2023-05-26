@@ -363,6 +363,75 @@ app.delete('/eliminarcuenta', function (req, res) {
   }
 });
 
+
+
+
+// Endpoint para obtener el perfil del usuario
+app.get('/perfil', function (req, res) {
+  const username = req.session.username;
+
+  if (username) {
+    db.query(
+      'SELECT * FROM usuarios WHERE username = ?',
+      [username],
+      function (error, results, fields) {
+        if (error) {
+          console.log(error);
+          res.status(500).send('Error al obtener el perfil');
+        } else {
+          if (results.length > 0) {
+            const profile = results[0];
+            res.json({
+              username: profile.username,
+              email: profile.email,
+              fullname: profile.fullname,
+              city: profile.city,
+              country: profile.country,
+              age: profile.age,
+              university: profile.university,
+              languages: profile.languages,
+              linkedin: profile.linkedin,
+              hobbies: profile.hobbies,
+              extraknowledge: profile.extraknowledge
+            });
+          } else {
+            res.status(404).send('Perfil no encontrado');
+          }
+        }
+      }
+    );
+  } else {
+    res.status(401).send('No se ha iniciado sesión');
+  }
+});
+
+// Endpoint para actualizar el perfil del usuario
+app.put('/perfil', function (req, res) {
+  const username = req.session.username;
+  const profileData = req.body;
+
+  if (username) {
+    db.query(
+      'UPDATE usuarios SET ? WHERE username = ?',
+      [profileData, username],
+      function (error, results, fields) {
+        if (error) {
+          console.log(error);
+          res.status(500).send('Error al actualizar el perfil');
+        } else {
+          console.log('Perfil actualizado correctamente');
+          res.send('Perfil actualizado correctamente');
+        }
+      }
+    );
+  } else {
+    res.status(401).send('No se ha iniciado sesión');
+  }
+});
+
+
+
+
 app.listen(port, () => {
   console.log(`Servidor iniciado en el puerto ${port}`);
 });
