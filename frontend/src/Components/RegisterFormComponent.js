@@ -15,6 +15,7 @@ export const RegisterFormComponent = () => {
         languages: '',
         linkedin: '',
         hobbies: '',
+        extraknowledge: ''
     });
 
     const [message, setMessage] = useState('');
@@ -43,6 +44,7 @@ export const RegisterFormComponent = () => {
             languages,
             linkedin,
             hobbies,
+            extraknowledge
         } = formData;
 
         const regexEmail = /^\S+@\S+\.\S+$/; 
@@ -108,6 +110,7 @@ export const RegisterFormComponent = () => {
             languages,
             linkedin,
             hobbies,
+            extraknowledge
         };
 
         try {
@@ -120,7 +123,7 @@ export const RegisterFormComponent = () => {
             });
 
             const responseData = await response.json();
-
+console.log(formData.extraknowledge);
             if (response.ok) {
                 setMessage(responseData.message);
                 setError(false);
@@ -194,6 +197,10 @@ export const RegisterFormComponent = () => {
                       <div className="form-group">
                         <label htmlFor="hobbies">Hobbies</label>
                         <textarea className="form-control" id="hobbies" rows="3" name="hobbies" value={formData.hobbies} onChange={handleChange}></textarea>
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="extraknowledge">Conocimientos extra</label>
+                        <textarea className="form-control" id="extraknowledge" rows="3" name="extraknowledge" value={formData.extraknowledge} onChange={handleChange}></textarea>
                     </div>
                     <button type="submit" className="btn btn-primary btn-block mt-3">Registrarse</button>
                 </form>

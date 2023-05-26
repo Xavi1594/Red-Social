@@ -1,4 +1,3 @@
-import { body } from 'express-validator';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -13,6 +12,7 @@ export const ProfileComponent = ({ loggedIn }) => {
     languages: '',
     linkedin: '',
     hobbies: '',
+    extraknowledge: '',
   });
 
   useEffect(() => {
@@ -50,7 +50,7 @@ export const ProfileComponent = ({ loggedIn }) => {
       .then((text) => {
         console.log(text);
         // Redireccionar a la página de inicio después de eliminar la cuenta
-        navigate('/perfil');
+        navigate('/');
       })
       .catch((error) => {
         console.error('Error al eliminar la cuenta:', error);
@@ -58,7 +58,6 @@ export const ProfileComponent = ({ loggedIn }) => {
   };
 
   return (
-    
     <div className="container my-5" style={{ backgroundColor: '#86888a' }}>
       {loggedIn ? (
         <>
@@ -133,21 +132,19 @@ export const ProfileComponent = ({ loggedIn }) => {
                 </div>
               </div>
 
-              <div className="row my-3 justify-content-center">
-                <div className="col-6">
-                  <button id="eliminar-cuenta" className="btn btn-danger btn-block" onClick={handleEliminarCuenta}>
-                    Eliminar cuenta
-                  </button>
+              <div className="row my-3">
+                <div className="col-3 col-md-2 text-muted">Conocimiento extra</div>
+                <div className="col-9 col-md-10">
+                  <p>{datosPerfil.extraknowledge}</p>
                 </div>
               </div>
 
-              <div className="row my-3 oculto" id="mensaje-confirmacion">
-                <div className="col-12">
-                  {/* <div className="alert alert-success" role="alert">
-                    La cuenta ha sido eliminada exitosamente.
-                  </div> */}
-                </div>
-              </div>
+              <button type="button" id="eliminar-cuenta" onClick={handleEliminarCuenta}>
+                Eliminar cuenta
+              </button>
+              <p id="mensaje-confirmacion" className="">
+                cuenta eliminada
+              </p>
             </div>
           </div>
         </>
