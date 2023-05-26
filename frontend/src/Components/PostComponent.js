@@ -105,7 +105,7 @@ export const PostComponent = () => {
   };
 
   return (
-    <main className="container">
+    <main className="container ">
       <div className="row">
         <div className="col-12 col-lg-3 mt-5">
           <div className="accordion mt-5" id="accordionExample">

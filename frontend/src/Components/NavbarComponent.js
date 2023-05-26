@@ -1,11 +1,18 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import { NavLink } from 'react-router-dom';
-export const NavbarComponent = () => {
+import { NavLink, useNavigate } from 'react-router-dom';
+
+export const NavbarComponent = ({ onLogout }) => {
   const [isNavbarOpen, setNavbarOpen] = useState(false);
+  const navigate = useNavigate();
 
   const toggleNavbar = () => {
     setNavbarOpen(!isNavbarOpen);
+  };
+
+  const handleLogout = () => {
+    onLogout(); // Llama a la función onLogout pasada a través de las props para indicar que el usuario ha cerrado sesión
+    navigate('/'); // Redirecciona a la página de inicio u otra página deseada después de cerrar sesión
   };
 
   return (
@@ -14,7 +21,7 @@ export const NavbarComponent = () => {
         <div className="container">
           <NavLink to="/" className="navbar-brand">
             Socialy
-         </NavLink>
+          </NavLink>
           <i className="bi bi-wechat"></i>
           <button
             className="navbar-toggler"
@@ -59,7 +66,7 @@ export const NavbarComponent = () => {
                 </NavLink>
               </li>
               <li className="nav-item">
-                <NavLink to="/" className="nav-link">
+                <NavLink to={"/"} className="nav-link" onClick={handleLogout}>
                   Logout
                 </NavLink>
               </li>
