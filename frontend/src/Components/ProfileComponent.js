@@ -87,7 +87,7 @@ export const ProfileComponent = ({ loggedIn }) => {
           <div className="row justify-content-center">
             <div className="col-6 col-md-4">
               <img
-                src={datosPerfil.user_img}
+                src={profileData.user_img}
                 className="img-fluid mt-3"
                 width="200"
                 alt="Foto de perfil"
