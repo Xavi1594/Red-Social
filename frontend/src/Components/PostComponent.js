@@ -109,7 +109,7 @@ export const PostComponent = () => {
       <div className="row">
         <div className="col-12 col-lg-3 mt-5">
           <div className="accordion mt-5" id="accordionExample">
-            {/* Contenido del panel izquierdo (si es necesario) */}
+     <h3>hola</h3>
           </div>
         </div>
         <div className="col-12 col-lg-6 mt-5">
@@ -140,7 +140,7 @@ export const PostComponent = () => {
               </button>
             </form>
 
-            <div className="mb-4" id="posts-container">
+            <div className="bg-light p-2 rounded-3 border border-2 mb-4" id="posts-container">
               {posts.map((post) => (
                 <div key={post.id} className="post card mb-3">
                   {editedPost.id === post.id ? (

@@ -13,6 +13,7 @@ export const ProfileComponent = ({ loggedIn }) => {
     linkedin: '',
     hobbies: '',
     extraknowledge: '',
+    user_img:''
   });
 
   useEffect(() => {
@@ -64,7 +65,7 @@ export const ProfileComponent = ({ loggedIn }) => {
           <div className="row justify-content-center">
             <div className="col-6 col-md-4">
               <img
-                src="https://picsum.photos/200/300"
+                src={datosPerfil.user_img}
                 className="img-fluid mt-3"
                 width="200"
                 alt="Foto de perfil"

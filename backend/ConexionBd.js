@@ -42,7 +42,7 @@ app.use(
 
 // Registro
 app.post('/registro', (req, res) => {
-  const { username, password, email, fullname, city, country, age, university, languages, hobbies, linkedin, extraknowledge } = req.body;
+  const { username, password, email, fullname, city, country, age, university, languages, hobbies, linkedin, extraknowledge,user_img } = req.body;
 
   bcrypt.hash(password, 10, (err, hashedPassword) => {
     if (err) {
@@ -67,13 +67,13 @@ app.post('/registro', (req, res) => {
         }
       }
 
-      const sql = 'INSERT INTO usuarios (username, password, email, fullname, city, country, age, university, languages, linkedin, hobbies, extraknowledge) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)';
-      db.query(sql, [username, hashedPassword, email, fullname, city, country, age, university, languages, linkedin, hobbies, extraknowledge], (err, result) => {
+      const sql = 'INSERT INTO usuarios (username, password, email, fullname, city, country, age, university, languages, linkedin, hobbies, extraknowledge, user_img) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)';
+      db.query(sql, [username, hashedPassword, email, fullname, city, country, age, university, languages, linkedin, hobbies, extraknowledge, user_img], (err, result) => {
         if (err) {
           console.error('Error al insertar usuario:', err);
           return res.status(500).json({ message: 'Ha ocurrido un error al insertar el usuario en la base de datos. Por favor, intenta más tarde.' });
         }
-        console.log([username, hashedPassword, email, fullname, city, country, age, university, languages, linkedin, hobbies, extraknowledge]);
+        console.log([username, hashedPassword, email, fullname, city, country, age, university, languages, linkedin, hobbies, extraknowledge, user_img]);
         console.log('Usuario registrado correctamente');
         res.json({ message: 'El usuario ha sido registrado correctamente.' });
       });
@@ -321,7 +321,7 @@ app.get('/perfil', function (req, res) {
 
   if (loggedIn && username) {
     db.query(
-      'SELECT fullname, city, country, age, university, languages, hobbies, linkedin, extraknowledge FROM usuarios WHERE username = ?',
+      'SELECT fullname, city, country, age, university, languages, hobbies, linkedin, extraknowledge, user_img FROM usuarios WHERE username = ?',
       [username],
       function (error, results, fields) {
         if (error) {

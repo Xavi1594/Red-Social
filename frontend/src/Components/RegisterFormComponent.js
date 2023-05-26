@@ -44,7 +44,8 @@ export const RegisterFormComponent = () => {
             languages,
             linkedin,
             hobbies,
-            extraknowledge
+            extraknowledge,
+            user_img
         } = formData;
 
         const regexEmail = /^\S+@\S+\.\S+$/; 
@@ -110,7 +111,8 @@ export const RegisterFormComponent = () => {
             languages,
             linkedin,
             hobbies,
-            extraknowledge
+            extraknowledge,
+            user_img
         };
 
         try {
@@ -123,7 +125,7 @@ export const RegisterFormComponent = () => {
             });
 
             const responseData = await response.json();
-console.log(formData.extraknowledge);
+
             if (response.ok) {
                 setMessage(responseData.message);
                 setError(false);
@@ -151,6 +153,8 @@ console.log(formData.extraknowledge);
                   <form className="form-registro p-3" id="form-registro" onSubmit={handleSubmit}>
                       {message && <div className={error ? 'error' : 'success'}>{message}</div>}
                       <div className="form-group">
+                        <label htmlFor="foto">foto de perfil </label>
+                        <input type='file' className='formcontrol'name='user_img'  value={formData.user_img} onChange={handleChange} />
                           <label htmlFor="username">Nombre de usuario</label>
                           <input type="text" className="form-control" id="username" name="username" value={formData.username} onChange={handleChange} />
                       </div>

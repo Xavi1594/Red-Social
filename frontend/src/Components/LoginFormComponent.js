@@ -39,6 +39,8 @@ export const LoginFormComponent = ({ onLogin }) => { // Asegúrate de pasar onLo
       setErrorMessage('Ha ocurrido un error, por favor intente nuevamente.');
     }
   };
+
+  
   return (
     <div className="container-fluid d-flex justify-content-center align-items-center vh-100">
      <div className="card col-md-4 col-lg-6 col-10 p-0 d-flex flex-column justify-content-center align-items-center mx-auto">

@@ -155,11 +155,15 @@ const connection = mysql.createConnection({
   app.get("/dashboard.html", (req, res) => {
     res.sendFile(path.join(__dirname, "dashboard.html"));
   });
-  
   app.get("/logout", (req, res) => {
-    req.usuarioId = null;
-    res.redirect("/");
-  });
+    req.session.destroy((err) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.redirect("/");
+        }
+    });
+});
   
 ////////////////////////////////////////////////////DATOS DE PERFIL//////////////////////////////////////////////////////////////////////
 

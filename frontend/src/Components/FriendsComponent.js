@@ -73,7 +73,7 @@ export const FriendsComponent = () => {
               key={usuario.id}
               className="usuario-card col-sm-6 col-md-4 col-lg-3 mx-auto"
             >
-              <h2 className="nombre-usuario">
+              <h2 className="nombre-usuario ">
                 <strong>{usuario.username}</strong>
               </h2>
               <div className="detalles">
