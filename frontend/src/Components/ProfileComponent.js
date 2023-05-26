@@ -256,7 +256,6 @@ export const ProfileComponent = ({ loggedIn }) => {
           </div>
 
           <div className="row my-3">
-<<<<<<< HEAD
             <div className="col-3 col-md-2 text-muted">Conocimientos extra:</div>
             <div className="col-9 col-md-10">
               {isEditMode ? (
@@ -280,19 +279,6 @@ export const ProfileComponent = ({ loggedIn }) => {
           ) : (
             <button onClick={handleEdit}>Editar</button>
           )}
-=======
-            <div className="col-3 col-md-2 text-muted">Conocimiento extra</div>
-            <div className="col-9 col-md-10">
-              <p>{datosPerfil.extraknowledge}</p>
-            </div>
-          </div>
-          <button id="eliminar-cuenta" onClick={handleEliminarCuenta}>
-            Eliminar cuenta
-          </button>
-          <p id="mensaje-confirmacion" className="oculto">
-            La cuenta ha sido eliminada exitosamente.
-          </p>
->>>>>>> 98ed59807a29bef60112c033596e73ecabde935d
         </>
       ) : (
         <p>No se ha iniciado sesión</p>
