@@ -3,7 +3,10 @@ import { useNavigate } from 'react-router-dom';
 
 export const ProfileComponent = ({ loggedIn }) => {
   const navigate = useNavigate();
-  const [datosPerfil, setDatosPerfil] = useState({
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [profileData, setProfileData] = useState({
+    username: '',
+    email: '',
     fullname: '',
     city: '',
     country: '',
@@ -30,17 +33,25 @@ export const ProfileComponent = ({ loggedIn }) => {
         return response.json();
       })
       .then((data) => {
-        setDatosPerfil(data);
+        setProfileData(data);
       })
       .catch((error) => {
         console.error('Error al recuperar los datos del perfil:', error);
       });
   }, [loggedIn, navigate]);
 
-  const handleEliminarCuenta = () => {
-    fetch('http://localhost:3000/eliminarcuenta', {
-      method: 'DELETE',
+  const handleEdit = () => {
+    setIsEditMode(true);
+  };
+
+  const handleSave = () => {
+    fetch('http://localhost:3000/perfil', {
+      method: 'PUT',
       credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(profileData),
     })
       .then((response) => {
         if (!response.ok) {
@@ -50,12 +61,23 @@ export const ProfileComponent = ({ loggedIn }) => {
       })
       .then((text) => {
         console.log(text);
-        // Redireccionar a la página de inicio después de eliminar la cuenta
-        navigate('/');
+        setIsEditMode(false);
       })
       .catch((error) => {
-        console.error('Error al eliminar la cuenta:', error);
+        console.error('Error al guardar los cambios del perfil:', error);
       });
+  };
+
+  const handleCancel = () => {
+    setIsEditMode(false);
+  };
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setProfileData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
   return (
@@ -73,81 +95,191 @@ export const ProfileComponent = ({ loggedIn }) => {
             </div>
           </div>
 
-          <div className="card mt-5">
-            <div className="card-body">
-              <div className="row my-3 bg-light p-3">
-                <div className="col-3 col-md-2 text-muted">Nombre completo:</div>
-                <div className="col-9 col-md-10">
-                  <p className="card-text shadow">{datosPerfil.fullname}</p>
-                </div>
-              </div>
-
-              <div className="row my-3 bg-light p-3">
-                <div className="col-3 col-md-2 text-muted">Ciudad de residencia:</div>
-                <div className="col-9 col-md-10">
-                  <p className="card-text shadow">{datosPerfil.city}</p>
-                </div>
-              </div>
-
-              <div className="row my-3 bg-light p-3">
-                <div className="col-3 col-md-2 text-muted">País de residencia:</div>
-                <div className="col-9 col-md-10">
-                  <p className="card-text shadow">{datosPerfil.country}</p>
-                </div>
-              </div>
-
-              <div className="row my-3 bg-light p-3">
-                <div className="col-3 col-md-2 text-muted">Edad:</div>
-                <div className="col-9 col-md-10">
-                  <p className="card-text shadow">{datosPerfil.age}</p>
-                </div>
-              </div>
-
-              <div className="row my-3 bg-light p-3">
-                <div className="col-3 col-md-2 text-muted">Estudios:</div>
-                <div className="col-9 col-md-10">
-                  <p className="card-text shadow">{datosPerfil.university}</p>
-                </div>
-              </div>
-
-              <div className="row my-3 bg-light p-3">
-                <div className="col-3 col-md-2 text-muted">Idiomas:</div>
-                <div className="col-9 col-md-10">
-                  <p className="card-text shadow">{datosPerfil.languages}</p>
-                </div>
-              </div>
-
-              <div className="row my-3 bg-light p-3">
-                <div className="col-3 col-md-2 text-muted">Perfil de Linkedin:</div>
-                <div className="col-9 col-md-10">
-                  <p className="card-text shadow">
-                    <a href={datosPerfil.linkedin}>{datosPerfil.linkedin}</a>
-                  </p>
-                </div>
-              </div>
-
-              <div className="row my-3 bg-light p-3">
-                <div className="col-3 col-md-2 text-muted">Hobbies:</div>
-                <div className="col-9 col-md-10">
-                  <p className="card-text shadow">{datosPerfil.hobbies}</p>
-                </div>
-              </div>
-
-              <div className="row my-3">
-                <div className="col-3 col-md-2 text-muted">Conocimiento extra</div>
-                <div className="col-9 col-md-10">
-                  <p>{datosPerfil.extraknowledge}</p>
-                </div>
-              </div>
-
-              <button type="button" id="eliminar-cuenta" onClick={handleEliminarCuenta}>
-                Eliminar cuenta
-              </button>
-              <p id="mensaje-confirmacion" className="">
-                cuenta eliminada
-              </p>
+          <div className="row my-3">
+            <div className="col-3 col-md-2 text-muted">Nombre de usuario:</div>
+            <div className="col-9 col-md-10">
+              {isEditMode ? (
+                <input
+                  type="text"
+                  name="username"
+                  value={profileData.username}
+                  onChange={handleChange}
+                />
+              ) : (
+                <p>{profileData.username}</p>
+              )}
             </div>
           </div>
+
+          <div className="row my-3">
+            <div className="col-3 col-md-2 text-muted">E-Mail:</div>
+            <div className="col-9 col-md-10">
+              {isEditMode ? (
+                <input
+                  type="text"
+                  name="email"
+                  value={profileData.email}
+                  onChange={handleChange}
+                />
+              ) : (
+                <p>{profileData.email}</p>
+              )}
+            </div>
+          </div>
+
+
+          <div className="row my-3">
+            <div className="col-3 col-md-2 text-muted">Nombre completo:</div>
+            <div className="col-9 col-md-10">
+              {isEditMode ? (
+                <input
+                  type="text"
+                  name="fullname"
+                  value={profileData.fullname}
+                  onChange={handleChange}
+                />
+              ) : (
+                <p>{profileData.fullname}</p>
+              )}
+            </div>
+          </div>
+
+          <div className="row my-3">
+            <div className="col-3 col-md-2 text-muted">Pais de residencia:</div>
+            <div className="col-9 col-md-10">
+              {isEditMode ? (
+                <input
+                  type="text"
+                  name="country"
+                  value={profileData.country}
+                  onChange={handleChange}
+                />
+              ) : (
+                <p>{profileData.country}</p>
+              )}
+            </div>
+          </div>
+
+          <div className="row my-3">
+            <div className="col-3 col-md-2 text-muted">Ciudad de residencia:</div>
+            <div className="col-9 col-md-10">
+              {isEditMode ? (
+                <input
+                  type="text"
+                  name="city"
+                  value={profileData.city}
+                  onChange={handleChange}
+                />
+              ) : (
+                <p>{profileData.city}</p>
+              )}
+            </div>
+          </div>
+
+          <div className="row my-3">
+            <div className="col-3 col-md-2 text-muted">Edad:</div>
+            <div className="col-9 col-md-10">
+              {isEditMode ? (
+                <input
+                  type="number"
+                  name="age"
+                  value={profileData.age}
+                  onChange={handleChange}
+                />
+              ) : (
+                <p>{profileData.age}</p>
+              )}
+            </div>
+          </div>
+
+          <div className="row my-3">
+            <div className="col-3 col-md-2 text-muted">Estudios:</div>
+            <div className="col-9 col-md-10">
+              {isEditMode ? (
+                <input
+                  type="textbox"
+                  name="university"
+                  value={profileData.university}
+                  onChange={handleChange}
+                />
+              ) : (
+                <p>{profileData.university}</p>
+              )}
+            </div>
+          </div>
+
+          <div className="row my-3">
+            <div className="col-3 col-md-2 text-muted">Idiomas:</div>
+            <div className="col-9 col-md-10">
+              {isEditMode ? (
+                <input
+                  type="textbox"
+                  name="languages"
+                  value={profileData.languages}
+                  onChange={handleChange}
+                />
+              ) : (
+                <p>{profileData.languages}</p>
+              )}
+            </div>
+          </div>
+
+          <div className="row my-3">
+            <div className="col-3 col-md-2 text-muted">Perfil de LinkedIn:</div>
+            <div className="col-9 col-md-10">
+              {isEditMode ? (
+                <input
+                  type="text"
+                  name="linkedin"
+                  value={profileData.linkedin}
+                  onChange={handleChange}
+                />
+              ) : (
+                <p>{profileData.linkedin}</p>
+              )}
+            </div>
+          </div>
+
+          <div className="row my-3">
+            <div className="col-3 col-md-2 text-muted">Hobbies:</div>
+            <div className="col-9 col-md-10">
+              {isEditMode ? (
+                <input
+                  type="textarea"
+                  name="hobbies"
+                  value={profileData.hobbies}
+                  onChange={handleChange}
+                />
+              ) : (
+                <p>{profileData.hobbies}</p>
+              )}
+            </div>
+          </div>
+
+          <div className="row my-3">
+            <div className="col-3 col-md-2 text-muted">Conocimientos extra:</div>
+            <div className="col-9 col-md-10">
+              {isEditMode ? (
+                <input
+                  type="text"
+                  name="extraknowledge"
+                  value={profileData.extraknowledge}
+                  onChange={handleChange}
+                />
+              ) : (
+                <p>{profileData.extraknowledge}</p>
+              )}
+            </div>
+          </div>
+
+          {isEditMode ? (
+            <>
+              <button onClick={handleSave}>Guardar</button>
+              <button onClick={handleCancel}>Cancelar</button>
+            </>
+          ) : (
+            <button onClick={handleEdit}>Editar</button>
+          )}
         </>
       ) : (
         <p>No se ha iniciado sesión</p>

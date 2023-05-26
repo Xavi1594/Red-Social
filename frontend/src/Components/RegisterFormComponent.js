@@ -50,6 +50,7 @@ export const RegisterFormComponent = () => {
 
         const regexEmail = /^\S+@\S+\.\S+$/; 
         const regexLinkedIn = /^(https?:\/\/)?([\w\d]+\.)?linkedin\.com\/.+$/; 
+        const regexname = /^[a-zA-Z\u00f1\u00d1\u00e7\u00c7\s]+$/;
 
         if (password !== confirmPassword) {
             setMessage('Las contraseñas no coinciden');
@@ -81,19 +82,19 @@ export const RegisterFormComponent = () => {
             return;
         }
 
-        if (!/^[a-zA-Z\s]+$/.test(fullname)) {
+        if (!regexname.test(fullname)) {
             setMessage('Ingrese un nombre válido (solo letras)');
             setError(true);
             return;
         }
 
-        if (!/^[a-zA-Z\s]+$/.test(city)) {
+        if (!regexname.test(city)) {
             setMessage('Ingrese una ciudad válida (solo letras)');
             setError(true);
             return;
         }
 
-        if (!/^[a-zA-Z\s]+$/.test(country)) {
+        if (!regexname.test(country)) {
             setMessage('Ingrese un país válido (solo letras)');
             setError(true);
             return;
