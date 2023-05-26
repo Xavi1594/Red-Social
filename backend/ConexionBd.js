@@ -67,7 +67,7 @@ app.post('/registro', (req, res) => {
         }
       }
 
-      const sql = 'INSERT INTO usuarios (username, password, email, fullname, city, country, age, university, languages, linkedin, hobbies, extraknowledge) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+      const sql = 'INSERT INTO usuarios (username, password, email, fullname, city, country, age, university, languages, linkedin, hobbies, extraknowledge) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)';
       db.query(sql, [username, hashedPassword, email, fullname, city, country, age, university, languages, linkedin, hobbies, extraknowledge], (err, result) => {
         if (err) {
           console.error('Error al insertar usuario:', err);
@@ -321,7 +321,7 @@ app.get('/perfil', function (req, res) {
 
   if (loggedIn && username) {
     db.query(
-      'SELECT fullname, city, country, age, university, languages, hobbies, linkedin FROM usuarios WHERE username = ?',
+      'SELECT fullname, city, country, age, university, languages, hobbies, linkedin, extraknowledge FROM usuarios WHERE username = ?',
       [username],
       function (error, results, fields) {
         if (error) {

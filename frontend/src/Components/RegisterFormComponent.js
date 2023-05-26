@@ -124,7 +124,7 @@ export const RegisterFormComponent = () => {
             });
 
             const responseData = await response.json();
-
+console.log(formData.extraknowledge);
             if (response.ok) {
                 setMessage(responseData.message);
                 setError(false);
