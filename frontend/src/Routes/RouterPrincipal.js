@@ -7,6 +7,7 @@ import { ProfileComponent } from '../Components/ProfileComponent';
 import { LoginFormComponent } from '../Components/LoginFormComponent';
 import { FriendsComponent } from '../Components/FriendsComponent';
 import { PostComponent } from '../Components/PostComponent';
+import { NotLoggedNavbarComponent } from '../Components/NotLoggedNavbarComponent';
 
 export const RouterPrincipal = () => {
   const [loggedIn, setLoggedIn] = useState(!!localStorage.getItem('token'));
@@ -23,7 +24,11 @@ export const RouterPrincipal = () => {
   return (
     <div>
       <BrowserRouter>
-        <NavbarComponent loggedIn={loggedIn} onLogout={handleLogout} />
+        {loggedIn ? (
+          <NavbarComponent loggedIn={loggedIn} onLogout={handleLogout} />
+        ) : (
+          <NotLoggedNavbarComponent onLogout={handleLogout} />
+        )}
         <Routes>
           <Route path="/" element={<LoginFormComponent onLogin={handleLogin} />} />
           <Route path="/registro" element={<RegisterFormComponent />} />
