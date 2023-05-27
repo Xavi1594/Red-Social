@@ -321,7 +321,7 @@ app.get('/perfil', function (req, res) {
 
   if (loggedIn && username) {
     db.query(
-      'SELECT fullname, city, country, age, university, languages, hobbies, linkedin, extraknowledge, user_img FROM usuarios WHERE username = ?',
+      'SELECT username, email, fullname, city, country, age, university, languages, hobbies, linkedin, extraknowledge, user_img FROM usuarios WHERE username = ?',
       [username],
       function (error, results, fields) {
         if (error) {
@@ -403,6 +403,7 @@ app.get('/perfil', function (req, res) {
   } else {
     res.status(401).send('No se ha iniciado sesión');
   }
+
 });
 
 // Endpoint para actualizar el perfil del usuario

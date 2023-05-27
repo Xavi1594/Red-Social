@@ -16,7 +16,7 @@ export const ProfileComponent = ({ loggedIn }) => {
     linkedin: '',
     hobbies: '',
     extraknowledge: '',
-    user_img:''
+    user_img: '',
   });
 
   useEffect(() => {
@@ -33,6 +33,7 @@ export const ProfileComponent = ({ loggedIn }) => {
         return response.json();
       })
       .then((data) => {
+        console.log(profileData.age);
         setProfileData(data);
       })
       .catch((error) => {
@@ -81,14 +82,15 @@ export const ProfileComponent = ({ loggedIn }) => {
   };
 
   return (
-    <div className="container my-5" style={{ backgroundColor: '#86888a' }}>
+    <div className="container my-5">
       {loggedIn ? (
         <>
           <div className="row justify-content-center">
             <div className="col-6 col-md-4">
               <img
                 src={profileData.user_img}
-                className="img-fluid mt-3"
+                className="img-fluid rounded mt-3"
+                style={{ width: '260px', height: '220px' }}
                 width="200"
                 alt="Foto de perfil"
               />
@@ -96,190 +98,220 @@ export const ProfileComponent = ({ loggedIn }) => {
           </div>
 
           <div className="row my-3">
-            <div className="col-3 col-md-2 text-muted">Nombre de usuario:</div>
-            <div className="col-9 col-md-10">
-              {isEditMode ? (
-                <input
-                  type="text"
-                  name="username"
-                  value={profileData.username}
-                  onChange={handleChange}
-                />
-              ) : (
-                <p>{profileData.username}</p>
-              )}
+            <div className="col-12">
+              <p className="font-weight-bold">
+                <b>Nombre de usuario:</b> {isEditMode ? (
+                  <input
+                    type="text"
+                    name="username"
+                    value={profileData.username}
+                    onChange={handleChange}
+                    className="form-control"
+                  />
+                ) : (
+                  <span>{profileData.username}</span>
+                )}
+              </p>
             </div>
           </div>
 
           <div className="row my-3">
-            <div className="col-3 col-md-2 text-muted">E-Mail:</div>
-            <div className="col-9 col-md-10">
-              {isEditMode ? (
-                <input
-                  type="text"
-                  name="email"
-                  value={profileData.email}
-                  onChange={handleChange}
-                />
-              ) : (
-                <p>{profileData.email}</p>
-              )}
-            </div>
-          </div>
-
-
-          <div className="row my-3">
-            <div className="col-3 col-md-2 text-muted">Nombre completo:</div>
-            <div className="col-9 col-md-10">
-              {isEditMode ? (
-                <input
-                  type="text"
-                  name="fullname"
-                  value={profileData.fullname}
-                  onChange={handleChange}
-                />
-              ) : (
-                <p>{profileData.fullname}</p>
-              )}
+            <div className="col-12">
+              <p>
+                <b>E-Mail:</b> {isEditMode ? (
+                  <input
+                    type="text"
+                    name="email"
+                    value={profileData.email}
+                    onChange={handleChange}
+                    className="form-control"
+                  />
+                ) : (
+                  <span>{profileData.email}</span>
+                )}
+              </p>
             </div>
           </div>
 
           <div className="row my-3">
-            <div className="col-3 col-md-2 text-muted">Pais de residencia:</div>
-            <div className="col-9 col-md-10">
-              {isEditMode ? (
-                <input
-                  type="text"
-                  name="country"
-                  value={profileData.country}
-                  onChange={handleChange}
-                />
-              ) : (
-                <p>{profileData.country}</p>
-              )}
+            <div className="col-12">
+              <p>
+                <b>Nombre completo:</b> {isEditMode ? (
+                  <input
+                    type="text"
+                    name="fullname"
+                    value={profileData.fullname}
+                    onChange={handleChange}
+                    className="form-control"
+                  />
+                ) : (
+                  <span>{profileData.fullname}</span>
+                )}
+              </p>
             </div>
           </div>
 
           <div className="row my-3">
-            <div className="col-3 col-md-2 text-muted">Ciudad de residencia:</div>
-            <div className="col-9 col-md-10">
-              {isEditMode ? (
-                <input
-                  type="text"
-                  name="city"
-                  value={profileData.city}
-                  onChange={handleChange}
-                />
-              ) : (
-                <p>{profileData.city}</p>
-              )}
+            <div className="col-12">
+              <p>
+                <b>Pais de residencia:</b> {isEditMode ? (
+                  <input
+                    type="text"
+                    name="country"
+                    value={profileData.country}
+                    onChange={handleChange}
+                    className="form-control"
+                  />
+                ) : (
+                  <span>{profileData.country}</span>
+                )}
+              </p>
             </div>
           </div>
 
           <div className="row my-3">
-            <div className="col-3 col-md-2 text-muted">Edad:</div>
-            <div className="col-9 col-md-10">
-              {isEditMode ? (
-                <input
-                  type="number"
-                  name="age"
-                  value={profileData.age}
-                  onChange={handleChange}
-                />
-              ) : (
-                <p>{profileData.age}</p>
-              )}
+            <div className="col-12">
+              <p>
+                <b>Ciudad de residencia:</b> {isEditMode ? (
+                  <input
+                    type="text"
+                    name="city"
+                    value={profileData.city}
+                    onChange={handleChange}
+                    className="form-control"
+                  />
+                ) : (
+                  <span>{profileData.city}</span>
+                )}
+              </p>
             </div>
           </div>
 
           <div className="row my-3">
-            <div className="col-3 col-md-2 text-muted">Estudios:</div>
-            <div className="col-9 col-md-10">
-              {isEditMode ? (
-                <input
-                  type="textbox"
-                  name="university"
-                  value={profileData.university}
-                  onChange={handleChange}
-                />
-              ) : (
-                <p>{profileData.university}</p>
-              )}
+            <div className="col-12">
+              <p>
+                <b>Edad:</b> {isEditMode ? (
+                  <input
+                    type="number"
+                    name="age"
+                    value={profileData.age}
+                    onChange={handleChange}
+                    className="form-control"
+                  />
+                ) : (
+                  <span>{profileData.age}</span>
+                )}
+              </p>
             </div>
           </div>
 
           <div className="row my-3">
-            <div className="col-3 col-md-2 text-muted">Idiomas:</div>
-            <div className="col-9 col-md-10">
-              {isEditMode ? (
-                <input
-                  type="textbox"
-                  name="languages"
-                  value={profileData.languages}
-                  onChange={handleChange}
-                />
-              ) : (
-                <p>{profileData.languages}</p>
-              )}
+            <div className="col-12">
+              <p>
+                <b>Estudios:</b> {isEditMode ? (
+                  <input
+                    type="textbox"
+                    name="university"
+                    value={profileData.university}
+                    onChange={handleChange}
+                    className="form-control"
+                  />
+                ) : (
+                  <span>{profileData.university}</span>
+                )}
+              </p>
             </div>
           </div>
 
           <div className="row my-3">
-            <div className="col-3 col-md-2 text-muted">Perfil de LinkedIn:</div>
-            <div className="col-9 col-md-10">
-              {isEditMode ? (
-                <input
-                  type="text"
-                  name="linkedin"
-                  value={profileData.linkedin}
-                  onChange={handleChange}
-                />
-              ) : (
-                <p>{profileData.linkedin}</p>
-              )}
+            <div className="col-12">
+              <p>
+                <b>Idiomas:</b> {isEditMode ? (
+                  <input
+                    type="textbox"
+                    name="languages"
+                    value={profileData.languages}
+                    onChange={handleChange}
+                    className="form-control"
+                  />
+                ) : (
+                  <span>{profileData.languages}</span>
+                )}
+              </p>
             </div>
           </div>
 
           <div className="row my-3">
-            <div className="col-3 col-md-2 text-muted">Hobbies:</div>
-            <div className="col-9 col-md-10">
-              {isEditMode ? (
-                <input
-                  type="textarea"
-                  name="hobbies"
-                  value={profileData.hobbies}
-                  onChange={handleChange}
-                />
-              ) : (
-                <p>{profileData.hobbies}</p>
-              )}
+            <div className="col-12">
+              <p>
+                <b>Perfil de LinkedIn:</b> {isEditMode ? (
+                  <input
+                    type="text"
+                    name="linkedin"
+                    value={profileData.linkedin}
+                    onChange={handleChange}
+                    className="form-control"
+                  />
+                ) : (
+                  <span>{profileData.linkedin}</span>
+                )}
+              </p>
             </div>
           </div>
 
           <div className="row my-3">
-            <div className="col-3 col-md-2 text-muted">Conocimientos extra:</div>
-            <div className="col-9 col-md-10">
-              {isEditMode ? (
-                <input
-                  type="text"
-                  name="extraknowledge"
-                  value={profileData.extraknowledge}
-                  onChange={handleChange}
-                />
-              ) : (
-                <p>{profileData.extraknowledge}</p>
-              )}
+            <div className="col-12">
+              <p>
+                <b>Hobbies:</b> {isEditMode ? (
+                  <textarea
+                    name="hobbies"
+                    value={profileData.hobbies}
+                    onChange={handleChange}
+                    className="form-control"
+                  />
+                ) : (
+                  <span>{profileData.hobbies}</span>
+                )}
+              </p>
             </div>
           </div>
 
-          {isEditMode ? (
-            <>
-              <button onClick={handleSave}>Guardar</button>
-              <button onClick={handleCancel}>Cancelar</button>
-            </>
-          ) : (
-            <button onClick={handleEdit}>Editar</button>
-          )}
+          <div className="row my-3">
+            <div className="col-12">
+              <p>
+                <b>Conocimientos extra:</b> {isEditMode ? (
+                  <input
+                    type="text"
+                    name="extraknowledge"
+                    value={profileData.extraknowledge}
+                    onChange={handleChange}
+                    className="form-control"
+                  />
+                ) : (
+                  <span>{profileData.extraknowledge}</span>
+                )}
+              </p>
+            </div>
+          </div>
+
+          <div className="row my-3">
+            <div className="col-12">
+              {isEditMode ? (
+                <>
+                  <button className="btn btn-primary mr-2" onClick={handleSave}>
+                    Guardar
+                  </button>
+                  <button className="btn btn-secondary" onClick={handleCancel}>
+                    Cancelar
+                  </button>
+                </>
+              ) : (
+                <button className="btn btn-primary" onClick={handleEdit}>
+                  Editar
+                </button>
+              )}
+            </div>
+          </div>
         </>
       ) : (
         <p>No se ha iniciado sesión</p>
