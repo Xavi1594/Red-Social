@@ -4,6 +4,7 @@ export const PostComponent = () => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [posts, setPosts] = useState([]);
+ const[usuarioId, setUsuarioId]= useState(''); 
   const [editedPost, setEditedPost] = useState({ id: null, title: '', content: '' });
 
   useEffect(() => {
@@ -16,6 +17,7 @@ export const PostComponent = () => {
     const post = {
       title: title,
       content: content,
+      usuarioId: usuarioId
     };
 
     try {
@@ -30,7 +32,6 @@ export const PostComponent = () => {
 
       if (response.ok) {
         const newPost = await response.json();
-        console.log('Nuevo post creado:', newPost);
         setTitle('');
         setContent('');
         await fetchPosts();

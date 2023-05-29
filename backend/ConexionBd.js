@@ -137,23 +137,25 @@ app.get('/logout', function (req, res) {
 app.get('/usuarios/registrados', function (req, res) {
   var userId = req.session.usuarioId;
   db.query(
-    'SELECT usuarios.*, CASE WHEN amigos.idAmigo IS NOT NULL THEN 1 ELSE 0 END AS amigo FROM usuarios LEFT JOIN amigos ON usuarios.id = amigos.idAmigo AND amigos.iduser = ? WHERE usuarios.id != ?',
+    'SELECT usuarios.id, usuarios.username, usuarios.user_img,usuarios.country, usuarios.fullname, CASE WHEN amigos.idAmigo IS NOT NULL THEN 1 ELSE 0 END AS amigo FROM usuarios LEFT JOIN amigos ON usuarios.id = amigos.idAmigo AND amigos.iduser = ? WHERE usuarios.id != ?',
     [userId, userId],
     function (error, results) {
       if (error) {
         console.error('Ha ocurrido un error:', error.message);
         return res.status(500).json({ message: 'Ha ocurrido un error al obtener la lista de usuarios registrados' });
       }
+      console.log(results);
       res.status(200).json(results);
     }
   );
 });
 
+
 // Obtener la lista de amigos
 app.get('/amigos', function (req, res) {
   var userId = req.session.usuarioId;
   db.query(
-    'SELECT * FROM usuarios WHERE id != ? AND id NOT IN (SELECT idAmigo FROM amigos WHERE iduser = ?)',
+    'SELECT usuarios.id, usuarios.username, usuarios.user_img, usuarios.fullname FROM usuarios WHERE usuarios.id != ? AND usuarios.id NOT IN (SELECT amigos.idAmigo FROM amigos WHERE amigos.iduser = ?)',
     [userId, userId],
     function (error, results) {
       if (error) {
@@ -164,6 +166,7 @@ app.get('/amigos', function (req, res) {
     }
   );
 });
+
 
 // Agregar amigo
 app.post('/amigos/agregar/:idAmigo', function (req, res) {
@@ -195,7 +198,7 @@ app.post('/amigos/agregar/:idAmigo', function (req, res) {
 app.delete('/amigos/eliminar/:idAmigo', function (req, res) {
   const idAmigo = req.params.idAmigo;
   const userId = req.session.usuarioId;
-
+  console.log(idAmigo)
   db.query('DELETE FROM amigos WHERE idAmigo = ? AND iduser = ?', [idAmigo, userId], function (error, results, fields) {
     if (error) {
       console.error(error);
@@ -215,12 +218,29 @@ app.delete('/amigos/eliminar/:idAmigo', function (req, res) {
 app.get('/amigos/agregados', function (req, res) {
   var userId = req.session.usuarioId;
 
-  db.query('SELECT * FROM amigos WHERE iduser = ?', [userId], function (error, results) {
+  db.query(
+    'SELECT usuarios.id ,usuarios.fullname,usuarios.country, usuarios.user_img FROM amigos JOIN usuarios ON amigos.idAmigo = usuarios.id WHERE amigos.iduser = ?',
+    [userId],
+    function (error, results) {
+      if (error) {
+        console.error('Ha ocurrido un error:', error.message);
+        return res.status(500).json({ message: 'Ha ocurrido un error al obtener la lista de amigos agregados' });
+      }
+      res.status(200).json(results);
+    }
+  );
+});
+
+app.post('/amigos/agregar/:idAmigo', function(req, res) {
+  var userId = req.session.usuarioId;
+  var idAmigo = req.params.idAmigo;
+
+  db.query('INSERT INTO amigos (iduser, idamigo) VALUES (?, ?)', [userId, idAmigo], function(error, results) {
     if (error) {
       console.error('Ha ocurrido un error:', error.message);
-      return res.status(500).json({ message: 'Ha ocurrido un error al obtener la lista de amigos' });
+      return res.status(500).json({ message: 'Ha ocurrido un error al agregar al amigo' });
     }
-    res.status(200).json(results);
+    res.status(200).json({ message: 'Amigo agregado con éxito' });
   });
 });
 
@@ -239,6 +259,7 @@ app.get('/posts', (req, res) => {
 // Crear un nuevo post
 app.post('/posts', (req, res) => {
   const newPost = {
+    user_img:req.body.user_img,
     title: req.body.title,
     content: req.body.content,
     usuarioId: req.session.usuarioId,

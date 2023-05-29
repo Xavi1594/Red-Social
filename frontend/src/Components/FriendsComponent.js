@@ -66,67 +66,68 @@ export const FriendsComponent = () => {
       });
   };
 
+  const onPageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = usuariosRegistrados.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(usuariosRegistrados.length / itemsPerPage);
-
-  const paginate = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
 
   return (
     <div className="container mt-5 amigosContainer">
       <div className="row mt-5">
         <div className="col-lg-12">
           <div className="registrados-section row">
-            {currentItems.map((usuario) => (
-              <div
-                key={usuario.id}
-                className="usuario-card amigo-card col-sm-6 col-md-4 col-lg-3 mx-auto"
-              >
-                <h2 className="nombre-usuario">
-                  <strong>{usuario.username}</strong>
-                </h2>
-                <img
-                  src={usuario.user_img}
-                  className="img-fluid rounded mt-3"
-                  style={{ width: '100px', height: '100px' }}
-                  alt="Foto de perfil"
-                />
-                <div className="detalles">
-                  <p className="card-title">{usuario.fullname}</p>
-                  {!usuario.amigo ? (
-                    <button
-                      className="btn btn-success"
-                      onClick={() => {
-                        agregarAmigo(usuario.id, usuario.username);
-                      }}
-                    >
-                      Agregar amigo
-                    </button>
-                  ) : (
-                    <button
-                      className="btn btn-danger"
-                      onClick={() => {
-                        eliminarAmigo(usuario.id, usuario.username);
-                      }}
-                    >
-                      Eliminar amigo
-                    </button>
-                  )}
+            {currentItems.map((usuario) => {
+              return (
+                <div
+                  key={usuario.id}
+                  className="usuario-card amigo-card col-sm-6 col-md-4 col-lg-3 mx-auto"
+                >
+                  <h2 className="nombre-usuario">
+                    <strong>{usuario.fullname}</strong>
+                  </h2>
+                  <img
+                    src={usuario.user_img}
+                    className="img-fluid rounded mt-3"
+                    style={{ width: '100px', height: '100px' }}
+                    alt="Foto de perfil"
+                  />
+                  <div className="detalles">
+                    <p className="card-text">
+                      <small className="text-muted h4">{usuario.country}</small>
+                    </p>
+                    {usuario.amigo === 1 ? (
+                      <button
+                        className="btn btn-danger"
+                        onClick={() => {
+                          eliminarAmigo(usuario.id, usuario.username);
+                        }}
+                      >
+                        Eliminar amigo
+                      </button>
+                    ) : (
+                      <button
+                        className="btn btn-success"
+                        onClick={() => {
+                          agregarAmigo(usuario.id, usuario.username);
+                        }}
+                      >
+                        Agregar amigo
+                      </button>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={paginate}
-        className="d-flex justify-content-center mt-5"
-      />
+      <div className="row justify-content-center mb-5 py-5">
+        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} />
+      </div>
     </div>
   );
 };

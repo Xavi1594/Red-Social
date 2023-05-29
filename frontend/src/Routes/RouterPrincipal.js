@@ -8,6 +8,7 @@ import { LoginFormComponent } from '../Components/LoginFormComponent';
 import { FriendsComponent } from '../Components/FriendsComponent';
 import { PostComponent } from '../Components/PostComponent';
 import { NotLoggedNavbarComponent } from '../Components/NotLoggedNavbarComponent';
+import { FriendsAddedComponent } from '../Components/FriendsAddedComponent';
 
 export const RouterPrincipal = () => {
   const [loggedIn, setLoggedIn] = useState(!!localStorage.getItem('token'));
@@ -34,6 +35,7 @@ export const RouterPrincipal = () => {
           <Route path="/registro" element={<RegisterFormComponent />} />
           <Route path="/perfil" element={<ProfileComponent loggedIn={loggedIn} />} />
           <Route path="/amigos" element={<FriendsComponent />} />
+          <Route path="/amigosagregados" element={<FriendsAddedComponent />} />
           <Route path="/posts" element={<PostComponent />} />
         </Routes>
         <FooterComponent />

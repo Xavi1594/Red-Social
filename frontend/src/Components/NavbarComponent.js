@@ -57,7 +57,12 @@ export const NavbarComponent = ({ onLogout }) => {
               </li>
               <li className="nav-item">
                 <NavLink to="/amigos" className="nav-link ">
-                  Amigos
+                  Amplía tu red
+                </NavLink>
+              </li>
+              <li className="nav-item">
+                <NavLink to={"/amigosagregados"} className="nav-link">
+                  Mis amigos
                 </NavLink>
               </li>
               <li className="nav-item">
