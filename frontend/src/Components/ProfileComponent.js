@@ -17,6 +17,8 @@ export const ProfileComponent = ({ loggedIn }) => {
     hobbies: '',
     extraknowledge: '',
   });
+  const [originalProfileData, setOriginalProfileData] = useState({});
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     if (!loggedIn) {
@@ -33,6 +35,7 @@ export const ProfileComponent = ({ loggedIn }) => {
       })
       .then((data) => {
         setProfileData(data);
+        setOriginalProfileData(data);
       })
       .catch((error) => {
         console.error('Error al recuperar los datos del perfil:', error);
@@ -44,6 +47,11 @@ export const ProfileComponent = ({ loggedIn }) => {
   };
 
   const handleSave = () => {
+    // Validar los campos
+    if (!validateFields()) {
+      return;
+    }
+
     fetch('http://localhost:3000/perfil', {
       method: 'PUT',
       credentials: 'include',
@@ -68,7 +76,9 @@ export const ProfileComponent = ({ loggedIn }) => {
   };
 
   const handleCancel = () => {
+    setProfileData(originalProfileData);
     setIsEditMode(false);
+    setErrorMessage('');
   };
 
   const handleChange = (event) => {
@@ -77,6 +87,48 @@ export const ProfileComponent = ({ loggedIn }) => {
       ...prevData,
       [name]: value,
     }));
+  };
+
+  const validateFields = () => {
+    const regexEmail = /^\S+@\S+\.\S+$/;
+    const regexLinkedIn = /^(https?:\/\/)?([\w\d]+\.)?linkedin\.com\/.+$/;
+    const regexName = /^[a-zA-Z\u00f1\u00d1\u00e7\u00c7\s]+$/;
+
+    if (profileData.age && profileData.age < 16) {
+      setErrorMessage('Ingrese una edad válida');
+      return false;
+    }
+
+    if (profileData.email && !regexEmail.test(profileData.email)) {
+      setErrorMessage('Ingrese un correo electrónico válido');
+      return false;
+    }
+
+    if (
+      profileData.linkedin &&
+      !regexLinkedIn.test(profileData.linkedin)
+    ) {
+      setErrorMessage('Ingrese un perfil de LinkedIn válido');
+      return false;
+    }
+
+    if (!regexName.test(profileData.fullname)) {
+      setErrorMessage('Ingrese un nombre válido (solo letras)');
+      return false;
+    }
+
+    if (!regexName.test(profileData.city)) {
+      setErrorMessage('Ingrese una ciudad válida (solo letras)');
+      return false;
+    }
+
+    if (!regexName.test(profileData.country)) {
+      setErrorMessage('Ingrese un país válido (solo letras)');
+      return false;
+    }
+
+    setErrorMessage(''); // Limpiar mensaje de error si no hay errores
+    return true;
   };
 
   return (
@@ -97,15 +149,15 @@ export const ProfileComponent = ({ loggedIn }) => {
           <div className="row my-3">
             <div className="col-3 col-md-2 text-muted">Nombre de usuario:</div>
             <div className="col-9 col-md-10">
-              {isEditMode ? (
+              {!isEditMode ? (
+                <p>{profileData.username}</p>
+              ) : (
                 <input
                   type="text"
                   name="username"
                   value={profileData.username}
                   onChange={handleChange}
                 />
-              ) : (
-                <p>{profileData.username}</p>
               )}
             </div>
           </div>
@@ -113,19 +165,18 @@ export const ProfileComponent = ({ loggedIn }) => {
           <div className="row my-3">
             <div className="col-3 col-md-2 text-muted">E-Mail:</div>
             <div className="col-9 col-md-10">
-              {isEditMode ? (
+              {!isEditMode ? (
+                <p>{profileData.email}</p>
+              ) : (
                 <input
                   type="text"
                   name="email"
                   value={profileData.email}
                   onChange={handleChange}
                 />
-              ) : (
-                <p>{profileData.email}</p>
               )}
             </div>
           </div>
-
 
           <div className="row my-3">
             <div className="col-3 col-md-2 text-muted">Nombre completo:</div>
@@ -270,6 +321,8 @@ export const ProfileComponent = ({ loggedIn }) => {
               )}
             </div>
           </div>
+
+          {errorMessage && <p className="text-danger">{errorMessage}</p>}
 
           {isEditMode ? (
             <>

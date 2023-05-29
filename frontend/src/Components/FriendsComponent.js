@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 export const FriendsComponent = () => {
   const [usuariosRegistrados, setUsuariosRegistrados] = useState([]);
@@ -66,16 +67,18 @@ export const FriendsComponent = () => {
   return (
     <div>
       <div className="container mt-5">
-        <h3 >Usuarios Registrados</h3>
+        <h3>Usuarios Registrados</h3>
         <div className="registrados-section row">
           {usuariosRegistrados.map((usuario) => (
             <div
               key={usuario.id}
               className="usuario-card col-sm-6 col-md-4 col-lg-3 mx-auto"
             >
-              <h2 className="nombre-usuario">
-                <strong>{usuario.username}</strong>
-              </h2>
+              <Link to={`/amigos/${usuario.id}`}>
+                <h2 className="nombre-usuario">
+                  <strong>{usuario.username}</strong>
+                </h2>
+              </Link>
               <div className="detalles">
                 <p className="nombre-completo">{usuario.fullname}</p>
                 <p className="edad">{usuario.age} años</p>

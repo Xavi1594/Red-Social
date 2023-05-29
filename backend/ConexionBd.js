@@ -321,7 +321,7 @@ app.get('/perfil', function (req, res) {
 
   if (loggedIn && username) {
     db.query(
-      'SELECT fullname, city, country, age, university, languages, hobbies, linkedin, extraknowledge FROM usuarios WHERE username = ?',
+      'SELECT username, email, fullname, city, country, age, university, languages, hobbies, linkedin, extraknowledge FROM usuarios WHERE username = ?',
       [username],
       function (error, results, fields) {
         if (error) {
@@ -429,8 +429,34 @@ app.put('/perfil', function (req, res) {
   }
 });
 
+// Ruta para obtener los usuarios registrados
+app.get('/amigos/registrados', (req, res) => {
+  const query = 'SELECT * FROM usuarios';
+  db.query(query, (error, results) => {
+    if (error) {
+      console.error('Error al obtener los usuarios registrados:', error);
+      res.status(500).json({ message: 'Error al obtener los usuarios registrados' });
+    } else {
+      res.json(results);
+    }
+  });
+});
 
-
+// Ruta para obtener el perfil de un usuario específico
+app.get('/amigos/:userId', (req, res) => {
+  const userId = req.params.userId;
+  const query = 'SELECT * FROM usuarios WHERE id = ?';
+  db.query(query, [userId], (error, results) => {
+    if (error) {
+      console.error('Error al obtener el perfil del usuario:', error);
+      res.status(500).json({ message: 'Error al obtener el perfil del usuario' });
+    } else if (results.length === 0) {
+      res.status(404).json({ message: 'Usuario no encontrado' });
+    } else {
+      res.json(results[0]);
+    }
+  });
+});
 
 app.listen(port, () => {
   console.log(`Servidor iniciado en el puerto ${port}`);
