@@ -306,7 +306,7 @@ export const ProfileComponent = ({ loggedIn }) => {
                   </button>
                 </>
               ) : (
-                <button className="btn btn-primary" onClick={handleEdit}>
+                <button className="btn btn-primary w-25" onClick={handleEdit}>
                   Editar
                 </button>
               )}

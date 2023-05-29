@@ -76,55 +76,57 @@ export const FriendsComponent = () => {
   };
 
   return (
-    <div>
-      <div className="container mt-5">
-        <h3 className="mt-5 text-center">Añade amigos</h3>
-        <div className="registrados-section row">
-          {currentItems.map((usuario) => (
-            <div
-              key={usuario.id}
-              className="usuario-card col-sm-6 col-md-4 col-lg-3 mx-auto"
-            >
-              <h2 className="nombre-usuario">
-                <strong>{usuario.username}</strong>
-              </h2>
-              <img
-                src={usuario.user_img}
-                className="img-fluid rounded mt-3"
-                style={{ width: '100px', height: '100px' }}
-                alt="Foto de perfil"
-              />
-              <div className="detalles">
-                <p className="card-title">{usuario.fullname}</p>
-                {!usuario.amigo ? (
-                  <button
-                    className="btn btn-success"
-                    onClick={() => {
-                      agregarAmigo(usuario.id, usuario.username);
-                    }}
-                  >
-                    Agregar amigo
-                  </button>
-                ) : (
-                  <button
-                    className="btn btn-danger"
-                    onClick={() => {
-                      eliminarAmigo(usuario.id, usuario.username);
-                    }}
-                  >
-                    Eliminar amigo
-                  </button>
-                )}
+    <div className="container mt-5 amigosContainer">
+      <div className="row mt-5">
+        <div className="col-lg-12">
+          <div className="registrados-section row">
+            {currentItems.map((usuario) => (
+              <div
+                key={usuario.id}
+                className="usuario-card amigo-card col-sm-6 col-md-4 col-lg-3 mx-auto"
+              >
+                <h2 className="nombre-usuario">
+                  <strong>{usuario.username}</strong>
+                </h2>
+                <img
+                  src={usuario.user_img}
+                  className="img-fluid rounded mt-3"
+                  style={{ width: '100px', height: '100px' }}
+                  alt="Foto de perfil"
+                />
+                <div className="detalles">
+                  <p className="card-title">{usuario.fullname}</p>
+                  {!usuario.amigo ? (
+                    <button
+                      className="btn btn-success"
+                      onClick={() => {
+                        agregarAmigo(usuario.id, usuario.username);
+                      }}
+                    >
+                      Agregar amigo
+                    </button>
+                  ) : (
+                    <button
+                      className="btn btn-danger"
+                      onClick={() => {
+                        eliminarAmigo(usuario.id, usuario.username);
+                      }}
+                    >
+                      Eliminar amigo
+                    </button>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={paginate}
-        />
       </div>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={paginate}
+        className="d-flex justify-content-center mt-5"
+      />
     </div>
   );
 };

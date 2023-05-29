@@ -131,39 +131,47 @@ body {
   font-weight:bold;
 }
 
-
 .amigosContainer {
-  margin-top: 80px; /* ajusta la cantidad de margen que deseas agregar */
+  margin-top: 180px; /* ajusta la cantidad de margen que deseas agregar */
 }
 
 .amigo-card {
-  margin-top: 50px;
-  display: inline-block;
+  display: flex;
   flex-direction: column;
-  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  width: 200px;
-  height: 300px;
+  width: 100%;
+  height: 100%;
   margin: 20px;
   padding: 20px;
   background-color: #fff;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
+  text-align: center;
 }
 
-.amigo-card:hover {
-  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+.amigo-card img {
+  width: 100%;
+  height: 200px; /* ajusta la altura de la imagen */
+  object-fit: cover;
 }
 
-
-.card:hover {
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-  cursor: pointer;
+.detalles {
+  margin-top: 1em;
 }
+
+@media (max-width: 576px) {
+  .amigo-card {
+    width: 100%;
+  }
+}
+
 
 .btn:hover {
   transform: scale(1.1);
+}
+#register-form{
+  background-image: linear-gradient(to bottom, #e6eff7, #bbcfe2);
 }
 
 @media (min-width: 768px) and (max-width: 1200px) {
