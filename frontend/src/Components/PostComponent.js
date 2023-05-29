@@ -1,23 +1,48 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-export const PostComponent = () => {
+export const PostComponent = ({ loggedIn }) => {
+  const navigate = useNavigate();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [posts, setPosts] = useState([]);
- const[usuarioId, setUsuarioId]= useState(''); 
+  const [userFullname, setUserFullname] = useState('');
+  const [user_Img, setUser_Img] = useState('');
+  const [usuarioId, setUsuarioId] = useState('');
   const [editedPost, setEditedPost] = useState({ id: null, title: '', content: '' });
 
   useEffect(() => {
-    fetchPosts();
-  }, []);
+    if (!loggedIn) {
+      navigate('/'); // Redirige a la página de inicio si no se ha iniciado sesión
+    } else {
+      fetchUser();
+      fetchPosts();
+    }
+  }, [loggedIn, navigate]);
 
+  const fetchUser = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/usuario', { credentials: 'include' });
+      console.log(response);
+      if (!response.ok) {
+        throw new Error('Error de red al intentar obtener el usuario');
+      }
+      const user = await response.json();
+      console.log(user);
+      setUserFullname(user.fullname);
+      setUser_Img(user.user_img);
+    } catch (error) {
+      console.error('Error al obtener el usuario:', error);
+    }
+  };
+  
   const createPost = async (e) => {
     e.preventDefault();
 
     const post = {
       title: title,
       content: content,
-      usuarioId: usuarioId
+      usuarioId: usuarioId,
     };
 
     try {
@@ -31,7 +56,6 @@ export const PostComponent = () => {
       });
 
       if (response.ok) {
-        const newPost = await response.json();
         setTitle('');
         setContent('');
         await fetchPosts();
@@ -106,14 +130,15 @@ export const PostComponent = () => {
   };
 
   return (
-    <main className="container ">
+    <main className="container">
       <div className="row">
-        <div className="col-12 col-lg-3 mt-5">
-          <div className="accordion mt-5" id="accordionExample">
-     <h3>hola</h3>
+        <div className="col-lg-3 mt-5">
+          <div className="mt-5 usuario-loged">
+            <img src={user_Img} alt="Foto de perfil" />
+            <p>{userFullname}</p>
           </div>
         </div>
-        <div className="col-12 col-lg-6 mt-5">
+        <div className="col-lg-6 mt-5">
           <div className="card mt-5 py-2">
             <form id="new-post-form" onSubmit={createPost}>
               <div className="form-group">
@@ -140,7 +165,6 @@ export const PostComponent = () => {
                 Publicar
               </button>
             </form>
-
             <div className="bg-light p-2 rounded-3 border border-2 mb-4" id="posts-container">
               {posts.map((post) => (
                 <div key={post.id} className="post card mb-3">
@@ -161,7 +185,20 @@ export const PostComponent = () => {
                     </>
                   ) : (
                     <>
-                      <h2 className="card-header">{post.title}</h2>
+                      <div className="card-body d-flex align-items-center">
+                        <img
+                          src={post.user_img}
+                          className="img-fluid rounded-circle me-3"
+                          style={{ width: '50px', height: '50px' }}
+                          alt="Foto de perfil"
+                        />
+                        <div>
+                          <h5 className="card-title mb-0">{post.fullname}</h5>
+                          <p className="card-text">
+                            <strong>{post.title}</strong>
+                          </p>
+                        </div>
+                      </div>
                       <p className="card-body">{post.content}</p>
                     </>
                   )}
@@ -199,7 +236,7 @@ export const PostComponent = () => {
             </div>
           </div>
         </div>
-        <div className="col-12 col-lg-3 mt-5"></div>
+        <div className="col-lg-3 mt-5"></div>
       </div>
     </main>
   );
