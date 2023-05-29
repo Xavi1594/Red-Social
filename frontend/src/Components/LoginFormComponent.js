@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-
-
-
 export const LoginFormComponent = ({ onLogin }) => { // Asegúrate de pasar onLogin como prop
   const [usernameOrEmail, setUsernameOrEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -28,10 +25,10 @@ export const LoginFormComponent = ({ onLogin }) => { // Asegúrate de pasar onLo
         return;
       }
 
-      // Guardar el token en el almacenamiento local
+     
       localStorage.setItem('token', data.token);
 
-      // Llama a la función pasada a través de las props para establecer que el usuario ha iniciado sesión
+    
       onLogin(); 
 
       navigate('/perfil');
@@ -43,7 +40,7 @@ export const LoginFormComponent = ({ onLogin }) => { // Asegúrate de pasar onLo
   
   return (
     <div className="container-fluid d-flex justify-content-center align-items-center vh-100">
-     <div className="card col-md-4 col-lg-6 col-10 p-0 d-flex flex-column justify-content-center align-items-center mx-auto">
+     <div className="card col-md-4 col-lg-6 col-10 p-0 d-flex flex-column justify-content-center align-items-center mx-auto" id='container-inputs'>
         <div className="text-center mt-5">
           <h2 className="card-header text-center h2-animation">Inicia sesión en Socialy</h2>
           <img src="socialy.jpg" className="img-thumbnail mt-5" width="200" alt="..." />
