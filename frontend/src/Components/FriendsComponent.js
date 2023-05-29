@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import Pagination from './Pagination';
 
 export const FriendsComponent = () => {
   const [usuariosRegistrados, setUsuariosRegistrados] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(12);
 
   useEffect(() => {
     cargarUsuariosRegistrados();
@@ -63,26 +66,39 @@ export const FriendsComponent = () => {
       });
   };
 
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = usuariosRegistrados.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(usuariosRegistrados.length / itemsPerPage);
+
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
   return (
     <div>
       <div className="container mt-5">
-        <h3 >Usuarios Registrados</h3>
+        <h3 className="mt-5 text-center">Añade amigos</h3>
         <div className="registrados-section row">
-          {usuariosRegistrados.map((usuario) => (
+          {currentItems.map((usuario) => (
             <div
               key={usuario.id}
               className="usuario-card col-sm-6 col-md-4 col-lg-3 mx-auto"
             >
-              <h2 className="nombre-usuario ">
+              <h2 className="nombre-usuario">
                 <strong>{usuario.username}</strong>
               </h2>
+              <img
+                src={usuario.user_img}
+                className="img-fluid rounded mt-3"
+                style={{ width: '100px', height: '100px' }}
+                alt="Foto de perfil"
+              />
               <div className="detalles">
-                <p className="nombre-completo">{usuario.fullname}</p>
-                <p className="edad">{usuario.age} años</p>
-                <p className="pais">{usuario.country}</p>
+                <p className="card-title">{usuario.fullname}</p>
                 {!usuario.amigo ? (
                   <button
-                    className="btn"
+                    className="btn btn-success"
                     onClick={() => {
                       agregarAmigo(usuario.id, usuario.username);
                     }}
@@ -91,7 +107,7 @@ export const FriendsComponent = () => {
                   </button>
                 ) : (
                   <button
-                    className="btn"
+                    className="btn btn-danger"
                     onClick={() => {
                       eliminarAmigo(usuario.id, usuario.username);
                     }}
@@ -103,6 +119,11 @@ export const FriendsComponent = () => {
             </div>
           ))}
         </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={paginate}
+        />
       </div>
     </div>
   );

@@ -199,16 +199,17 @@ app.delete('/amigos/eliminar/:idAmigo', function (req, res) {
   db.query('DELETE FROM amigos WHERE idAmigo = ? AND iduser = ?', [idAmigo, userId], function (error, results, fields) {
     if (error) {
       console.error(error);
-      return res.status(500).send('Ha ocurrido un error al eliminar al amigo');
+      return res.status(500).send({ message: 'Ha ocurrido un error al eliminar al amigo' });
     }
 
     if (results.affectedRows === 0) {
-      return res.status(404).send('No se encontró al amigo con el id especificado');
+      return res.status(404).send({ message: 'No se encontró al amigo con el id especificado' });
     }
 
-    res.send('Amigo eliminado correctamente');
+    res.send({ message: 'Amigo eliminado correctamente' });
   });
 });
+
 
 // Cargar amigos ya agregados
 app.get('/amigos/agregados', function (req, res) {
