@@ -343,7 +343,7 @@ app.get('/perfil', function (req, res) {
 
   if (loggedIn && username) {
     db.query(
-      'SELECT username, email, fullname, city, country, age, university, languages, hobbies, linkedin, extraknowledge, user_img FROM usuarios WHERE username = ?',
+      'SELECT username, email, fullname, city, country, age, university, languages, hobbies, linkedin, extraknowledge FROM usuarios WHERE username = ?',
       [username],
       function (error, results, fields) {
         if (error) {
@@ -452,8 +452,63 @@ app.put('/perfil', function (req, res) {
   }
 });
 
+// Ruta para obtener los usuarios registrados
+app.get('/amigos/registrados', (req, res) => {
+  const query = 'SELECT * FROM usuarios';
+  db.query(query, (error, results) => {
+    if (error) {
+      console.error('Error al obtener los usuarios registrados:', error);
+      res.status(500).json({ message: 'Error al obtener los usuarios registrados' });
+    } else {
+      res.json(results);
+    }
+  });
+});
 
+// Ruta para obtener el perfil de un usuario específico
+app.get('/amigos/:userId', (req, res) => {
+  const userId = req.params.userId;
+  const query = 'SELECT * FROM usuarios WHERE id = ?';
+  db.query(query, [userId], (error, results) => {
+    if (error) {
+      console.error('Error al obtener el perfil del usuario:', error);
+      res.status(500).json({ message: 'Error al obtener el perfil del usuario' });
+    } else if (results.length === 0) {
+      res.status(404).json({ message: 'Usuario no encontrado' });
+    } else {
+      res.json(results[0]);
+    }
+  });
+});
 
+// Ruta para enviar el feedback
+app.post('/feedback', (req, res) => {
+  const { idReceiver, feedback } = req.body;
+  const idUser = req.session.usuarioId;
+  const query = 'INSERT INTO feedback (iduser, idreceiver, feedback) VALUES (?, ?, ?)';
+  db.query(query, [idUser, idReceiver, feedback], (error) => {
+    if (error) {
+      console.error('Error al guardar el feedback:', error);
+      res.status(500).json({ message: 'Error al guardar el feedback' });
+    } else {
+      res.json({ message: 'Feedback guardado correctamente' });
+    }
+  });
+});
+
+// Ruta para obtener el feedback de un usuario específico
+app.get('/feedback/:userId', (req, res) => {
+  const userId = req.params.userId;
+  const query = 'SELECT feedback, username FROM feedback INNER JOIN usuarios ON feedback.iduser = usuarios.id WHERE feedback.idreceiver = ?';
+  db.query(query, [userId], (error, results) => {
+    if (error) {
+      console.error('Error al obtener el feedback del usuario:', error);
+      res.status(500).json({ message: 'Error al obtener el feedback del usuario' });
+    } else {
+      res.json(results);
+    }
+  });
+});
 
 app.listen(port, () => {
   console.log(`Servidor iniciado en el puerto ${port}`);

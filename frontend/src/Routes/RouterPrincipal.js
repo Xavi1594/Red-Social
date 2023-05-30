@@ -9,6 +9,7 @@ import { FriendsComponent } from '../Components/FriendsComponent';
 import { PostComponent } from '../Components/PostComponent';
 import { NotLoggedNavbarComponent } from '../Components/NotLoggedNavbarComponent';
 import { FriendsAddedComponent } from '../Components/FriendsAddedComponent';
+import { OtherProfilesComponent } from '../Components/OtherProfilesComponent';
 
 export const RouterPrincipal = () => {
   const [loggedIn, setLoggedIn] = useState(!!localStorage.getItem('token'));
@@ -37,6 +38,10 @@ export const RouterPrincipal = () => {
           <Route path="/amigos" element={<FriendsComponent />} />
           <Route path="/amigosagregados" element={<FriendsAddedComponent />} />
           <Route path="/posts" element={<PostComponent />} />
+          <Route
+            path="/amigos/:userId"
+            element={<OtherProfilesComponent />}
+          />
         </Routes>
         <FooterComponent />
       </BrowserRouter>

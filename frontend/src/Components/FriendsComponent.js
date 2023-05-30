@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import Pagination from './Pagination';
+import React, { useEffect, useState } from "react";
+import Pagination from "./Pagination";
+import { Link } from "react-router-dom";
 
 export const FriendsComponent = () => {
   const [usuariosRegistrados, setUsuariosRegistrados] = useState([]);
@@ -11,58 +12,60 @@ export const FriendsComponent = () => {
   }, []);
 
   const cargarUsuariosRegistrados = () => {
-    fetch('http://localhost:3000/usuarios/registrados', { credentials: 'include' })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw new Error('No se pudo obtener la lista de usuarios registrados');
-      })
-      .then((usuariosRegistrados) => {
-        setUsuariosRegistrados(usuariosRegistrados);
-      })
-      .catch((error) => {
-        console.error('Ha ocurrido un error:', error.message);
-      });
-  };
-
-  const agregarAmigo = (idAmigo, nombreAmigo) => {
-    fetch(`http://localhost:3000/amigos/agregar/${idAmigo}`, {
-      method: 'POST',
-      credentials: 'include'
+    fetch("http://localhost:3000/usuarios/registrados", {
+      credentials: "include",
     })
       .then((response) => {
         if (response.ok) {
           return response.json();
         }
-        throw new Error('No se pudo agregar al amigo');
+        throw new Error("No se pudo obtener la lista de usuarios registrados");
+      })
+      .then((usuariosRegistrados) => {
+        setUsuariosRegistrados(usuariosRegistrados);
+      })
+      .catch((error) => {
+        console.error("Ha ocurrido un error:", error.message);
+      });
+  };
+
+  const agregarAmigo = (idAmigo, nombreAmigo) => {
+    fetch(`http://localhost:3000/amigos/agregar/${idAmigo}`, {
+      method: "POST",
+      credentials: "include",
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+        throw new Error("No se pudo agregar al amigo");
       })
       .then((amigo) => {
         cargarUsuariosRegistrados();
         alert(`Amigo ${nombreAmigo} agregado con éxito`);
       })
       .catch((error) => {
-        console.error('Ha ocurrido un error:', error.message);
+        console.error("Ha ocurrido un error:", error.message);
       });
   };
 
   const eliminarAmigo = (idAmigo, nombreAmigo) => {
     fetch(`http://localhost:3000/amigos/eliminar/${idAmigo}`, {
-      method: 'DELETE',
-      credentials: 'include'
+      method: "DELETE",
+      credentials: "include",
     })
       .then((response) => {
         if (response.ok) {
           return response.json();
         }
-        throw new Error('No se pudo eliminar al amigo');
+        throw new Error("No se pudo eliminar al amigo");
       })
       .then((amigo) => {
         cargarUsuariosRegistrados();
         alert(`Amigo ${nombreAmigo} eliminado con éxito`);
       })
       .catch((error) => {
-        console.error('Ha ocurrido un error:', error.message);
+        console.error("Ha ocurrido un error:", error.message);
       });
   };
 
@@ -72,7 +75,10 @@ export const FriendsComponent = () => {
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = usuariosRegistrados.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = usuariosRegistrados.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
   const totalPages = Math.ceil(usuariosRegistrados.length / itemsPerPage);
 
   return (
@@ -86,13 +92,17 @@ export const FriendsComponent = () => {
                   key={usuario.id}
                   className="usuario-card amigo-card col-sm-6 col-md-4 col-lg-3 mx-auto"
                 >
+                  <Link to={`/amigos/${usuario.id}`}>
                   <h2 className="nombre-usuario">
                     <strong>{usuario.fullname}</strong>
                   </h2>
+                  </Link>
+
+               
                   <img
                     src={usuario.user_img}
                     className="img-fluid rounded mt-3"
-                    style={{ width: '100px', height: '100px' }}
+                    style={{ width: "100px", height: "100px" }}
                     alt="Foto de perfil"
                   />
                   <div className="detalles">
@@ -126,7 +136,11 @@ export const FriendsComponent = () => {
         </div>
       </div>
       <div className="row justify-content-center mb-5 py-5">
-        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} />
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={onPageChange}
+        />
       </div>
     </div>
   );

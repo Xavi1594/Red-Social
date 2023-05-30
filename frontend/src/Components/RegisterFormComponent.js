@@ -30,7 +30,7 @@ export const RegisterFormComponent = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         const {
             username,
             password,
@@ -48,8 +48,8 @@ export const RegisterFormComponent = () => {
             user_img
         } = formData;
 
-        const regexEmail = /^\S+@\S+\.\S+$/; 
-        const regexLinkedIn = /^(https?:\/\/)?([\w\d]+\.)?linkedin\.com\/.+$/; 
+        const regexEmail = /^\S+@\S+\.\S+$/;
+        const regexLinkedIn = /^(https?:\/\/)?([\w\d]+\.)?linkedin\.com\/.+$/;
         const regexname = /^[a-zA-Z\u00f1\u00d1\u00e7\u00c7\s]+$/;
 
         if (password !== confirmPassword) {
@@ -62,6 +62,18 @@ export const RegisterFormComponent = () => {
             setMessage('La contraseña debe tener entre 6 y 16 caracteres');
             setError(true);
             return;
+        }
+
+        if (hobbies.length > 300) {
+            setMessage('El campo Hobbies no puede superar los 300 caracteres');
+            setError(true);
+            return
+        }
+
+        if (extraknowledge.length > 300) {
+            setMessage('El campo Conocimientos extra no puede superar los 300 caracteres');
+            setError(true);
+            return
         }
 
         if (age < 16) {
@@ -126,7 +138,6 @@ export const RegisterFormComponent = () => {
             });
 
             const responseData = await response.json();
-
             if (response.ok) {
                 setMessage(responseData.message);
                 setError(false);
@@ -143,9 +154,9 @@ export const RegisterFormComponent = () => {
             setMessage('Ha ocurrido un error en el servidor. Por favor, intenta más tarde.');
             setError(true);
         }
-     };
-  
-   
+    };
+
+
     return (
       <div className="container formulario  mb-2 mt-5">
           <div className="row">
@@ -211,10 +222,9 @@ export const RegisterFormComponent = () => {
                 </form>
             </div>
         </div>
-    </div>
-);
-};
+    );
+</div>
+)};
+
 
 export default RegisterFormComponent;
-
-
