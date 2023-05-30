@@ -11,18 +11,19 @@ export const NavbarComponent = ({ onLogout }) => {
   };
 
   const handleLogout = () => {
-    onLogout(); // Llama a la función onLogout pasada a través de las props para indicar que el usuario ha cerrado sesión
-    navigate('/'); // Redirecciona a la página de inicio u otra página deseada después de cerrar sesión
+    onLogout(); 
+    navigate('/'); 
   };
 
   return (
     <div>
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div className="container">
-          <NavLink to="/" className="navbar-brand">
+        <NavLink to="/posts" className="navbar-brand">
+            <img src="socialy.jpg" alt="Logo" style={{ width: '30px', marginRight: '5px' }} />
             Socialy
-          </NavLink>
-          <i className="bi bi-wechat"></i>
+            </NavLink>
+       
           <button
             className="navbar-toggler"
             type="button"

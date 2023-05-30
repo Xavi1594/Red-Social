@@ -10,18 +10,16 @@ export const PostComponent = ({ loggedIn }) => {
   const [userFullname, setUserFullname] = useState("");
   const [user_Img, setUser_Img] = useState("");
   const [usuarioId, setUsuarioId] = useState("");
-  const [createdAt, setCreatedAt] = useState("");
   const [editedPost, setEditedPost] = useState({
     id: null,
     title: "",
     content: "",
   });
+
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    const day = date.getDate();
-    const month = date.toLocaleString("default", { month: "long" });
-    const year = date.getFullYear();
-    return `${day} ${month} ${year}`;
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return date.toLocaleDateString(undefined, options);
   };
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -230,7 +228,7 @@ export const PostComponent = ({ loggedIn }) => {
                         <div>
                           <h5 className="card-title mb-0">
                             <strong>{post.fullname}</strong>
-                            <h6 className="post-date ">
+                            <h6 className="post-date">
                               {formatDate(post.createdAt)}
                             </h6>
                           </h5>
