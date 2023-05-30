@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Pagination from './Pagination';
+import Pagination from "./Pagination";
 
 export const PostComponent = ({ loggedIn }) => {
   const navigate = useNavigate();
@@ -10,11 +10,20 @@ export const PostComponent = ({ loggedIn }) => {
   const [userFullname, setUserFullname] = useState("");
   const [user_Img, setUser_Img] = useState("");
   const [usuarioId, setUsuarioId] = useState("");
+  const [createdAt, setCreatedAt] = useState("");
   const [editedPost, setEditedPost] = useState({
     id: null,
     title: "",
     content: "",
   });
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = date.getDate();
+    const month = date.toLocaleString("default", { month: "long" });
+    const year = date.getFullYear();
+    return `${day} ${month} ${year}`;
+  };
+
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5; // Número de elementos por página
 
@@ -152,10 +161,15 @@ export const PostComponent = ({ loggedIn }) => {
       <div className="row">
         <div className="col-lg-3 col-md-6 mt-5">
           <div className="mt-5 usuario-loged border text-center text-lg-center text-md-center">
-            <img src={user_Img} alt="Foto de perfil" className="img-fluid py-2 rounded" />
+            <img
+              src={user_Img}
+              alt="Foto de perfil"
+              className="img-fluid py-2 rounded"
+            />
             <h3>{userFullname}</h3>
           </div>
         </div>
+
         <div className="col-lg-6 mt-5">
           <div className="card mt-5 py-2">
             <form id="new-post-form" onSubmit={createPost}>
@@ -214,12 +228,18 @@ export const PostComponent = ({ loggedIn }) => {
                           alt="Foto de perfil"
                         />
                         <div>
-                          <h5 className="card-title mb-0">{post.fullname}</h5>
+                          <h5 className="card-title mb-0">
+                            <strong>{post.fullname}</strong>
+                            <h6 className="post-date ">
+                              {formatDate(post.createdAt)}
+                            </h6>
+                          </h5>
                           <p className="card-text">
                             <strong>{post.title}</strong>
                           </p>
                         </div>
                       </div>
+
                       <p className="card-body">{post.content}</p>
                     </>
                   )}
@@ -260,7 +280,11 @@ export const PostComponent = ({ loggedIn }) => {
         <div className="col-lg-3 mt-5"></div>
       </div>
       <div className="row justify-content-center mb-5 py-5">
-        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} />
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={onPageChange}
+        />
       </div>
     </main>
   );

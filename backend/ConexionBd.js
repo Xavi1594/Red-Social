@@ -144,7 +144,7 @@ app.get('/usuarios/registrados', function (req, res) {
         console.error('Ha ocurrido un error:', error.message);
         return res.status(500).json({ message: 'Ha ocurrido un error al obtener la lista de usuarios registrados' });
       }
-      console.log(results);
+      
       res.status(200).json(results);
     }
   );
@@ -198,7 +198,7 @@ app.post('/amigos/agregar/:idAmigo', function (req, res) {
 app.delete('/amigos/eliminar/:idAmigo', function (req, res) {
   const idAmigo = req.params.idAmigo;
   const userId = req.session.usuarioId;
-  console.log(idAmigo)
+  
   db.query('DELETE FROM amigos WHERE idAmigo = ? AND iduser = ?', [idAmigo, userId], function (error, results, fields) {
     if (error) {
       console.error(error);
@@ -268,7 +268,7 @@ app.post('/posts', (req, res) => {
     updatedAt: new Date(),
   };
 
-  console.log('Nuevo post:', newPost);
+ 
   if (newPost.title && newPost.content) {
     db.query(
       'INSERT INTO post (title, content, usuarioId, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?)',
