@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 export const OtherProfilesComponent = () => {
-  const [perfilUsuario, setPerfilUsuario] = useState(null);
+  const [profile, setProfile] = useState(null);
   const { userId } = useParams();
   const [feedback, setFeedback] = useState('');
   const [feedbackList, setFeedbackList] = useState([]);
@@ -16,12 +16,13 @@ export const OtherProfilesComponent = () => {
     fetch(`http://localhost:3000/amigos/${userId}`, { credentials: 'include' })
       .then((response) => {
         if (response.ok) {
+          console.log(response);
           return response.json();
         }
         throw new Error('No se pudo obtener el perfil del usuario');
       })
-      .then((perfilUsuario) => {
-        setPerfilUsuario(perfilUsuario);
+      .then((profile) => {
+        setProfile(profile);
       })
       .catch((error) => {
         console.error('Ha ocurrido un error:', error.message);
@@ -74,24 +75,57 @@ export const OtherProfilesComponent = () => {
     return idUsuarioLogeado;
   };
 
-  if (!perfilUsuario) {
+  if (!profile) {
     return <div>Cargando perfil del usuario...</div>;
   }
 
   return (
-    <div>
+    <div className="container mt-5">
+      <div className="col-6 col-md-4">
+              <img
+                src={profile.user_img}
+                className="img-fluid rounded mt-3"
+                style={{ width: '260px', height: '220px' }}
+               
+                alt="Foto de perfil"
+              />
+            </div>
       <h2>Perfil de Usuario</h2>
-      <p>Nombre de usuario: {perfilUsuario.username}</p>
-      <p>Email: {perfilUsuario.email}</p>
-      <p>Nombre completo: {perfilUsuario.fullname}</p>
-      <p>Ciudad: {perfilUsuario.city}</p>
-      <p>País: {perfilUsuario.country}</p>
-      <p>Edad: {perfilUsuario.age}</p>
-      <p>Universidad: {perfilUsuario.university}</p>
-      <p>Lenguajes: {perfilUsuario.languages}</p>
-      <p>LinkedIn: {perfilUsuario.linkedin}</p>
-      <p>Hobbies: {perfilUsuario.hobbies}</p>
-      <p>Conocimientos extra: {perfilUsuario.extraknowledge}</p>
+      <p>
+        <b>Nombre de usuario:</b> {profile.username}
+      </p>
+      <p>
+        <b>Email:</b> {profile.email}
+      </p>
+      <p>
+        <b>Nombre completo:</b> {profile.fullname}
+      </p>
+      <p>
+        <b>Ciudad:</b> {profile.city}
+      </p>
+      <p>
+        <b>País:</b> {profile.country}
+      </p>
+      <p>
+        <b>Edad:</b> {profile.age}
+      </p>
+      <p>
+        <b>Universidad:</b> {profile.university}
+      </p>
+      <p>
+        <b>
+          <span className="font-weight-bold">Lenguajes:</span> {profile.languages}
+        </b>
+      </p>
+      <p>
+        <b>LinkedIn:</b> {profile.linkedin}
+      </p>
+      <p>
+        <b>Hobbies:</b> {profile.hobbies}
+      </p>
+      <p>
+        <b>Conocimientos extra:</b> {profile.extraknowledge}
+      </p>
 
       <div>
         <h3>Dejar Feedback y Recomendaciones</h3>
@@ -99,8 +133,11 @@ export const OtherProfilesComponent = () => {
           value={feedback}
           onChange={(e) => setFeedback(e.target.value)}
           placeholder="Escribe tu feedback y recomendaciones..."
+          className="form-control"
         ></textarea>
-        <button onClick={enviarFeedback}>Enviar Feedback</button>
+        <button onClick={enviarFeedback} className="btn btn-primary mt-2">
+          Enviar Feedback
+        </button>
       </div>
 
       <div>

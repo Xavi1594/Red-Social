@@ -344,7 +344,7 @@ app.get('/perfil', function (req, res) {
 
   if (loggedIn && username) {
     db.query(
-      'SELECT username, email, fullname, city, country, age, university, languages, hobbies, linkedin, extraknowledge FROM usuarios WHERE username = ?',
+      'SELECT username, email, fullname, city, country, age, university, languages, hobbies, linkedin, extraknowledge,user_img FROM usuarios WHERE username = ?',
       [username],
       function (error, results, fields) {
         if (error) {
@@ -397,6 +397,7 @@ app.get('/perfil', function (req, res) {
     db.query(
       'SELECT * FROM usuarios WHERE username = ?',
       [username],
+      
       function (error, results, fields) {
         if (error) {
           console.log(error);
@@ -415,11 +416,14 @@ app.get('/perfil', function (req, res) {
               languages: profile.languages,
               linkedin: profile.linkedin,
               hobbies: profile.hobbies,
-              extraknowledge: profile.extraknowledge
+              extraknowledge: profile.extraknowledge,
+              user_img: profile.user_img
             });
           } else {
             res.status(404).send('Perfil no encontrado');
           }
+    console.log(results);
+
         }
       }
     );
