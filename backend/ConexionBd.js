@@ -144,7 +144,7 @@ app.get('/usuarios/registrados', function (req, res) {
         console.error('Ha ocurrido un error:', error.message);
         return res.status(500).json({ message: 'Ha ocurrido un error al obtener la lista de usuarios registrados' });
       }
-      console.log(results);
+      
       res.status(200).json(results);
     }
   );
@@ -198,7 +198,7 @@ app.post('/amigos/agregar/:idAmigo', function (req, res) {
 app.delete('/amigos/eliminar/:idAmigo', function (req, res) {
   const idAmigo = req.params.idAmigo;
   const userId = req.session.usuarioId;
-  console.log(idAmigo)
+  
   db.query('DELETE FROM amigos WHERE idAmigo = ? AND iduser = ?', [idAmigo, userId], function (error, results, fields) {
     if (error) {
       console.error(error);
@@ -246,7 +246,7 @@ app.post('/amigos/agregar/:idAmigo', function(req, res) {
 
 // Obtener la lista de posts
 app.get('/posts', (req, res) => {
-  db.query('SELECT id, title, content, usuarioId, createdAt, updatedAt FROM post', (err, results) => {
+  db.query('SELECT p.id, p.title, p.content, p.usuarioId, p.createdAt, p.updatedAt, u.fullname, u.user_img FROM post AS p JOIN usuarios AS u ON p.usuarioId = u.id', (err, results) => {
     if (err) {
       console.error('Error al obtener los posts:', err);
       res.status(500).json({ message: 'Ha ocurrido un error al obtener los posts. Por favor, intenta más tarde.' });
@@ -255,6 +255,7 @@ app.get('/posts', (req, res) => {
     res.json(results);
   });
 });
+
 
 // Crear un nuevo post
 app.post('/posts', (req, res) => {
@@ -267,7 +268,7 @@ app.post('/posts', (req, res) => {
     updatedAt: new Date(),
   };
 
-  console.log('Nuevo post:', newPost);
+ 
   if (newPost.title && newPost.content) {
     db.query(
       'INSERT INTO post (title, content, usuarioId, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?)',
@@ -480,6 +481,9 @@ app.get('/amigos/:userId', (req, res) => {
     }
   });
 });
+app.get('/usuario', function (req, res) {
+  const loggedIn = req.session.loggedin;
+  const userId = req.session.usuarioId;
 
 // Ruta para enviar el feedback
 app.post('/feedback', (req, res) => {
@@ -495,7 +499,26 @@ app.post('/feedback', (req, res) => {
     }
   });
 });
-
+  if (loggedIn && userId) {
+    db.query(
+      'SELECT fullname, user_img FROM usuarios WHERE id = ?',
+      [userId],
+      function (error, results) {
+        if (error) {
+          console.error('Error al buscar usuario:', error);
+          res.status(500).json('Error del servidor');
+        } else if (results.length > 0) {
+          const user = results[0];
+          res.json(user);
+        } else {
+          res.status(404).json('Usuario no encontrado');
+        }
+      }
+    );
+  } else {
+    res.status(401).json('No se ha iniciado sesión');
+  }
+});
 // Ruta para obtener el feedback de un usuario específico
 app.get('/feedback/:userId', (req, res) => {
   const userId = req.params.userId;
