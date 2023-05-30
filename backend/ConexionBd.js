@@ -478,11 +478,6 @@ app.get('/usuario', function (req, res) {
   }
 });
 
-
-
-
-
-
 app.listen(port, () => {
   console.log(`Servidor iniciado en el puerto ${port}`);
 });
