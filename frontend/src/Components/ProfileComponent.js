@@ -83,6 +83,32 @@ export const ProfileComponent = ({ loggedIn }) => {
     setErrorMessage('');
   };
 
+  const handleDeleteAccount = () => {
+    const confirmDelete = window.confirm(
+      '¿Estás seguro de que deseas borrar tu cuenta? Esta acción es permanente y no se puede revertir.'
+    );
+
+    if (confirmDelete) {
+      fetch('http://localhost:3000/eliminarcuenta', {
+        method: 'DELETE',
+        credentials: 'include',
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.text();
+        })
+        .then((text) => {
+          console.log(text);
+          navigate('/'); // Redirigir a la página de inicio después de eliminar la cuenta
+        })
+        .catch((error) => {
+          console.error('Error al eliminar la cuenta:', error);
+        });
+    }
+  };
+
   const handleChange = (event) => {
     const { name, value } = event.target;
     setProfileData((prevData) => ({
@@ -355,6 +381,9 @@ export const ProfileComponent = ({ loggedIn }) => {
                   </button>
                   <button className="btn btn-secondary" onClick={handleCancel}>
                     Cancelar
+                  </button>
+                  <button className="btn btn-danger ml-2" onClick={handleDeleteAccount}>
+                    Borrar cuenta
                   </button>
                 </>
               ) : (
