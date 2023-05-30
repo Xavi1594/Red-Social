@@ -97,8 +97,6 @@ export const FriendsComponent = () => {
                     <strong>{usuario.fullname}</strong>
                   </h2>
                   </Link>
-
-               
                   <img
                     src={usuario.user_img}
                     className="img-fluid rounded mt-3"

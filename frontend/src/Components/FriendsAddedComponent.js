@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from "react-router-dom";
 
 export const FriendsAddedComponent = () => {
   const [amigosAgregados, setAmigosAgregados] = useState([]);
@@ -54,9 +55,11 @@ export const FriendsAddedComponent = () => {
                   key={amigo.id}
                   className="usuario-card amigo-card col-sm-6 col-md-4 col-lg-3 mx-auto"
                 >
+                  <Link to={`/amigos/${amigo.id}`}>
                   <h2 className="nombre-usuario">
                     <strong>{amigo.fullname}</strong>
                   </h2>
+                  </Link>
                   <img
                     src={amigo.user_img}
                     className="img-fluid rounded mt-3"
