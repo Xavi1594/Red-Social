@@ -458,6 +458,35 @@ app.get('/amigos/:userId', (req, res) => {
   });
 });
 
+// Ruta para enviar el feedback
+app.post('/feedback', (req, res) => {
+  const { idReceiver, feedback } = req.body;
+  const idUser = req.session.usuarioId;
+  const query = 'INSERT INTO feedback (iduser, idreceiver, feedback) VALUES (?, ?, ?)';
+  db.query(query, [idUser, idReceiver, feedback], (error) => {
+    if (error) {
+      console.error('Error al guardar el feedback:', error);
+      res.status(500).json({ message: 'Error al guardar el feedback' });
+    } else {
+      res.json({ message: 'Feedback guardado correctamente' });
+    }
+  });
+});
+
+// Ruta para obtener el feedback de un usuario específico
+app.get('/feedback/:userId', (req, res) => {
+  const userId = req.params.userId;
+  const query = 'SELECT feedback, username FROM feedback INNER JOIN usuarios ON feedback.iduser = usuarios.id WHERE feedback.idreceiver = ?';
+  db.query(query, [userId], (error, results) => {
+    if (error) {
+      console.error('Error al obtener el feedback del usuario:', error);
+      res.status(500).json({ message: 'Error al obtener el feedback del usuario' });
+    } else {
+      res.json(results);
+    }
+  });
+});
+
 app.listen(port, () => {
   console.log(`Servidor iniciado en el puerto ${port}`);
 });
