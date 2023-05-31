@@ -1,29 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import { NavLink, useNavigate } from 'react-router-dom';
 
 export const NavbarComponent = ({ onLogout }) => {
   const [isNavbarOpen, setNavbarOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Realiza una solicitud al backend para verificar si el usuario es administrador
+    fetch('http://localhost:3000/usuarios/isadmin', { credentials: 'include' })
+      .then((response) => response.json())
+      .then((data) => setIsAdmin(data.isAdmin))
+      .catch((error) => console.error('Error al verificar si el usuario es administrador:', error));
+  }, []);
 
   const toggleNavbar = () => {
     setNavbarOpen(!isNavbarOpen);
   };
 
   const handleLogout = () => {
-    onLogout(); 
-    navigate('/'); 
+    onLogout();
+    navigate('/');
   };
 
   return (
     <div>
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div className="container">
-        <NavLink to="/posts" className="navbar-brand">
+          <NavLink to="/posts" className="navbar-brand">
             <img src="socialy.jpg" alt="Logo" style={{ width: '30px', marginRight: '5px' }} />
             Socialy
-            </NavLink>
-       
+          </NavLink>
+
           <button
             className="navbar-toggler"
             type="button"
@@ -62,10 +71,17 @@ export const NavbarComponent = ({ onLogout }) => {
                 </NavLink>
               </li>
               <li className="nav-item">
-                <NavLink to={"/amigosagregados"} className="nav-link">
+                <NavLink to="/amigosagregados" className="nav-link">
                   Mis amigos
                 </NavLink>
               </li>
+              {isAdmin && (
+                <li className="nav-item">
+                  <NavLink to="/usuarios" className="nav-link">
+                    Usuarios Registrados
+                  </NavLink>
+                </li>
+              )}
               <li className="nav-item">
                 <NavLink to="/registro" className="nav-link">
                   Registro

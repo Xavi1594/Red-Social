@@ -256,7 +256,6 @@ app.get('/posts', (req, res) => {
   });
 });
 
-
 // Crear un nuevo post
 app.post('/posts', (req, res) => {
   const newPost = {
@@ -268,7 +267,6 @@ app.post('/posts', (req, res) => {
     updatedAt: new Date(),
   };
 
- 
   if (newPost.title && newPost.content) {
     db.query(
       'INSERT INTO post (title, content, usuarioId, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?)',
@@ -385,9 +383,6 @@ app.delete('/eliminarcuenta', function (req, res) {
     res.status(401).send('No se ha iniciado sesión');
   }
 });
-
-
-
 
 // Endpoint para obtener el perfil del usuario
 app.get('/perfil', function (req, res) {
@@ -532,6 +527,60 @@ app.get('/feedback/:userId', (req, res) => {
     }
   });
 });
+
+
+
+
+// Ruta para verificar si el usuario es administrador
+app.get('/usuarios/isadmin', (req, res) => {
+  const userId = req.session.usuarioId;
+  db.query('SELECT privilegios FROM usuarios WHERE id = ?', [userId], (error, results) => {
+    if (error) {
+      console.error('Error al verificar si el usuario es administrador:', error);
+      res.status(500).json({ message: 'Error al verificar si el usuario es administrador' });
+    } else {
+      if (results.length > 0 && results[0].privilegios === 1) {
+        res.json({ isAdmin: true });
+      } else {
+        res.json({ isAdmin: false });
+      }
+    }
+  });
+});
+
+
+// Ruta para obtener la lista de usuarios registrados
+app.get('/usuarios/registrados', (req, res) => {
+  const userId = req.session.usuarioId;
+
+  // Primero, verifica si el usuario tiene privilegios de administrador
+  db.query('SELECT privilegios FROM usuarios WHERE id = ?', [userId], (error, results) => {
+    if (error) {
+      console.error('Error al verificar los privilegios del usuario:', error);
+      res.status(500).json({ message: 'Error al verificar los privilegios del usuario' });
+    } else {
+      if (results.length > 0 && results[0].privilegios === 1) {
+        // Si el usuario es un administrador, se permite el acceso a la lista de usuarios
+        db.query('SELECT id, username, password, email, fullname, city, country, age, university, languages, linkedin, hobbies, extraknowledge FROM usuarios', (error, results) => {
+          if (error) {
+            console.error('Error al obtener la lista de usuarios registrados:', error);
+            res.status(500).json({ message: 'Error al obtener la lista de usuarios registrados' });
+          } else {
+            res.json(results);
+          }
+        });
+      } else {
+        // Si el usuario no es un administrador, se devuelve un error de autorización
+        res.status(403).json({ message: 'Acceso denegado' });
+      }
+    }
+  });
+});
+
+
+
+
+
 
 app.listen(port, () => {
   console.log(`Servidor iniciado en el puerto ${port}`);
