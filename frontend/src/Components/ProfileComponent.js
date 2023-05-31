@@ -23,7 +23,7 @@ export const ProfileComponent = ({ loggedIn }) => {
 
   useEffect(() => {
     if (!loggedIn) {
-      navigate('/'); // Redirigir a la página de inicio si no se ha iniciado sesión
+      navigate('/'); 
       return;
     }
 

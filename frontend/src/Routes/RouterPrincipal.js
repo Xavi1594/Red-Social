@@ -40,7 +40,7 @@ export const RouterPrincipal = () => {
           <Route path="/posts" element={<PostComponent loggedIn={loggedIn} />} />
           <Route
             path="/amigos/:userId"
-            element={<OtherProfilesComponent />}
+            element={<OtherProfilesComponent loggedIn={loggedIn} />}
           />
         </Routes>
         <FooterComponent />

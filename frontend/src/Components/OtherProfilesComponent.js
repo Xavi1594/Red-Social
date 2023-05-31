@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 export const OtherProfilesComponent = () => {
-  const [profile, setProfile] = useState(null);
+  const [profile, setProfile] = useState("");
   const { userId } = useParams();
-  const [feedback, setFeedback] = useState('');
+  const [feedback, setFeedback] = useState("");
   const [feedbackList, setFeedbackList] = useState([]);
 
   useEffect(() => {
@@ -13,35 +13,39 @@ export const OtherProfilesComponent = () => {
   }, [userId]);
 
   const cargarPerfilUsuario = (userId) => {
-    fetch(`http://localhost:3000/amigos/${userId}`, { credentials: 'include' })
+    fetch(`http://localhost:3000/amigos/${userId}`, { credentials: "include" })
       .then((response) => {
         if (response.ok) {
           console.log(response);
           return response.json();
         }
-        throw new Error('No se pudo obtener el perfil del usuario');
+        throw new Error("No se pudo obtener el perfil del usuario");
       })
       .then((profile) => {
+        console.log(profile);
+        console.log(profile.user_img);
         setProfile(profile);
       })
       .catch((error) => {
-        console.error('Ha ocurrido un error:', error.message);
+        console.error("Ha ocurrido un error:", error.message);
       });
   };
 
   const cargarFeedbackList = (userId) => {
-    fetch(`http://localhost:3000/feedback/${userId}`, { credentials: 'include' })
+    fetch(`http://localhost:3000/feedback/${userId}`, {
+      credentials: "include",
+    })
       .then((response) => {
         if (response.ok) {
           return response.json();
         }
-        throw new Error('No se pudo obtener la lista de feedback');
+        throw new Error("No se pudo obtener la lista de feedback");
       })
       .then((feedbackList) => {
         setFeedbackList(feedbackList);
       })
       .catch((error) => {
-        console.error('Ha ocurrido un error:', error.message);
+        console.error("Ha ocurrido un error:", error.message);
       });
   };
 
@@ -50,28 +54,28 @@ export const OtherProfilesComponent = () => {
     const idUser = obtenerIdUsuarioLogeado();
     const data = { idReceiver, idUser, feedback };
 
-    fetch('http://localhost:3000/feedback', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    fetch("http://localhost:3000/feedback", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
-      credentials: 'include'
+      credentials: "include",
     })
       .then((response) => {
         if (response.ok) {
-          console.log('Feedback enviado correctamente');
-          setFeedback(''); // Limpiar el campo de feedback después de enviarlo
-          cargarFeedbackList(userId); // Actualizar la lista de feedback después de enviarlo
+          console.log("Feedback enviado correctamente");
+          setFeedback("");
+          cargarFeedbackList(userId);
         } else {
-          throw new Error('No se pudo enviar el feedback');
+          throw new Error("No se pudo enviar el feedback");
         }
       })
       .catch((error) => {
-        console.error('Ha ocurrido un error:', error.message);
+        console.error("Ha ocurrido un error:", error.message);
       });
   };
 
   const obtenerIdUsuarioLogeado = () => {
-    const idUsuarioLogeado = sessionStorage.getItem('userId'); // Obtener el ID del usuario logeado del sessionStorage
+    const idUsuarioLogeado = sessionStorage.getItem("userId");
     return idUsuarioLogeado;
   };
 
@@ -82,14 +86,13 @@ export const OtherProfilesComponent = () => {
   return (
     <div className="container mt-5">
       <div className="col-6 col-md-4">
-              <img
-                src={profile.user_img}
-                className="img-fluid rounded mt-3"
-                style={{ width: '260px', height: '220px' }}
-               
-                alt="Foto de perfil"
-              />
-            </div>
+        <img
+          src={profile.user_img}
+          className="img-fluid rounded mt-3"
+          style={{ width: "260px", height: "220px" }}
+          alt="Foto de perfil"
+        />
+      </div>
       <h2>Perfil de Usuario</h2>
       <p>
         <b>Nombre de usuario:</b> {profile.username}
@@ -114,7 +117,8 @@ export const OtherProfilesComponent = () => {
       </p>
       <p>
         <b>
-          <span className="font-weight-bold">Lenguajes:</span> {profile.languages}
+          <span className="font-weight-bold">Lenguajes:</span>{" "}
+          {profile.languages}
         </b>
       </p>
       <p>

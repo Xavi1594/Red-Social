@@ -1,13 +1,14 @@
+
 import React, { useState } from 'react';
 
-const SearchBar = ({ onSearch }) => {
+const SearchBar = ({ onSearch, usuariosRegistrados, setUsuariosRegistrados }) => {
   const [searchTerm, setSearchTerm] = useState('');
 
   const handleSearch = (event) => {
     const value = event.target.value;
     setSearchTerm(value);
-    onSearch(value);
-  };
+    onSearch(value); // Call the parent's onSearch function
+};
 
   return (
     <form className="d-flex my-2 my-lg-0 ms-auto">
