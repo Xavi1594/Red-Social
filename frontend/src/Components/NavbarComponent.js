@@ -18,7 +18,7 @@ export const NavbarComponent = ({ onLogout }) => {
   };
 
   const handleSearch = (searchTerm) => {
-    // Implementa la lógica para buscar amigos aquí
+    
     console.log('Buscar amigos con término:', searchTerm);
   };
 

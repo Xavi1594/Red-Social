@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 export const OtherProfilesComponent = () => {
-  const [profile, setProfile] = useState("");
+  const [profileData, setProfileData] = useState("");
   const { userId } = useParams();
   const [feedback, setFeedback] = useState("");
   const [feedbackList, setFeedbackList] = useState([]);
@@ -21,10 +21,10 @@ export const OtherProfilesComponent = () => {
         }
         throw new Error("No se pudo obtener el perfil del usuario");
       })
-      .then((profile) => {
-        console.log(profile);
-        console.log(profile.user_img);
-        setProfile(profile);
+      .then((profileData) => {
+        console.log(profileData);
+        console.log(profileData.user_img);
+        setProfileData(profileData);
       })
       .catch((error) => {
         console.error("Ha ocurrido un error:", error.message);
@@ -79,7 +79,7 @@ export const OtherProfilesComponent = () => {
     return idUsuarioLogeado;
   };
 
-  if (!profile) {
+  if (!profileData) {
     return <div>Cargando perfil del usuario...</div>;
   }
 
@@ -87,7 +87,7 @@ export const OtherProfilesComponent = () => {
     <div className="container mt-5">
       <div className="col-6 col-md-4">
         <img
-          src={profile.user_img}
+          src={profileData.user_img}
           className="img-fluid rounded mt-3"
           style={{ width: "260px", height: "220px" }}
           alt="Foto de perfil"
@@ -95,40 +95,40 @@ export const OtherProfilesComponent = () => {
       </div>
       <h2>Perfil de Usuario</h2>
       <p>
-        <b>Nombre de usuario:</b> {profile.username}
+        <b>Nombre de usuario:</b> {profileData.username}
       </p>
       <p>
-        <b>Email:</b> {profile.email}
+        <b>Email:</b> {profileData.email}
       </p>
       <p>
-        <b>Nombre completo:</b> {profile.fullname}
+        <b>Nombre completo:</b> {profileData.fullname}
       </p>
       <p>
-        <b>Ciudad:</b> {profile.city}
+        <b>Ciudad:</b> {profileData.city}
       </p>
       <p>
-        <b>País:</b> {profile.country}
+        <b>País:</b> {profileData.country}
       </p>
       <p>
-        <b>Edad:</b> {profile.age}
+        <b>Edad:</b> {profileData.age}
       </p>
       <p>
-        <b>Universidad:</b> {profile.university}
+        <b>Universidad:</b> {profileData.university}
       </p>
       <p>
         <b>
           <span className="font-weight-bold">Lenguajes:</span>{" "}
-          {profile.languages}
+          {profileData.languages}
         </b>
       </p>
       <p>
-        <b>LinkedIn:</b> {profile.linkedin}
+        <b>LinkedIn:</b> {profileData.linkedin}
       </p>
       <p>
-        <b>Hobbies:</b> {profile.hobbies}
+        <b>Hobbies:</b> {profileData.hobbies}
       </p>
       <p>
-        <b>Conocimientos extra:</b> {profile.extraknowledge}
+        <b>Conocimientos extra:</b> {profileData.extraknowledge}
       </p>
 
       <div>
