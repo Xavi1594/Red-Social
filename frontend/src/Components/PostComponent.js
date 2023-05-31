@@ -15,10 +15,11 @@ export const PostComponent = ({ loggedIn }) => {
     title: "",
     content: "",
   });
+  const [likedPosts, setLikedPosts] = useState([]);
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    const options = { year: "numeric", month: "long", day: "numeric" };
     return date.toLocaleDateString(undefined, options);
   };
 
@@ -145,6 +146,12 @@ export const PostComponent = ({ loggedIn }) => {
     setEditedPost({ ...editedPost, content: event.target.value });
   };
 
+  const handleLikePost = (postId) => {
+    if (!likedPosts.includes(postId)) {
+      setLikedPosts([...likedPosts, postId]);
+    }
+  };
+
   const onPageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
@@ -242,6 +249,22 @@ export const PostComponent = ({ loggedIn }) => {
                     </>
                   )}
                   <div className="card-footer">
+                    {likedPosts.includes(post.id) ? (
+                      <button className="btn btn-sm btn-danger" disabled>
+                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
+</svg>
+                      </button>
+                    ) : (
+                      <button
+                        className="btn btn-sm btn-outline-danger"
+                        onClick={() => handleLikePost(post.id)}
+                      >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
+</svg>
+                      </button>
+                    )}
                     {editedPost.id === post.id ? (
                       <button
                         className="btn btn-sm btn-primary mr-2"
