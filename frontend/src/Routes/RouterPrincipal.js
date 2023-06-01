@@ -58,21 +58,24 @@ export const RouterPrincipal = () => {
           <NotLoggedNavbarComponent onLogout={handleLogout} />
         )}
         <Routes>
-          <Route path="/" element={<LoginFormComponent onLogin={handleLogin} />} />
+          <Route
+            path="/"
+            element={
+              loggedIn ? <Navigate to="/posts" /> : <LoginFormComponent onLogin={handleLogin} />
+            }
+          />
           <Route path="/registro" element={<RegisterFormComponent />} />
           <Route path="/perfil" element={<ProfileComponent loggedIn={loggedIn} />} />
           <Route path="/amigos" element={<FriendsComponent />} />
           <Route path="/amigosagregados" element={<FriendsAddedComponent />} />
           <Route path="/posts" element={<PostComponent loggedIn={loggedIn} />} />
-          <Route
-            path="/amigos/:userId"
-            element={<OtherProfilesComponent />}
-          />
+          <Route path="/amigos/:userId" element={<OtherProfilesComponent />} />
           <Route
             path="/usuarios"
             element={loggedIn && isAdmin ? <UsersListComponent /> : <Navigate to="/" />}
           />
         </Routes>
+
         <FooterComponent />
       </BrowserRouter>
     </div>
