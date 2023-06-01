@@ -650,7 +650,7 @@ app.get("/amigos/registrados", (req, res) => {
   });
 });
 
-// Ruta para obtener el perfil de un usuario específico
+
 app.get("/amigos/:userId", (req, res) => {
   const userId = req.params.userId;
   const query = "SELECT * FROM usuarios WHERE id = ?";

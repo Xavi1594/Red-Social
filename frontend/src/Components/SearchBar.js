@@ -20,9 +20,6 @@ const SearchBar = ({ onSearch, usuariosRegistrados, setUsuariosRegistrados }) =>
         value={searchTerm}
         onChange={handleSearch}
       />
-      <button className="btn btn-outline-success" type="submit">
-        <i className="bi bi-search"></i>
-      </button>
     </form>
   );
 };

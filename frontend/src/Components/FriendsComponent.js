@@ -97,7 +97,7 @@ export const FriendsComponent = () => {
 
   useEffect(() => {
     filterUsers();
-}, [usuariosRegistrados, searchTerm]); // rerun the filter whenever searchTerm changes
+}, [usuariosRegistrados, searchTerm]); 
 
 const handleSearch = (searchTerm) => {
     setSearchTerm(searchTerm);
