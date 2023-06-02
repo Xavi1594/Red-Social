@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+
+
 export const LoginFormComponent = ({ onLogin }) => { // Asegúrate de pasar onLogin como prop
   const [usernameOrEmail, setUsernameOrEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -26,7 +28,7 @@ export const LoginFormComponent = ({ onLogin }) => { // Asegúrate de pasar onLo
       }
   
       localStorage.setItem('token', data.token);
-      localStorage.setItem('isAdmin', data.isAdmin); // Agregar isAdmin al localStorage
+      localStorage.setItem('isAdmin', data.isAdmin);
   
       onLogin();
   
@@ -35,6 +37,7 @@ export const LoginFormComponent = ({ onLogin }) => { // Asegúrate de pasar onLo
       setErrorMessage('Ha ocurrido un error, por favor intente nuevamente.');
     }
   };
+  
   
   
   return (

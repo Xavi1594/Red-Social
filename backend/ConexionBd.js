@@ -7,7 +7,9 @@ const bcrypt = require("bcrypt");
 require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 3000;
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
+const XLSX = require('xlsx');
+
 
 // Permitir CORS
 const corsOptions = {
@@ -63,12 +65,10 @@ app.post("/registro", (req, res) => {
   bcrypt.hash(password, 10, (err, hashedPassword) => {
     if (err) {
       console.error("Error al hashear la contraseña:", err);
-      return res
-        .status(500)
-        .json({
-          message:
-            "Ha ocurrido un error al registrar el usuario. Por favor, intenta más tarde.",
-        });
+      return res.status(500).json({
+        message:
+          "Ha ocurrido un error al registrar el usuario. Por favor, intenta más tarde.",
+      });
     }
 
     const checkUserSql =
@@ -79,12 +79,10 @@ app.post("/registro", (req, res) => {
       (checkUserErr, checkUserResult) => {
         if (checkUserErr) {
           console.error("Error al buscar usuario:", checkUserErr);
-          return res
-            .status(500)
-            .json({
-              message:
-                "Ha ocurrido un error al validar el registro. Por favor, intenta más tarde.",
-            });
+          return res.status(500).json({
+            message:
+              "Ha ocurrido un error al validar el registro. Por favor, intenta más tarde.",
+          });
         }
         if (checkUserResult.length > 0) {
           const usernameExists = checkUserResult.some(
@@ -94,20 +92,15 @@ app.post("/registro", (req, res) => {
             (user) => user.email === email
           );
           if (usernameExists) {
-            return res
-              .status(400)
-              .json({
-                message:
-                  "El nombre de usuario ya existe. Por favor, elige otro.",
-              });
+            return res.status(400).json({
+              message: "El nombre de usuario ya existe. Por favor, elige otro.",
+            });
           }
           if (emailExists) {
-            return res
-              .status(400)
-              .json({
-                message:
-                  "El correo electrónico ya está registrado. Por favor, utiliza otro.",
-              });
+            return res.status(400).json({
+              message:
+                "El correo electrónico ya está registrado. Por favor, utiliza otro.",
+            });
           }
         }
 
@@ -133,12 +126,10 @@ app.post("/registro", (req, res) => {
           (err, result) => {
             if (err) {
               console.error("Error al insertar usuario:", err);
-              return res
-                .status(500)
-                .json({
-                  message:
-                    "Ha ocurrido un error al insertar el usuario en la base de datos. Por favor, intenta más tarde.",
-                });
+              return res.status(500).json({
+                message:
+                  "Ha ocurrido un error al insertar el usuario en la base de datos. Por favor, intenta más tarde.",
+              });
             }
             console.log([
               username,
@@ -167,71 +158,62 @@ app.post("/registro", (req, res) => {
 });
 
 // Login
-app.post("/", (req, res) => {
+app.post('/', (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
 
   if (username && password) {
     db.query(
-      "SELECT * FROM usuarios WHERE username = ? OR email = ?",
+      'SELECT * FROM usuarios WHERE username = ? OR email = ?',
       [username, username],
-      (error, results, fields) => {
+      (error, results) => {
         if (error) {
-          console.error("Error al buscar usuario:", error);
-          return res
-            .status(500)
-            .json({
-              login: false,
-              error:
-                "Ha ocurrido un error al iniciar sesión. Por favor, intenta más tarde.",
-            });
+          console.error('Error al buscar usuario:', error);
+          return res.status(500).json({
+            login: false,
+            error: 'Ha ocurrido un error al iniciar sesión. Por favor, intenta más tarde.',
+          });
         }
         if (results.length > 0) {
           const storedPassword = results[0].password;
           bcrypt.compare(password, storedPassword, function (err, isMatch) {
             if (err) {
-              console.error("Error al verificar la contraseña:", err);
-              return res
-                .status(500)
-                .json({
-                  login: false,
-                  error:
-                    "Ha ocurrido un error al iniciar sesión. Por favor, intenta más tarde.",
-                });
+              console.error('Error al verificar la contraseña:', err);
+              return res.status(500).json({
+                login: false,
+                error: 'Ha ocurrido un error al iniciar sesión. Por favor, intenta más tarde.',
+              });
             }
             if (isMatch === true) {
-              req.session.loggedin = true;
-              req.session.username = results[0].username;
-              req.session.usuarioId = results[0].id;
               const isAdmin = results[0].es_admin === 1; // Comprueba si el usuario es un administrador
 
-              res.json({ login: true, id: results[0].id, isAdmin }); // Devuelve el estado de administrador
+              const token = jwt.sign(
+                { username, isAdmin },
+                secretKey,
+                { expiresIn: '1h' }
+              );
+
+              res.json({ login: true, id: results[0].id, isAdmin, token }); // Devuelve el estado de administrador y el token
             } else {
-              res
-                .status(400)
-                .json({
-                  login: false,
-                  error: "Usuario o contraseña incorrectos",
-                });
+              res.status(400).json({
+                login: false,
+                error: 'Usuario o contraseña incorrectos',
+              });
             }
           });
         } else {
-          res
-            .status(400)
-            .json({
-              login: false,
-              error: "Usuario o contraseña incorrectos",
-            });
+          res.status(400).json({
+            login: false,
+            error: 'Usuario o contraseña incorrectos',
+          });
         }
       }
     );
   } else {
-    res
-      .status(400)
-      .json({
-        login: false,
-        error: "Por favor, introduce un nombre de usuario y una contraseña",
-      });
+    res.status(400).json({
+      login: false,
+      error: 'Por favor, introduce un nombre de usuario y una contraseña',
+    });
   }
 });
 
@@ -255,12 +237,10 @@ app.get("/usuarios/registrados", function (req, res) {
     function (error, results) {
       if (error) {
         console.error("Ha ocurrido un error:", error.message);
-        return res
-          .status(500)
-          .json({
-            message:
-              "Ha ocurrido un error al obtener la lista de usuarios registrados",
-          });
+        return res.status(500).json({
+          message:
+            "Ha ocurrido un error al obtener la lista de usuarios registrados",
+        });
       }
 
       res.status(200).json(results);
@@ -277,11 +257,9 @@ app.get("/amigos", function (req, res) {
     function (error, results) {
       if (error) {
         console.error("Ha ocurrido un error:", error.message);
-        return res
-          .status(500)
-          .json({
-            message: "Ha ocurrido un error al obtener la lista de amigos",
-          });
+        return res.status(500).json({
+          message: "Ha ocurrido un error al obtener la lista de amigos",
+        });
       }
       res.status(200).json(results);
     }
@@ -363,12 +341,10 @@ app.get("/amigos/agregados", function (req, res) {
     function (error, results) {
       if (error) {
         console.error("Ha ocurrido un error:", error.message);
-        return res
-          .status(500)
-          .json({
-            message:
-              "Ha ocurrido un error al obtener la lista de amigos agregados",
-          });
+        return res.status(500).json({
+          message:
+            "Ha ocurrido un error al obtener la lista de amigos agregados",
+        });
       }
       res.status(200).json(results);
     }
@@ -401,12 +377,10 @@ app.get("/posts", (req, res) => {
     (err, results) => {
       if (err) {
         console.error("Error al obtener los posts:", err);
-        res
-          .status(500)
-          .json({
-            message:
-              "Ha ocurrido un error al obtener los posts. Por favor, intenta más tarde.",
-          });
+        res.status(500).json({
+          message:
+            "Ha ocurrido un error al obtener los posts. Por favor, intenta más tarde.",
+        });
         return;
       }
       res.json(results);
@@ -438,12 +412,10 @@ app.post("/posts", (req, res) => {
       (err, results) => {
         if (err) {
           console.error("Error al crear el post:", err);
-          res
-            .status(500)
-            .json({
-              message:
-                "Ha ocurrido un error al crear el post. Por favor, intenta más tarde.",
-            });
+          res.status(500).json({
+            message:
+              "Ha ocurrido un error al crear el post. Por favor, intenta más tarde.",
+          });
           return;
         }
         newPost.id = results.insertId;
@@ -465,12 +437,10 @@ app.delete("/posts/:id", (req, res) => {
   db.query(sql, [postId], (err, result) => {
     if (err) {
       console.error("Error al eliminar el post:", err);
-      res
-        .status(500)
-        .json({
-          message:
-            "Ha ocurrido un error al eliminar el post. Por favor, intenta más tarde.",
-        });
+      res.status(500).json({
+        message:
+          "Ha ocurrido un error al eliminar el post. Por favor, intenta más tarde.",
+      });
       return;
     }
 
@@ -492,12 +462,10 @@ app.put("/posts/:id", (req, res) => {
   const updatedAt = new Date();
 
   if (!title && !content) {
-    res
-      .status(400)
-      .json({
-        message:
-          "Debes proporcionar al menos un campo (título o contenido) para editar el post.",
-      });
+    res.status(400).json({
+      message:
+        "Debes proporcionar al menos un campo (título o contenido) para editar el post.",
+    });
     return;
   }
 
@@ -506,12 +474,10 @@ app.put("/posts/:id", (req, res) => {
   db.query(sql, [title, content, updatedAt, postId], (err, result) => {
     if (err) {
       console.error("Error al editar el post:", err);
-      res
-        .status(500)
-        .json({
-          message:
-            "Ha ocurrido un error al editar el post. Por favor, intenta más tarde.",
-        });
+      res.status(500).json({
+        message:
+          "Ha ocurrido un error al editar el post. Por favor, intenta más tarde.",
+      });
       return;
     }
 
@@ -656,7 +622,6 @@ app.get("/amigos/registrados", (req, res) => {
   });
 });
 
-
 app.get("/amigos/:userId", (req, res) => {
   const userId = req.params.userId;
   const query = "SELECT * FROM usuarios WHERE id = ?";
@@ -728,47 +693,84 @@ app.get("/feedback/:userId", (req, res) => {
     }
   });
 });
+const secretKey = 'your-secret-key';
 
+// Generar un token JWT
+const token = jwt.sign({ userId: '123456789' }, secretKey, { expiresIn: '1h' });
 
-// ...
-
-// Middleware para verificar el token
-function verificarTokenMiddleware(req, res, next) {
-  const token = req.headers.authorization?.split(' ')[1];
-  console.log("Token recibido:", token);
-
-  if (!token) {
-    return res.status(401).json({ message: 'Token no proporcionado' });
+// Verificar un token JWT
+jwt.verify(token, secretKey, (err, decoded) => {
+  if (err) {
+    console.error('Error al verificar el token:', err);
+    // Manejar el error de token inválido
+  } else {
+    console.log('Token verificado:', decoded);
+    // El token es válido y se ha decodificado correctamente
   }
+});
 
+
+app.get('/lista', (req, res) => {
+  const token = req.headers.authorization;
+
+  // Verificar y decodificar el token
   try {
-    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-    console.log("Token decodificado:", decodedToken);
+    const decodedToken = jwt.verify(token, secretKey);
+    const isAdmin = decodedToken.isAdmin || false;
 
-    req.user = decodedToken;
-    next();
-  } catch (error) {
-    console.error("Error al verificar el token:", error);
-    return res.status(403).json({ message: 'Token inválido', error: error.message });
-  }
-}
-
-// Ruta para obtener la lista de usuarios
-app.get('/users', verificarTokenMiddleware, (req, res) => {
-  if (!req.user.isAdmin) {
-    return res.status(403).json({ message: 'Acceso denegado' });
-  }
-
-  const sql = 'SELECT * FROM usuarios';
-  db.query(sql, (err, results) => {
-    if (err) {
-      console.error('Error al obtener los usuarios:', err);
-      return res.status(500).json({ message: 'Error en el servidor' });
+    if (!isAdmin) {
+      return res.status(403).json({ error: 'Acceso denegado' });
     }
 
-    res.json({ users: results });
-  });
+    db.query('SELECT id, username, email FROM usuarios', (error, results) => {
+      if (error) {
+        console.error('Error al obtener usuarios:', error);
+        return res.status(500).json({ error: 'Error en el servidor' });
+      }
+
+      res.json(results);
+    });
+  } catch (error) {
+    console.error('Error al decodificar el token:', error);
+    res.status(401).json({ error: 'Token inválido' });
+  }
 });
+
+app.get('/lista/exportar', (req, res) => {
+  const token = req.headers.authorization;
+
+  // Verificar y decodificar el token
+  try {
+    const decodedToken = jwt.verify(token, secretKey);
+    const isAdmin = decodedToken.isAdmin || false;
+
+    if (!isAdmin) {
+      return res.status(403).json({ error: 'Acceso denegado' });
+    }
+
+    db.query('SELECT id, username, email FROM usuarios', (error, results) => {
+      if (error) {
+        console.error('Error al obtener usuarios:', error);
+        return res.status(500).json({ error: 'Error en el servidor' });
+      }
+
+      const workbook = XLSX.utils.book_new();
+      const worksheet = XLSX.utils.json_to_sheet(results);
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Usuarios');
+
+      const excelBuffer = XLSX.write(workbook, { type: 'buffer', bookType: 'xlsx' });
+
+      const fileName = 'usuarios.xlsx';
+      res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+      res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+      res.send(excelBuffer);
+    });
+  } catch (error) {
+    console.error('Error al decodificar el token:', error);
+    res.status(401).json({ error: 'Token inválido' });
+  }
+});
+
 
 app.listen(port, () => {
   console.log(`Servidor iniciado en el puerto ${port}`);

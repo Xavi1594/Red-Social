@@ -10,25 +10,29 @@ import { PostComponent } from '../Components/PostComponent';
 import { NotLoggedNavbarComponent } from '../Components/NotLoggedNavbarComponent';
 import { FriendsAddedComponent } from '../Components/FriendsAddedComponent';
 import { OtherProfilesComponent } from '../Components/OtherProfilesComponent';
-import {UserList} from '../Components/UserList';
+import { UsuariosComponent } from '../Components/UsuariosComponent';
 
 export const RouterPrincipal = () => {
   const [loggedIn, setLoggedIn] = useState(!!localStorage.getItem('token'));
+  const [isAdmin, setIsAdmin] = useState(!!localStorage.getItem('isAdmin'));
 
   const handleLogin = () => {
     setLoggedIn(true);
+    setIsAdmin(!!localStorage.getItem('isAdmin'));
   };
 
   const handleLogout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('isAdmin');
     setLoggedIn(false);
+    setIsAdmin(false);
   };
 
   return (
     <div>
       <BrowserRouter>
         {loggedIn ? (
-          <NavbarComponent loggedIn={loggedIn} onLogout={handleLogout} />
+          <NavbarComponent loggedIn={loggedIn} isAdmin={isAdmin} onLogout={handleLogout} />
         ) : (
           <NotLoggedNavbarComponent onLogout={handleLogout} />
         )}
@@ -39,8 +43,7 @@ export const RouterPrincipal = () => {
           <Route path="/amigos" element={<FriendsComponent />} />
           <Route path="/amigosagregados" element={<FriendsAddedComponent />} />
           <Route path="/posts" element={<PostComponent loggedIn={loggedIn} />} />
-          <Route path="/userlist" element={<UserList loggedIn={loggedIn} />} />
-
+          <Route path="/usuarios" element={<UsuariosComponent />} />
           <Route
             path="/amigos/:userId"
             element={<OtherProfilesComponent loggedIn={loggedIn} />}
