@@ -17,26 +17,25 @@ export const LoginFormComponent = ({ onLogin }) => { // Asegúrate de pasar onLo
         body: JSON.stringify({ username: usernameOrEmail, password }),
         credentials: 'include',
       });
-      
+  
       const data = await response.json();
-
+  
       if (response.status !== 200) {
         setErrorMessage(data.error || 'Ha ocurrido un error, por favor intente nuevamente.');
         return;
       }
-
-     
+  
       localStorage.setItem('token', data.token);
-
-    
-      onLogin(); 
-
+      localStorage.setItem('isAdmin', data.isAdmin); // Agregar isAdmin al localStorage
+  
+      onLogin();
+  
       navigate('/perfil');
     } catch (error) {
       setErrorMessage('Ha ocurrido un error, por favor intente nuevamente.');
     }
   };
-
+  
   
   return (
     <div className="container-fluid d-flex justify-content-center align-items-center vh-100">

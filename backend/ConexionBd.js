@@ -7,6 +7,7 @@ const bcrypt = require("bcrypt");
 require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 3000;
+const jwt = require('jsonwebtoken');
 
 // Permitir CORS
 const corsOptions = {
@@ -202,7 +203,9 @@ app.post("/", (req, res) => {
               req.session.loggedin = true;
               req.session.username = results[0].username;
               req.session.usuarioId = results[0].id;
-              res.json({ login: true, id: results[0].id });
+              const isAdmin = results[0].es_admin === 1; // Comprueba si el usuario es un administrador
+
+              res.json({ login: true, id: results[0].id, isAdmin }); // Devuelve el estado de administrador
             } else {
               res
                 .status(400)
@@ -215,7 +218,10 @@ app.post("/", (req, res) => {
         } else {
           res
             .status(400)
-            .json({ login: false, error: "Usuario o contraseña incorrectos" });
+            .json({
+              login: false,
+              error: "Usuario o contraseña incorrectos",
+            });
         }
       }
     );
@@ -224,7 +230,7 @@ app.post("/", (req, res) => {
       .status(400)
       .json({
         login: false,
-        error: "Por favor, introduce tu nombre de usuario y contraseña",
+        error: "Por favor, introduce un nombre de usuario y una contraseña",
       });
   }
 });
@@ -720,6 +726,47 @@ app.get("/feedback/:userId", (req, res) => {
     } else {
       res.json(results);
     }
+  });
+});
+
+
+// ...
+
+// Middleware para verificar el token
+function verificarTokenMiddleware(req, res, next) {
+  const token = req.headers.authorization?.split(' ')[1];
+  console.log("Token recibido:", token);
+
+  if (!token) {
+    return res.status(401).json({ message: 'Token no proporcionado' });
+  }
+
+  try {
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+    console.log("Token decodificado:", decodedToken);
+
+    req.user = decodedToken;
+    next();
+  } catch (error) {
+    console.error("Error al verificar el token:", error);
+    return res.status(403).json({ message: 'Token inválido', error: error.message });
+  }
+}
+
+// Ruta para obtener la lista de usuarios
+app.get('/users', verificarTokenMiddleware, (req, res) => {
+  if (!req.user.isAdmin) {
+    return res.status(403).json({ message: 'Acceso denegado' });
+  }
+
+  const sql = 'SELECT * FROM usuarios';
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error('Error al obtener los usuarios:', err);
+      return res.status(500).json({ message: 'Error en el servidor' });
+    }
+
+    res.json({ users: results });
   });
 });
 
