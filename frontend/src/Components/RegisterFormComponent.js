@@ -158,9 +158,9 @@ export const RegisterFormComponent = () => {
 
 
     return (
-      <div className="container formulario  mb-2 mt-5">
-          <div className="row">
-              <div className="col-md-6 offset-md-3 mt-5 " id='register-form'>
+        <div className="container formulario mb-2 mt-5">
+            <div className="row">
+                <div className="col-md-6 offset-md-3 mt-5" data-testid="register-form">
                   <h2 className="text-center text-bg-warning p-3 mt-2">Formulario de Registro</h2>
                   <form className="form-registro p-3" id="form-registro" onSubmit={handleSubmit}>
                       {message && <div className={error ? 'error' : 'success'}>{message}</div>}
@@ -175,7 +175,7 @@ export const RegisterFormComponent = () => {
                           <input type="password" className="form-control" id="password" name="password" value={formData.password} onChange={handleChange} />
                       </div>
                       <div className="form-group">
-                          <label htmlFor="confirmPassword">Confirmar Contraseña</label>
+                          <label htmlFor="confirm-password">Confirmar Contraseña</label>
                           <input type="password" className="form-control" id="confirm-password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} />
                       </div>
                       <div className="form-group">
@@ -218,7 +218,7 @@ export const RegisterFormComponent = () => {
                         <label htmlFor="extraknowledge">Conocimientos extra</label>
                         <textarea className="form-control" id="extraknowledge" rows="3" name="extraknowledge" value={formData.extraknowledge} onChange={handleChange}></textarea>
                     </div>
-                    <button type="submit" className="btn btn-primary btn-block mt-3 mb-5 w-100">Registrarse</button>
+                    <button type="submit" text="submit" className="btn btn-primary btn-block mt-3 mb-5 w-100">Registrarse</button>
                 </form>
             </div>
         </div>
