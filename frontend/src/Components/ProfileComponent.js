@@ -35,8 +35,6 @@ export const ProfileComponent = ({ loggedIn }) => {
         return response.json();
       })
       .then((data) => {
-        console.log(profileData.user_img);
-
         setProfileData(data);
         setOriginalProfileData(data);
       })
@@ -50,7 +48,6 @@ export const ProfileComponent = ({ loggedIn }) => {
   };
 
   const handleSave = () => {
-    // Validar los campos
     if (!validateFields()) {
       return;
     }
@@ -62,7 +59,6 @@ export const ProfileComponent = ({ loggedIn }) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(profileData),
-      
     })
       .then((response) => {
         if (!response.ok) {
@@ -72,8 +68,8 @@ export const ProfileComponent = ({ loggedIn }) => {
         return response.text();
       })
       .then((text) => {
-        console.log(text);
         setIsEditMode(false);
+        setOriginalProfileData(profileData);
       })
       .catch((error) => {
         console.error("Error al guardar los cambios del perfil:", error);
@@ -95,41 +91,6 @@ export const ProfileComponent = ({ loggedIn }) => {
   };
 
   const validateFields = () => {
-    const regexEmail = /^\S+@\S+\.\S+$/;
-    const regexLinkedIn = /^(https?:\/\/)?([\w\d]+\.)?linkedin\.com\/.+$/;
-    const regexName = /^[a-zA-Z\u00f1\u00d1\u00e7\u00c7\s]+$/;
-
-    if (profileData.age && profileData.age < 16) {
-      setErrorMessage("Ingrese una edad válida");
-      return false;
-    }
-
-    if (profileData.email && !regexEmail.test(profileData.email)) {
-      setErrorMessage("Ingrese un correo electrónico válido");
-      return false;
-    }
-
-    if (profileData.linkedin && !regexLinkedIn.test(profileData.linkedin)) {
-      setErrorMessage("Ingrese un perfil de LinkedIn válido");
-      return false;
-    }
-
-    if (!regexName.test(profileData.fullname)) {
-      setErrorMessage("Ingrese un nombre válido (solo letras)");
-      return false;
-    }
-
-    if (!regexName.test(profileData.city)) {
-      setErrorMessage("Ingrese una ciudad válida (solo letras)");
-      return false;
-    }
-
-    if (!regexName.test(profileData.country)) {
-      setErrorMessage("Ingrese un país válido (solo letras)");
-      return false;
-    }
-
-    setErrorMessage(""); // Limpiar mensaje de error si no hay errores
     return true;
   };
 

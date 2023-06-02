@@ -625,7 +625,7 @@ app.put("/perfil", function (req, res) {
           console.log(error);
           res.status(500).send("Error al actualizar el perfil");
         } else {
-          console.log("Perfil actualizado correctamente");
+        
           res.send("Perfil actualizado correctamente");
         }
       }
