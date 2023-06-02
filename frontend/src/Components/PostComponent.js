@@ -24,11 +24,11 @@ export const PostComponent = ({ loggedIn }) => {
   };
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5; // Número de elementos por página
+  const itemsPerPage = 5;
 
   useEffect(() => {
     if (!loggedIn) {
-      navigate("/"); // Redirige a la página de inicio si no se ha iniciado sesión
+      navigate("/");
     } else {
       fetchUser();
       fetchPosts();
@@ -318,7 +318,9 @@ export const PostComponent = ({ loggedIn }) => {
             </div>
           </div>
         </div>
-        <div className="col-lg-3 mt-5"></div>
+        <div className="col-lg-3 mt-5 ">
+          <img src="socialy.jpg" className="img-thumbnail mt-5" width="200" alt="..." />
+        </div>
       </div>
       <div className="row justify-content-center mb-5 py-5">
         <Pagination

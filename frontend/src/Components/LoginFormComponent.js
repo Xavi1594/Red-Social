@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export const LoginFormComponent = ({ onLogin }) => { // Asegúrate de pasar onLogin como prop
+export const LoginFormComponent = ({ onLogin }) => { 
   const [usernameOrEmail, setUsernameOrEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -31,7 +31,7 @@ export const LoginFormComponent = ({ onLogin }) => { // Asegúrate de pasar onLo
     
       onLogin(); 
 
-      navigate('/perfil');
+      navigate('/posts');
     } catch (error) {
       setErrorMessage('Ha ocurrido un error, por favor intente nuevamente.');
     }

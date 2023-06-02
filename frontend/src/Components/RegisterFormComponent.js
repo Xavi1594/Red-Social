@@ -174,7 +174,7 @@ export const RegisterFormComponent = () => {
               <div className={error ? "error" : "success"}>{message}</div>
             )}
             <div className="form-group">
-              <label htmlFor="foto">foto de perfil </label>
+              <label htmlFor="foto">Foto de perfil </label>
               <input
                 type="text"
                 className="form-control"
