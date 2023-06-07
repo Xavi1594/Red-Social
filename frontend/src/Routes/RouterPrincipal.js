@@ -71,8 +71,8 @@ export const RouterPrincipal = () => {
           <Route path="/posts" element={<PostComponent loggedIn={loggedIn} />} />
           <Route path="/amigos/:userId" element={<OtherProfilesComponent />} />
           <Route
-            path="/usuarios"
-            element={loggedIn && isAdmin ? <UsersListComponent /> : <Navigate to="/" />}
+            path="/amigos/:userId"
+            element={<OtherProfilesComponent loggedIn={loggedIn} />}
           />
         </Routes>
 

@@ -1,7 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
-const SearchBar = ({ onSearch }) => {
-  const [searchTerm, setSearchTerm] = useState('');
+const SearchBar = ({
+  onSearch,
+  usuariosRegistrados,
+  setUsuariosRegistrados,
+}) => {
+  const [searchTerm, setSearchTerm] = useState("");
 
   const handleSearch = (event) => {
     const value = event.target.value;
@@ -19,9 +23,6 @@ const SearchBar = ({ onSearch }) => {
         value={searchTerm}
         onChange={handleSearch}
       />
-      <button className="btn btn-outline-success" type="submit">
-        <i className="bi bi-search"></i>
-      </button>
     </form>
   );
 };

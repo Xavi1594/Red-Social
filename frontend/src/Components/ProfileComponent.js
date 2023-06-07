@@ -1,33 +1,33 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const ProfileComponent = ({ loggedIn }) => {
   const navigate = useNavigate();
   const [isEditMode, setIsEditMode] = useState(false);
   const [profileData, setProfileData] = useState({
-    username: '',
-    email: '',
-    fullname: '',
-    city: '',
-    country: '',
-    age: '',
-    university: '',
-    languages: '',
-    linkedin: '',
-    hobbies: '',
-    extraknowledge: '',
-    user_img: '',
+    username: "",
+    email: "",
+    fullname: "",
+    city: "",
+    country: "",
+    age: "",
+    university: "",
+    languages: "",
+    linkedin: "",
+    hobbies: "",
+    extraknowledge: "",
+    user_img: "",
   });
   const [originalProfileData, setOriginalProfileData] = useState({});
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     if (!loggedIn) {
-      navigate('/'); // Redirigir a la página de inicio si no se ha iniciado sesión
+      navigate("/");
       return;
     }
 
-    fetch('http://localhost:3000/perfil', { credentials: 'include' })
+    fetch("http://localhost:3000/perfil", { credentials: "include" })
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -35,12 +35,11 @@ export const ProfileComponent = ({ loggedIn }) => {
         return response.json();
       })
       .then((data) => {
-        console.log(profileData.age);
         setProfileData(data);
         setOriginalProfileData(data);
       })
       .catch((error) => {
-        console.error('Error al recuperar los datos del perfil:', error);
+        console.error("Error al recuperar los datos del perfil:", error);
       });
   }, [loggedIn, navigate]);
 
@@ -49,16 +48,15 @@ export const ProfileComponent = ({ loggedIn }) => {
   };
 
   const handleSave = () => {
-    // Validar los campos
     if (!validateFields()) {
       return;
     }
 
-    fetch('http://localhost:3000/perfil', {
-      method: 'PUT',
-      credentials: 'include',
+    fetch("http://localhost:3000/perfil", {
+      method: "PUT",
+      credentials: "include",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(profileData),
     })
@@ -66,21 +64,22 @@ export const ProfileComponent = ({ loggedIn }) => {
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
+
         return response.text();
       })
       .then((text) => {
-        console.log(text);
         setIsEditMode(false);
+        setOriginalProfileData(profileData);
       })
       .catch((error) => {
-        console.error('Error al guardar los cambios del perfil:', error);
+        console.error("Error al guardar los cambios del perfil:", error);
       });
   };
 
   const handleCancel = () => {
     setProfileData(originalProfileData);
     setIsEditMode(false);
-    setErrorMessage('');
+    setErrorMessage("");
   };
 
   const handleDeleteAccount = () => {
@@ -118,44 +117,6 @@ export const ProfileComponent = ({ loggedIn }) => {
   };
 
   const validateFields = () => {
-    const regexEmail = /^\S+@\S+\.\S+$/;
-    const regexLinkedIn = /^(https?:\/\/)?([\w\d]+\.)?linkedin\.com\/.+$/;
-    const regexName = /^[a-zA-Z\u00f1\u00d1\u00e7\u00c7\s]+$/;
-
-    if (profileData.age && profileData.age < 16) {
-      setErrorMessage('Ingrese una edad válida');
-      return false;
-    }
-
-    if (profileData.email && !regexEmail.test(profileData.email)) {
-      setErrorMessage('Ingrese un correo electrónico válido');
-      return false;
-    }
-
-    if (
-      profileData.linkedin &&
-      !regexLinkedIn.test(profileData.linkedin)
-    ) {
-      setErrorMessage('Ingrese un perfil de LinkedIn válido');
-      return false;
-    }
-
-    if (!regexName.test(profileData.fullname)) {
-      setErrorMessage('Ingrese un nombre válido (solo letras)');
-      return false;
-    }
-
-    if (!regexName.test(profileData.city)) {
-      setErrorMessage('Ingrese una ciudad válida (solo letras)');
-      return false;
-    }
-
-    if (!regexName.test(profileData.country)) {
-      setErrorMessage('Ingrese un país válido (solo letras)');
-      return false;
-    }
-
-    setErrorMessage(''); // Limpiar mensaje de error si no hay errores
     return true;
   };
 
@@ -168,7 +129,7 @@ export const ProfileComponent = ({ loggedIn }) => {
               <img
                 src={profileData.user_img}
                 className="img-fluid rounded mt-3"
-                style={{ width: '260px', height: '220px' }}
+                style={{ width: "260px", height: "220px" }}
                 width="200"
                 alt="Foto de perfil"
               />
@@ -178,7 +139,8 @@ export const ProfileComponent = ({ loggedIn }) => {
           <div className="row my-3">
             <div className="col-12">
               <p className="font-weight-bold">
-                <b>Nombre de usuario:</b> {isEditMode ? (
+                <b>Nombre de usuario:</b>{" "}
+                {isEditMode ? (
                   <input
                     type="text"
                     name="username"
@@ -196,7 +158,8 @@ export const ProfileComponent = ({ loggedIn }) => {
           <div className="row my-3">
             <div className="col-12">
               <p>
-                <b>E-Mail:</b> {isEditMode ? (
+                <b>E-Mail:</b>{" "}
+                {isEditMode ? (
                   <input
                     type="text"
                     name="email"
@@ -214,7 +177,8 @@ export const ProfileComponent = ({ loggedIn }) => {
           <div className="row my-3">
             <div className="col-12">
               <p>
-                <b>Nombre completo:</b> {isEditMode ? (
+                <b>Nombre completo:</b>{" "}
+                {isEditMode ? (
                   <input
                     type="text"
                     name="fullname"
@@ -232,7 +196,8 @@ export const ProfileComponent = ({ loggedIn }) => {
           <div className="row my-3">
             <div className="col-12">
               <p>
-                <b>Pais de residencia:</b> {isEditMode ? (
+                <b>Pais de residencia:</b>{" "}
+                {isEditMode ? (
                   <input
                     type="text"
                     name="country"
@@ -250,7 +215,8 @@ export const ProfileComponent = ({ loggedIn }) => {
           <div className="row my-3">
             <div className="col-12">
               <p>
-                <b>Ciudad de residencia:</b> {isEditMode ? (
+                <b>Ciudad de residencia:</b>{" "}
+                {isEditMode ? (
                   <input
                     type="text"
                     name="city"
@@ -268,7 +234,8 @@ export const ProfileComponent = ({ loggedIn }) => {
           <div className="row my-3">
             <div className="col-12">
               <p>
-                <b>Edad:</b> {isEditMode ? (
+                <b>Edad:</b>{" "}
+                {isEditMode ? (
                   <input
                     type="number"
                     name="age"
@@ -286,7 +253,8 @@ export const ProfileComponent = ({ loggedIn }) => {
           <div className="row my-3">
             <div className="col-12">
               <p>
-                <b>Estudios:</b> {isEditMode ? (
+                <b>Estudios:</b>{" "}
+                {isEditMode ? (
                   <input
                     type="textbox"
                     name="university"
@@ -304,7 +272,8 @@ export const ProfileComponent = ({ loggedIn }) => {
           <div className="row my-3">
             <div className="col-12">
               <p>
-                <b>Idiomas:</b> {isEditMode ? (
+                <b>Idiomas:</b>{" "}
+                {isEditMode ? (
                   <input
                     type="textbox"
                     name="languages"
@@ -322,7 +291,8 @@ export const ProfileComponent = ({ loggedIn }) => {
           <div className="row my-3">
             <div className="col-12">
               <p>
-                <b>Perfil de LinkedIn:</b> {isEditMode ? (
+                <b>Perfil de LinkedIn:</b>{" "}
+                {isEditMode ? (
                   <input
                     type="text"
                     name="linkedin"
@@ -340,7 +310,8 @@ export const ProfileComponent = ({ loggedIn }) => {
           <div className="row my-3">
             <div className="col-12">
               <p>
-                <b>Hobbies:</b> {isEditMode ? (
+                <b>Hobbies:</b>{" "}
+                {isEditMode ? (
                   <textarea
                     name="hobbies"
                     value={profileData.hobbies}
@@ -357,7 +328,8 @@ export const ProfileComponent = ({ loggedIn }) => {
           <div className="row my-3">
             <div className="col-12">
               <p>
-                <b>Conocimientos extra:</b> {isEditMode ? (
+                <b>Conocimientos extra:</b>{" "}
+                {isEditMode ? (
                   <input
                     type="text"
                     name="extraknowledge"

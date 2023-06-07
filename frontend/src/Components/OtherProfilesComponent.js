@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 export const OtherProfilesComponent = () => {
-  const [perfilUsuario, setPerfilUsuario] = useState(null);
+  const [profileData, setProfileData] = useState("");
   const { userId } = useParams();
-  const [feedback, setFeedback] = useState('');
+  const [feedback, setFeedback] = useState("");
   const [feedbackList, setFeedbackList] = useState([]);
 
   useEffect(() => {
@@ -13,34 +13,36 @@ export const OtherProfilesComponent = () => {
   }, [userId]);
 
   const cargarPerfilUsuario = (userId) => {
-    fetch(`http://localhost:3000/amigos/${userId}`, { credentials: 'include' })
+    fetch(`http://localhost:3000/amigos/${userId}`, { credentials: "include" })
       .then((response) => {
         if (response.ok) {
           return response.json();
         }
-        throw new Error('No se pudo obtener el perfil del usuario');
+        throw new Error("No se pudo obtener el perfil del usuario");
       })
-      .then((perfilUsuario) => {
-        setPerfilUsuario(perfilUsuario);
+      .then((profileData) => {
+        setProfileData(profileData);
       })
       .catch((error) => {
-        console.error('Ha ocurrido un error:', error.message);
+        console.error("Ha ocurrido un error:", error.message);
       });
   };
 
   const cargarFeedbackList = (userId) => {
-    fetch(`http://localhost:3000/feedback/${userId}`, { credentials: 'include' })
+    fetch(`http://localhost:3000/feedback/${userId}`, {
+      credentials: "include",
+    })
       .then((response) => {
         if (response.ok) {
           return response.json();
         }
-        throw new Error('No se pudo obtener la lista de feedback');
+        throw new Error("No se pudo obtener la lista de feedback");
       })
       .then((feedbackList) => {
         setFeedbackList(feedbackList);
       })
       .catch((error) => {
-        console.error('Ha ocurrido un error:', error.message);
+        console.error("Ha ocurrido un error:", error.message);
       });
   };
 
@@ -49,73 +51,112 @@ export const OtherProfilesComponent = () => {
     const idUser = obtenerIdUsuarioLogeado();
     const data = { idReceiver, idUser, feedback };
 
-    fetch('http://localhost:3000/feedback', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    fetch("http://localhost:3000/feedback", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
-      credentials: 'include'
+      credentials: "include",
     })
       .then((response) => {
         if (response.ok) {
-          console.log('Feedback enviado correctamente');
-          setFeedback(''); // Limpiar el campo de feedback después de enviarlo
-          cargarFeedbackList(userId); // Actualizar la lista de feedback después de enviarlo
+          console.log("Feedback enviado correctamente");
+          setFeedback("");
+          cargarFeedbackList(userId);
         } else {
-          throw new Error('No se pudo enviar el feedback');
+          throw new Error("No se pudo enviar el feedback");
         }
       })
       .catch((error) => {
-        console.error('Ha ocurrido un error:', error.message);
+        console.error("Ha ocurrido un error:", error.message);
       });
   };
 
   const obtenerIdUsuarioLogeado = () => {
-    const idUsuarioLogeado = sessionStorage.getItem('userId'); // Obtener el ID del usuario logeado del sessionStorage
+    const idUsuarioLogeado = sessionStorage.getItem("userId");
     return idUsuarioLogeado;
   };
 
-  if (!perfilUsuario) {
+  if (!profileData) {
     return <div>Cargando perfil del usuario...</div>;
   }
 
   return (
-    <div>
-      <h2>Perfil de Usuario</h2>
-      <p>Nombre de usuario: {perfilUsuario.username}</p>
-      <p>Email: {perfilUsuario.email}</p>
-      <p>Nombre completo: {perfilUsuario.fullname}</p>
-      <p>Ciudad: {perfilUsuario.city}</p>
-      <p>País: {perfilUsuario.country}</p>
-      <p>Edad: {perfilUsuario.age}</p>
-      <p>Universidad: {perfilUsuario.university}</p>
-      <p>Lenguajes: {perfilUsuario.languages}</p>
-      <p>LinkedIn: {perfilUsuario.linkedin}</p>
-      <p>Hobbies: {perfilUsuario.hobbies}</p>
-      <p>Conocimientos extra: {perfilUsuario.extraknowledge}</p>
-
-      <div>
-        <h3>Dejar Feedback y Recomendaciones</h3>
-        <textarea
-          value={feedback}
-          onChange={(e) => setFeedback(e.target.value)}
-          placeholder="Escribe tu feedback y recomendaciones..."
-        ></textarea>
-        <button onClick={enviarFeedback}>Enviar Feedback</button>
+    <div className="container mt-5">
+      <div className="row">
+        <div className="col-lg-6">
+          <h2>Perfil de Usuario</h2>
+          <p>
+            <b>Nombre de usuario:</b> {profileData.username}
+          </p>
+          <p>
+            <b>Email:</b> {profileData.email}
+          </p>
+          <p>
+            <b>Nombre completo:</b> {profileData.fullname}
+          </p>
+          <p>
+            <b>Ciudad:</b> {profileData.city}
+          </p>
+          <p>
+            <b>País:</b> {profileData.country}
+          </p>
+          <p>
+            <b>Edad:</b> {profileData.age}
+          </p>
+          <p>
+            <b>Universidad:</b> {profileData.university}
+          </p>
+          <p>
+            <b>
+              <span className="font-weight-bold">Lenguajes:</span>{" "}
+              {profileData.languages}
+            </b>
+          </p>
+          <p>
+            <b>LinkedIn:</b> {profileData.linkedin}
+          </p>
+          <p>
+            <b>Hobbies:</b> {profileData.hobbies}
+          </p>
+          <p>
+            <b>Conocimientos extra:</b> {profileData.extraknowledge}
+          </p>
+        </div>
+        <div className="col-lg-6">
+          <h3>Dejar Feedback y Recomendaciones</h3>
+          <textarea
+            value={feedback}
+            onChange={(e) => setFeedback(e.target.value)}
+            placeholder="Escribe tu feedback y recomendaciones..."
+            className="form-control"
+          ></textarea>
+          <button onClick={enviarFeedback} className="btn btn-primary mt-2">
+            Enviar Feedback
+          </button>
+        </div>
       </div>
 
-      <div>
-        <h3>Feedbacks y Recomendaciones dejados</h3>
-        {feedbackList.length > 0 ? (
-          <ul>
-            {feedbackList.map((feedbackItem) => (
-              <li key={feedbackItem.id}>
-                {feedbackItem.feedback} - {feedbackItem.username}
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>No se encontraron feedback</p>
-        )}
+      <div className="row mt-5">
+        <div className="col-lg-12">
+          <h3>Feedbacks y Recomendaciones dejados</h3>
+          {feedbackList.length > 0 ? (
+            <ul className="list-group">
+              {feedbackList.map((feedbackItem) => (
+                <li
+                  key={feedbackItem.id}
+                  className="list-group-item d-flex justify-content-between align-items-center"
+                >
+                  <span className="font-weight-bold">
+                    <strong>{feedbackItem.username}</strong>
+                  </span>
+                  {feedbackItem.feedback}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No se encontraron feedback</p>
+          )}
+        </div>
       </div>
     </div>
   );
