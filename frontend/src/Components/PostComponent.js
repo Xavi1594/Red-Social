@@ -89,12 +89,17 @@ export const PostComponent = ({ loggedIn }) => {
     try {
       const response = await fetch("http://localhost:3000/posts");
       const posts = await response.json();
-      setAllPosts(posts);
+      const sortedPosts = posts.sort((a, b) => {
+        const dateA = new Date(a.createdAt);
+        const dateB = new Date(b.createdAt);
+        return dateB - dateA;
+      });
+      setAllPosts(sortedPosts);
     } catch (error) {
       console.error("Error al obtener los posts:", error);
     }
   };
-
+  
   const deletePost = async (postId) => {
     try {
       const response = await fetch(`http://localhost:3000/posts/${postId}`, {
@@ -158,7 +163,9 @@ export const PostComponent = ({ loggedIn }) => {
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentPosts = allPosts.slice(indexOfFirstItem, indexOfLastItem);
+  const currentPosts = Array.isArray(allPosts)
+    ? allPosts.slice(indexOfFirstItem, indexOfLastItem)
+    : [];
   const totalPages = Math.ceil(allPosts.length / itemsPerPage);
 
   return (
@@ -179,7 +186,6 @@ export const PostComponent = ({ loggedIn }) => {
           <div className="card mt-5 py-2">
             <form id="new-post-form" onSubmit={createPost}>
               <div className="form-group">
-              <div className="input-container">
                 <input
                   type="text"
                   className="form-control"
@@ -189,9 +195,7 @@ export const PostComponent = ({ loggedIn }) => {
                   onChange={(e) => setTitle(e.target.value)}
                 />
               </div>
-              </div>
               <div className="form-group">
-              <div className="textarea-container">
                 <textarea
                   className="form-control"
                   id="new-post-content"
@@ -200,15 +204,13 @@ export const PostComponent = ({ loggedIn }) => {
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
                 ></textarea>
-                   <button
+              </div>
+              <button
                 type="submit"
                 className="btn btn-primary w-100 mt-2 py-1 mb-2"
               >
                 Publicar
               </button>
-                </div>
-              </div>
-           
             </form>
             <div
               className="bg-light p-2 rounded-3 border border-2 mb-4"
