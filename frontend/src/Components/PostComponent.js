@@ -89,12 +89,17 @@ export const PostComponent = ({ loggedIn }) => {
     try {
       const response = await fetch("http://localhost:3000/posts");
       const posts = await response.json();
-      setAllPosts(posts);
+      const sortedPosts = posts.sort((a, b) => {
+        const dateA = new Date(a.createdAt);
+        const dateB = new Date(b.createdAt);
+        return dateB - dateA;
+      });
+      setAllPosts(sortedPosts);
     } catch (error) {
       console.error("Error al obtener los posts:", error);
     }
   };
-
+  
   const deletePost = async (postId) => {
     try {
       const response = await fetch(`http://localhost:3000/posts/${postId}`, {
@@ -158,14 +163,16 @@ export const PostComponent = ({ loggedIn }) => {
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentPosts = allPosts.slice(indexOfFirstItem, indexOfLastItem);
+  const currentPosts = Array.isArray(allPosts)
+    ? allPosts.slice(indexOfFirstItem, indexOfLastItem)
+    : [];
   const totalPages = Math.ceil(allPosts.length / itemsPerPage);
 
   return (
     <main className="container">
       <div className="row">
         <div className="col-lg-3 col-md-6 mt-5">
-          <div className="mt-5 usuario-loged border text-center text-lg-center text-md-center">
+          <div className="mt-5 usuario-loged text-center text-lg-center text-md-center">
             <img
               src={user_Img}
               alt="Foto de perfil"
@@ -198,7 +205,10 @@ export const PostComponent = ({ loggedIn }) => {
                   onChange={(e) => setContent(e.target.value)}
                 ></textarea>
               </div>
-              <button type="submit" className="btn btn-primary">
+              <button
+                type="submit"
+                className="btn btn-primary w-100 mt-2 py-1 mb-2"
+              >
                 Publicar
               </button>
             </form>
@@ -248,7 +258,7 @@ export const PostComponent = ({ loggedIn }) => {
                       <p className="card-body">{post.content}</p>
                     </>
                   )}
-                  <div className="card-footer">
+                  <div className="card-footer d-flex justify-content-between">
                     {likedPosts.includes(post.id) ? (
                       <button className="btn btn-sm btn-danger" disabled>
                         <svg
@@ -256,11 +266,11 @@ export const PostComponent = ({ loggedIn }) => {
                           width="16"
                           height="16"
                           fill="currentColor"
-                          class="bi bi-heart-fill"
+                          className="bi bi-heart-fill"
                           viewBox="0 0 16 16"
                         >
                           <path
-                            fill-rule="evenodd"
+                            fillRule="evenodd"
                             d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"
                           />
                         </svg>
@@ -275,20 +285,22 @@ export const PostComponent = ({ loggedIn }) => {
                           width="16"
                           height="16"
                           fill="currentColor"
-                          class="bi bi-heart-fill"
+                          className="bi bi-heart-fill"
                           viewBox="0 0 16 16"
                         >
                           <path
-                            fill-rule="evenodd"
+                            fillRule="evenodd"
                             d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"
                           />
                         </svg>
                       </button>
                     )}
+
                     {editedPost.id === post.id ? (
                       <button
                         className="btn btn-sm btn-primary mr-2"
                         onClick={() => editPost(post.id)}
+                        style={{ width: "25%" }}
                       >
                         Guardar
                       </button>
@@ -302,13 +314,16 @@ export const PostComponent = ({ loggedIn }) => {
                             content: post.content,
                           })
                         }
+                        style={{ width: "25%" }}
                       >
                         Editar
                       </button>
                     )}
+
                     <button
                       className="btn btn-sm btn-danger"
                       onClick={() => deletePost(post.id)}
+                      style={{ width: "25%" }}
                     >
                       Eliminar
                     </button>
@@ -319,7 +334,12 @@ export const PostComponent = ({ loggedIn }) => {
           </div>
         </div>
         <div className="col-lg-3 mt-5 ">
-          <img src="socialy.jpg" className="img-thumbnail mt-5" width="200" alt="..." />
+          <img
+            src="socialy.jpg"
+            className="img-thumbnail mt-5"
+            width="200"
+            alt="..."
+          />
         </div>
       </div>
       <div className="row justify-content-center mb-5 py-5">

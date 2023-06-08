@@ -40,8 +40,21 @@ export const FriendsComponent = () => {
     const filteredItems = usuariosRegistrados.filter((usuario) =>
       usuario.fullname.toLowerCase().startsWith(searchTerm.toLowerCase())
     );
-    setFilteredUsers(filteredItems);
+    
+    // Ordenar los usuarios por amigos primero
+    const sortedItems = filteredItems.sort((a, b) => {
+      if (a.amigo && !b.amigo) {
+        return -1;
+      } else if (!a.amigo && b.amigo) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
+  
+    setFilteredUsers(sortedItems);
   };
+  
 
   const agregarAmigo = (idAmigo, nombreAmigo) => {
     fetch(`http://localhost:3000/amigos/agregar/${idAmigo}`, {
