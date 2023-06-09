@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
 import { NavbarComponent } from '../Components/NavbarComponent';
 import { FooterComponent } from '../Components/FooterComponent';
@@ -12,14 +12,26 @@ import { FriendsAddedComponent } from '../Components/FriendsAddedComponent';
 import { OtherProfilesComponent } from '../Components/OtherProfilesComponent';
 
 export const RouterPrincipal = () => {
-  const [loggedIn, setLoggedIn] = useState(!!localStorage.getItem('token'));
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [token, setToken] = useState(null);
 
-  const handleLogin = () => {
+  useEffect(() => {
+    const tokenFromLocalStorage = localStorage.getItem('token');
+    if (tokenFromLocalStorage) {
+      setToken(tokenFromLocalStorage);
+      setLoggedIn(true);
+    }
+  }, [token]);
+
+  const handleLogin = (token) => {
+    localStorage.setItem('token', token);
+    setToken(token);
     setLoggedIn(true);
   };
 
   const handleLogout = () => {
     localStorage.removeItem('token');
+    setToken(null);
     setLoggedIn(false);
   };
 
@@ -37,7 +49,11 @@ export const RouterPrincipal = () => {
           <Route path="/perfil" element={<ProfileComponent loggedIn={loggedIn} />} />
           <Route path="/amigos" element={<FriendsComponent />} />
           <Route path="/amigosagregados" element={<FriendsAddedComponent />} />
-          <Route path="/posts" element={<PostComponent loggedIn={loggedIn} />} />
+          {token && (
+           <Route path="/posts" element={<PostComponent loggedIn={loggedIn} />} />
+
+
+          )}
           <Route
             path="/amigos/:userId"
             element={<OtherProfilesComponent loggedIn={loggedIn} />}

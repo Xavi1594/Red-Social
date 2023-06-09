@@ -41,6 +41,7 @@ app.use(
   })
 );
 
+
 // Registro
 app.post("/registro", (req, res) => {
   const {
@@ -239,9 +240,18 @@ app.get("/logout", function (req, res) {
     }
   });
 });
+const authenticateMiddleware = (req, res, next) => {
+  if (req.session.loggedin) {
+    // El usuario está autenticado, permitir el acceso a la ruta protegida
+    next();
+  } else {
+    // El usuario no está autenticado, redirigir a la página de inicio de sesión
+    res.status(401).json({ error: "No se ha iniciado sesión" });
+  }
+};
 
 // Obtener la lista de usuarios registrados
-app.get("/usuarios/registrados", function (req, res) {
+app.get("/usuarios/registrados",authenticateMiddleware, function (req, res) {
   var userId = req.session.usuarioId;
   db.query(
     "SELECT usuarios.id, usuarios.username, usuarios.user_img,usuarios.country, usuarios.fullname, CASE WHEN amigos.idAmigo IS NOT NULL THEN 1 ELSE 0 END AS amigo FROM usuarios LEFT JOIN amigos ON usuarios.id = amigos.idAmigo AND amigos.iduser = ? WHERE usuarios.id != ?",
@@ -263,7 +273,7 @@ app.get("/usuarios/registrados", function (req, res) {
 });
 
 // Obtener la lista de amigos
-app.get("/amigos", function (req, res) {
+app.get("/amigos",authenticateMiddleware, function (req, res) {
   var userId = req.session.usuarioId;
   db.query(
     "SELECT usuarios.id, usuarios.username, usuarios.user_img, usuarios.fullname FROM usuarios WHERE usuarios.id != ? AND usuarios.id NOT IN (SELECT amigos.idAmigo FROM amigos WHERE amigos.iduser = ?)",
@@ -283,7 +293,7 @@ app.get("/amigos", function (req, res) {
 });
 
 // Agregar amigo
-app.post("/amigos/agregar/:idAmigo", function (req, res) {
+app.post("/amigos/agregar/:idAmigo",authenticateMiddleware, function (req, res) {
   var idAmigo = req.params.idAmigo;
   var userId = req.session.usuarioId;
 
@@ -389,7 +399,7 @@ app.post("/amigos/agregar/:idAmigo", function (req, res) {
 });
 
 // Obtener la lista de posts
-app.get("/posts", (req, res) => {
+app.get("/posts",authenticateMiddleware, (req, res) => {
   db.query(
     "SELECT p.id, p.title, p.content, p.usuarioId, p.createdAt, p.updatedAt, u.fullname, u.user_img FROM post AS p JOIN usuarios AS u ON p.usuarioId = u.id",
     (err, results) => {
@@ -409,7 +419,7 @@ app.get("/posts", (req, res) => {
 });
 
 // Crear un nuevo post
-app.post("/posts", (req, res) => {
+app.post("/posts",authenticateMiddleware, (req, res) => {
   const newPost = {
     user_img: req.body.user_img,
     title: req.body.title,
@@ -452,7 +462,7 @@ app.post("/posts", (req, res) => {
 });
 
 // Eliminar un post por su ID
-app.delete("/posts/:id", (req, res) => {
+app.delete("/posts/:id",authenticateMiddleware, (req, res) => {
   const postId = req.params.id;
 
   const sql = "DELETE FROM post WHERE id = ?";
@@ -521,7 +531,7 @@ app.put("/posts/:id", (req, res) => {
 });
 
 // Obtener datos de perfil
-app.get("/perfil", function (req, res) {
+app.get("/perfil",authenticateMiddleware, function (req, res) {
   const loggedIn = req.session.loggedin;
   const username = req.session.username;
 
@@ -570,7 +580,7 @@ app.delete("/eliminarcuenta", function (req, res) {
 });
 
 // Endpoint para obtener el perfil del usuario
-app.get("/perfil", function (req, res) {
+app.get("/perfil",authenticateMiddleware, function (req, res) {
   const username = req.session.username;
 
   if (username) {
@@ -612,7 +622,7 @@ app.get("/perfil", function (req, res) {
 });
 
 // Endpoint para actualizar el perfil del usuario
-app.put("/perfil", function (req, res) {
+app.put("/perfil",authenticateMiddleware, function (req, res) {
   const username = req.session.username;
   const profileData = req.body;
 
@@ -667,7 +677,7 @@ app.get("/amigos/:userId", (req, res) => {
     }
   });
 });
-app.get("/usuario", function (req, res) {
+app.get("/usuario",authenticateMiddleware, function (req, res) {
   const loggedIn = req.session.loggedin;
   const userId = req.session.usuarioId;
 

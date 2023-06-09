@@ -11,11 +11,11 @@ export const LoginFormComponent = ({ onLogin }) => {
     try {
       const response = await fetch("http://localhost:3000/", {
         method: 'POST',
+        credentials: "include",
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ username: usernameOrEmail, password }),
-        credentials: 'include',
       });
       
       const data = await response.json();
@@ -25,11 +25,9 @@ export const LoginFormComponent = ({ onLogin }) => {
         return;
       }
 
-     
       localStorage.setItem('token', data.token);
 
-    
-      onLogin(); 
+      onLogin();
 
       navigate('/posts');
     } catch (error) {
@@ -37,15 +35,12 @@ export const LoginFormComponent = ({ onLogin }) => {
     }
   };
 
-  
   return (
     <div className="container-fluid d-flex justify-content-center align-items-center vh-100">
-     <div className="card col-md-4 col-lg-6 col-10 p-0 d-flex flex-column justify-content-center align-items-center mx-auto" id='container-inputs'>
+      <div className="card col-md-4 col-lg-6 col-10 p-0 d-flex flex-column justify-content-center align-items-center mx-auto" id='container-inputs'>
         <div className="text-center mt-5">
           <h2 className="card-header text-center h2-animation">Inicia sesión en Socialy</h2>
           <img src="socialy.jpg" className="img-thumbnail mt-5" width="200" alt="..." />
-
-
         </div>
         <div className="col-md-6 mx-auto mt-5">
           <form>
@@ -80,7 +75,7 @@ export const LoginFormComponent = ({ onLogin }) => {
                 Iniciar Sesión
               </button>
             </div>
-            <div id="mensaje-de-error" className="error">{errorMessage}</div>
+            {errorMessage && <div id="mensaje-de-error" className="error">{errorMessage}</div>}
           </form>
         </div>
       </div>

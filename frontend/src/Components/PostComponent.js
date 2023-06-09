@@ -87,7 +87,16 @@ export const PostComponent = ({ loggedIn }) => {
 
   const fetchPosts = async () => {
     try {
-      const response = await fetch("http://localhost:3000/posts");
+      const response = await fetch("http://localhost:3000/posts", {
+        credentials: "include",
+      });
+  
+      if (response.status === 401) {
+        
+        navigate("/");
+        return;
+      }
+  
       const posts = await response.json();
       const sortedPosts = posts.sort((a, b) => {
         const dateA = new Date(a.createdAt);
