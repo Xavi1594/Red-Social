@@ -8,7 +8,7 @@ import { LoginFormComponent } from '../Components/LoginFormComponent';
 import { FriendsComponent } from '../Components/FriendsComponent';
 import { PostComponent } from '../Components/PostComponent';
 import { NotLoggedNavbarComponent } from '../Components/NotLoggedNavbarComponent';
-import { FriendsAddedComponent } from '../Components/FriendsAddedComponent';
+import FriendsAddedComponent from '../Components/FriendsAddedComponent';
 import { OtherProfilesComponent } from '../Components/OtherProfilesComponent';
 
 export const RouterPrincipal = () => {
