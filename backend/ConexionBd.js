@@ -706,6 +706,7 @@ app.get("/usuario", function (req, res) {
     res.status(401).json("No se ha iniciado sesión");
   }
 });
+
 // Ruta para obtener el feedback de un usuario específico
 app.get("/feedback/:userId", (req, res) => {
   const userId = req.params.userId;
