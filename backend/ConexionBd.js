@@ -251,64 +251,63 @@ app.get("/usuarioadmin", authenticateMiddleware, (req, res) => {
 
   // Obtener los datos de todos los usuarios de la base de datos
   const sql = "SELECT * FROM usuarios";
-db.query(sql, (err, results) => {
-  if (err) {
-    console.error("Error al obtener los usuarios:", err);
-    return res
-      .status(500)
-      .json({ error: "Ha ocurrido un error al obtener los usuarios" });
-  }
-
-  // Especifica la ubicación y el nombre del archivo CSV
-  const csvFilePath = "./csv/usuarios.csv";
-
-  // Define las columnas del archivo CSV
-  const csvWriter = createCsvWriter({
-    path: csvFilePath,
-    header: [
-      { id: "id", title: "ID" },
-      { id: "username", title: "Nombre de usuario" },
-      { id: "email", title: "Correo electrónico" },
-      { id: "city", title: "Ciudad" },
-      { id: "country", title: "País" },
-      { id: "age", title: "Edad" },
-      { id: "university", title: "Universidad" }, 
-      { id: "languages", title: "Languages" },
-      { id: "hobbies", title: "Pasatiempos" },
-      { id: "extraknowledge", title: "Conocimientos adicionales" },
-    ],
-  });
-
-  
-  const csvData = results.map((user) => ({
-    id: user.id,
-    username: user.username,
-    email: user.email,
-    city: user.city,
-    country: user.country,
-    age: user.age,
-    university: user.university,
-    languages: user.languages,
-    hobbies: user.hobbies,
-    extraknowledge: user.extraknowledge,
-  }));
-
-  csvWriter
-    .writeRecords(csvData)
-    .then(() => {
-      console.log("Archivo CSV generado");
-
-      const fullUrl =
-        req.protocol + "://" + req.get("host") + "/csv/usuarios.csv";
-      res.json({ url: fullUrl });
-    })
-    .catch((err) => {
-      console.error("Error al generar el archivo CSV:", err);
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error("Error al obtener los usuarios:", err);
       return res
         .status(500)
-        .json({ error: "Ha ocurrido un error al generar el archivo CSV" });
+        .json({ error: "Ha ocurrido un error al obtener los usuarios" });
+    }
+
+    // Especifica la ubicación y el nombre del archivo CSV
+    const csvFilePath = "./csv/usuarios.csv";
+
+    // Define las columnas del archivo CSV
+    const csvWriter = createCsvWriter({
+      path: csvFilePath,
+      header: [
+        { id: "id", title: "ID" },
+        { id: "username", title: "Nombre de usuario" },
+        { id: "email", title: "Correo electrónico" },
+        { id: "city", title: "Ciudad" },
+        { id: "country", title: "País" },
+        { id: "age", title: "Edad" },
+        { id: "university", title: "Universidad" },
+        { id: "languages", title: "Languages" },
+        { id: "hobbies", title: "Pasatiempos" },
+        { id: "extraknowledge", title: "Conocimientos adicionales" },
+      ],
     });
-});
+
+    const csvData = results.map((user) => ({
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      city: user.city,
+      country: user.country,
+      age: user.age,
+      university: user.university,
+      languages: user.languages,
+      hobbies: user.hobbies,
+      extraknowledge: user.extraknowledge,
+    }));
+
+    csvWriter
+      .writeRecords(csvData)
+      .then(() => {
+        console.log("Archivo CSV generado");
+
+        const fullUrl =
+          req.protocol + "://" + req.get("host") + "/csv/usuarios.csv";
+        res.json({ url: fullUrl });
+      })
+      .catch((err) => {
+        console.error("Error al generar el archivo CSV:", err);
+        return res
+          .status(500)
+          .json({ error: "Ha ocurrido un error al generar el archivo CSV" });
+      });
+  });
 });
 
 // Obtener la lista de usuarios registrados

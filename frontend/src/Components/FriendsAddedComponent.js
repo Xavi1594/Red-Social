@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { loadFriends, deleteFriend } from '../actions/friendsActions';
 
 const FriendsAddedComponent = ({ friends, loadFriends, deleteFriend }) => {
-  console.log(friends); 
+  
   useEffect(() => {
     loadFriends();
   }, []);
@@ -15,7 +15,7 @@ const FriendsAddedComponent = ({ friends, loadFriends, deleteFriend }) => {
   };
 
   if (!friends || friends.length === 0) {
-    return <div>Loading...</div>; // o algún otro indicador de carga
+    return <div>Loading...</div>; 
   }
 
   return (
@@ -62,7 +62,7 @@ const FriendsAddedComponent = ({ friends, loadFriends, deleteFriend }) => {
 };
 
 const mapStateToProps = (state) => ({
-  friends: state.friends // Asegúrate de que el nombre del estado sea correcto
+  friends: state.friends 
 });
 
 const mapDispatchToProps = (dispatch) => ({

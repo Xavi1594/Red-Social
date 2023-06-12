@@ -51,7 +51,7 @@ export const ProfileComponent = ({ loggedIn }) => {
     if (!validateFields()) {
       return;
     }
-  
+
     fetch("http://localhost:3000/perfil", {
       method: "PUT",
       credentials: "include",
@@ -64,7 +64,7 @@ export const ProfileComponent = ({ loggedIn }) => {
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-  
+
         return response.text();
       })
       .then((text) => {
@@ -75,7 +75,7 @@ export const ProfileComponent = ({ loggedIn }) => {
         console.error("Error al guardar los cambios del perfil:", error);
       });
   };
-  
+
   const handleCancel = () => {
     setProfileData(originalProfileData);
     setIsEditMode(false);
@@ -89,7 +89,6 @@ export const ProfileComponent = ({ loggedIn }) => {
       [name]: value,
     }));
   };
-  
 
   const validateFields = () => {
     return true;
@@ -99,33 +98,32 @@ export const ProfileComponent = ({ loggedIn }) => {
     <div className="container my-5">
       {loggedIn ? (
         <>
- <div className="row justify-content-center">
-  <div className="col-6 col-md-4">
-    <img
-      src={profileData.user_img}
-      className="img-fluid rounded mt-3"
-      style={{ width: "260px", height: "220px" }}
-      width="200"
-      alt="Foto de perfil"
-    />
-    {isEditMode && (
-      <div className="form-group">
-        <label htmlFor="profile-image-url">URL de la foto de perfil:</label>
-        <input
-          type="text"
-          id="profile-image-url"
-          name="user_img"
-          value={profileData.user_img}
-          onChange={handleChange}
-          className="form-control"
-        />
-      </div>
-    )}
-  </div>
-</div>
-
-
-       
+          <div className="row justify-content-center">
+            <div className="col-6 col-md-4">
+              <img
+                src={profileData.user_img}
+                className="img-fluid rounded mt-3"
+                style={{ width: "260px", height: "220px" }}
+                width="200"
+                alt="Foto de perfil"
+              />
+              {isEditMode && (
+                <div className="form-group">
+                  <label htmlFor="profile-image-url">
+                    URL de la foto de perfil:
+                  </label>
+                  <input
+                    type="text"
+                    id="profile-image-url"
+                    name="user_img"
+                    value={profileData.user_img}
+                    onChange={handleChange}
+                    className="form-control"
+                  />
+                </div>
+              )}
+            </div>
+          </div>
 
           <div className="row my-3">
             <div className="col-12">
@@ -334,25 +332,29 @@ export const ProfileComponent = ({ loggedIn }) => {
               </p>
             </div>
           </div>
-
           <div className="row my-3">
-            <div className="col-12">
-              {isEditMode ? (
-                <>
-                  <button className="btn btn-primary mr-2" onClick={handleSave}>
-                    Guardar
-                  </button>
-                  <button className="btn btn-secondary" onClick={handleCancel}>
-                    Cancelar
-                  </button>
-                </>
-              ) : (
-                <button className="btn btn-primary w-25" onClick={handleEdit}>
-                  Editar
-                </button>
-              )}
-            </div>
-          </div>
+  <div className="col-12">
+    {isEditMode ? (
+      <>
+        <div className="botones-container d-flex justify-content-between">
+          <button className="btn btn-primary mr-2 w-25" onClick={handleSave}>
+            Guardar
+          </button>
+          <button className="btn btn-secondary w-25" onClick={handleCancel}>
+            Cancelar
+          </button>
+        </div>
+      </>
+    ) : (
+      <div>
+        <button className="btn btn-primary w-25" onClick={handleEdit}>
+          Editar
+        </button>
+      </div>
+    )}
+  </div>
+</div>
+
         </>
       ) : (
         <p>No se ha iniciado sesión</p>

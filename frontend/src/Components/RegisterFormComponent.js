@@ -161,7 +161,11 @@ export const RegisterFormComponent = () => {
   return (
     <div className="container formulario  mb-2 mt-5">
       <div className="row">
-        <div className="col-md-6 offset-md-3 mt-5 " id="register-form" data-testid="register-form">
+        <div
+          className="col-md-6 offset-md-3 mt-5 "
+          id="register-form"
+          data-testid="register-form"
+        >
           <h2 className="text-center text-bg-warning p-3 mt-2">
             Formulario de Registro
           </h2>

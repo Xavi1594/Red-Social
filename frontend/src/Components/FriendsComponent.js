@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import Pagination from './Pagination';
-import { Link } from 'react-router-dom';
-import SearchBar from './SearchBar';
+import React, { useEffect, useState } from "react";
+import Pagination from "./Pagination";
+import { Link } from "react-router-dom";
+import SearchBar from "./SearchBar";
 
 export const FriendsComponent = () => {
   const [usuariosRegistrados, setUsuariosRegistrados] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(12);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [filteredUsers, setFilteredUsers] = useState([]);
 
   useEffect(() => {
@@ -19,20 +19,20 @@ export const FriendsComponent = () => {
   }, [usuariosRegistrados, searchTerm]);
 
   const cargarUsuariosRegistrados = () => {
-    fetch('http://localhost:3000/usuarios/registrados', {
-      credentials: 'include',
+    fetch("http://localhost:3000/usuarios/registrados", {
+      credentials: "include",
     })
       .then((response) => {
         if (response.ok) {
           return response.json();
         }
-        throw new Error('No se pudo obtener la lista de usuarios registrados');
+        throw new Error("No se pudo obtener la lista de usuarios registrados");
       })
       .then((usuariosRegistrados) => {
         setUsuariosRegistrados(usuariosRegistrados);
       })
       .catch((error) => {
-        console.error('Ha ocurrido un error:', error.message);
+        console.error("Ha ocurrido un error:", error.message);
       });
   };
 
@@ -40,7 +40,7 @@ export const FriendsComponent = () => {
     const filteredItems = usuariosRegistrados.filter((usuario) =>
       usuario.fullname.toLowerCase().startsWith(searchTerm.toLowerCase())
     );
-    
+
     // Ordenar los usuarios por amigos primero
     const sortedItems = filteredItems.sort((a, b) => {
       if (a.amigo && !b.amigo) {
@@ -51,48 +51,47 @@ export const FriendsComponent = () => {
         return 0;
       }
     });
-  
+
     setFilteredUsers(sortedItems);
   };
-  
 
   const agregarAmigo = (idAmigo, nombreAmigo) => {
     fetch(`http://localhost:3000/amigos/agregar/${idAmigo}`, {
-      method: 'POST',
-      credentials: 'include',
+      method: "POST",
+      credentials: "include",
     })
       .then((response) => {
         if (response.ok) {
           return response.json();
         }
-        throw new Error('No se pudo agregar al amigo');
+        throw new Error("No se pudo agregar al amigo");
       })
       .then((amigo) => {
         cargarUsuariosRegistrados();
         alert(`Amigo ${nombreAmigo} agregado con éxito`);
       })
       .catch((error) => {
-        console.error('Ha ocurrido un error:', error.message);
+        console.error("Ha ocurrido un error:", error.message);
       });
   };
 
   const eliminarAmigo = (idAmigo, nombreAmigo) => {
     fetch(`http://localhost:3000/amigos/eliminar/${idAmigo}`, {
-      method: 'DELETE',
-      credentials: 'include',
+      method: "DELETE",
+      credentials: "include",
     })
       .then((response) => {
         if (response.ok) {
           return response.json();
         }
-        throw new Error('No se pudo eliminar al amigo');
+        throw new Error("No se pudo eliminar al amigo");
       })
       .then((amigo) => {
         cargarUsuariosRegistrados();
         alert(`Amigo ${nombreAmigo} eliminado con éxito`);
       })
       .catch((error) => {
-        console.error('Ha ocurrido un error:', error.message);
+        console.error("Ha ocurrido un error:", error.message);
       });
   };
 
@@ -102,19 +101,16 @@ export const FriendsComponent = () => {
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredUsers.slice(
-    indexOfFirstItem,
-    indexOfLastItem
-  );
+  const currentItems = filteredUsers.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
 
   useEffect(() => {
     filterUsers();
-}, [usuariosRegistrados, searchTerm]); 
+  }, [usuariosRegistrados, searchTerm]);
 
-const handleSearch = (searchTerm) => {
+  const handleSearch = (searchTerm) => {
     setSearchTerm(searchTerm);
-};
+  };
 
   return (
     <div className="container mt-5 amigosContainer">
@@ -139,7 +135,7 @@ const handleSearch = (searchTerm) => {
                 <img
                   src={usuario.user_img}
                   className="img-fluid rounded mt-3"
-                  style={{ width: '100px', height: '100px' }}
+                  style={{ width: "100px", height: "100px" }}
                   alt="Foto de perfil"
                 />
                 <div className="detalles">
