@@ -71,6 +71,13 @@ export const NavbarComponent = ({ onLogout }) => {
                   Registro
                 </NavLink>
               </li>
+
+              <li className="nav-item">
+                <NavLink to="/usuarios" className="nav-link">
+                 lista
+                </NavLink>
+              </li>
+
               <li className="nav-item">
                 <NavLink
                   to={'/'}

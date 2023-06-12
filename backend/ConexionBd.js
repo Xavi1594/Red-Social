@@ -6,6 +6,8 @@ const cors = require("cors");
 const bcrypt = require("bcrypt");
 require("dotenv").config();
 const app = express();
+const createCsvWriter = require('csv-writer').createObjectCsvWriter;
+const fs = require('fs');
 const port = process.env.PORT || 3000;
 
 // Permitir CORS
@@ -31,6 +33,7 @@ app.use(express.static("public"));
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use('/csv', express.static('csv'));
 
 // Configuración de la sesión
 app.use(
@@ -203,6 +206,10 @@ app.post("/", (req, res) => {
               req.session.loggedin = true;
               req.session.username = results[0].username;
               req.session.usuarioId = results[0].id;
+              req.session.es_admin = results[0].es_admin; // Agrega esta línea para establecer el valor de es_admin en la sesión
+          
+              console.log('Valor de req.session.es_admin:', req.session.es_admin);
+          
               res.json({ login: true, id: results[0].id });
             } else {
               res
@@ -249,6 +256,53 @@ const authenticateMiddleware = (req, res, next) => {
     res.status(401).json({ error: "No se ha iniciado sesión" });
   }
 };
+app.get('/usuarioadmin', authenticateMiddleware, (req, res) => {
+  // Verificar si el usuario tiene permisos de administrador
+  if (req.session.es_admin !== 1) {
+    console.log('El usuario no tiene permisos de administrador');
+    return res.status(403).json({ error: 'No tienes permiso para acceder a esta función' });
+  }
+
+  console.log('Valor de req.session.es_admin:', req.session.es_admin);
+
+  // Obtener los datos de todos los usuarios de la base de datos
+  const sql = 'SELECT * FROM usuarios';
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error('Error al obtener los usuarios:', err);
+      return res.status(500).json({ error: 'Ha ocurrido un error al obtener los usuarios' });
+    }
+
+    // Especifica la ubicación y el nombre del archivo CSV
+    const csvFilePath = './csv/usuarios.csv';
+
+    // Define las columnas del archivo CSV
+    const csvWriter = createCsvWriter({
+      path: csvFilePath,
+      header: [
+        { id: 'id', title: 'ID' },
+        { id: 'username', title: 'Nombre de usuario' },
+        { id: 'email', title: 'Correo electrónico' },
+        // Agrega las columnas adicionales que deseas incluir en el archivo CSV
+      ],
+    });
+
+    // Escribe los datos en el archivo CSV
+    csvWriter
+      .writeRecords(results)
+      .then(() => {
+        console.log('Archivo CSV generado');
+        // Devuelve la URL del archivo CSV para descargarlo en el cliente
+        const fullUrl = req.protocol + '://' + req.get('host') + '/csv/usuarios.csv';
+        res.json({ url: fullUrl });
+      })
+      .catch((err) => {
+        console.error('Error al generar el archivo CSV:', err);
+        return res.status(500).json({ error: 'Ha ocurrido un error al generar el archivo CSV' });
+      });
+  });
+});
+
 
 // Obtener la lista de usuarios registrados
 app.get("/usuarios/registrados",authenticateMiddleware, function (req, res) {

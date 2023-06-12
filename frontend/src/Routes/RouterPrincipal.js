@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
 import { NavbarComponent } from '../Components/NavbarComponent';
 import { FooterComponent } from '../Components/FooterComponent';
@@ -10,10 +10,12 @@ import { PostComponent } from '../Components/PostComponent';
 import { NotLoggedNavbarComponent } from '../Components/NotLoggedNavbarComponent';
 import FriendsAddedComponent from '../Components/FriendsAddedComponent';
 import { OtherProfilesComponent } from '../Components/OtherProfilesComponent';
+import { UsuariosComponent } from '../Components/UsuariosComponent';
 
 export const RouterPrincipal = () => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [token, setToken] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const tokenFromLocalStorage = localStorage.getItem('token');
@@ -21,25 +23,27 @@ export const RouterPrincipal = () => {
       setToken(tokenFromLocalStorage);
       setLoggedIn(true);
     }
-  }, [token]);
+  }, []);
 
-  const handleLogin = (token) => {
+  const handleLogin = (token, isAdmin) => {
     localStorage.setItem('token', token);
     setToken(token);
     setLoggedIn(true);
+    setIsAdmin(isAdmin);
   };
 
   const handleLogout = () => {
     localStorage.removeItem('token');
     setToken(null);
     setLoggedIn(false);
+    setIsAdmin(false);
   };
 
   return (
     <div>
       <BrowserRouter>
         {loggedIn ? (
-          <NavbarComponent loggedIn={loggedIn} onLogout={handleLogout} />
+          <NavbarComponent loggedIn={loggedIn} isAdmin={isAdmin} onLogout={handleLogout} />
         ) : (
           <NotLoggedNavbarComponent onLogout={handleLogout} />
         )}
@@ -49,15 +53,16 @@ export const RouterPrincipal = () => {
           <Route path="/perfil" element={<ProfileComponent loggedIn={loggedIn} />} />
           <Route path="/amigos" element={<FriendsComponent />} />
           <Route path="/amigosagregados" element={<FriendsAddedComponent />} />
-          {token && (
-           <Route path="/posts" element={<PostComponent loggedIn={loggedIn} />} />
-
-
+          {loggedIn && (
+            <Route path="/posts" element={<PostComponent loggedIn={loggedIn} />} />
           )}
           <Route
             path="/amigos/:userId"
             element={<OtherProfilesComponent loggedIn={loggedIn} />}
           />
+          
+            <Route path="/usuarios" element={<UsuariosComponent />} />
+        
         </Routes>
         <FooterComponent />
       </BrowserRouter>
