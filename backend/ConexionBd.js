@@ -6,8 +6,8 @@ const cors = require("cors");
 const bcrypt = require("bcrypt");
 require("dotenv").config();
 const app = express();
-const createCsvWriter = require('csv-writer').createObjectCsvWriter;
-const fs = require('fs');
+const createCsvWriter = require("csv-writer").createObjectCsvWriter;
+const fs = require("fs");
 const port = process.env.PORT || 3000;
 
 // Permitir CORS
@@ -33,7 +33,7 @@ app.use(express.static("public"));
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use('/csv', express.static('csv'));
+app.use("/csv", express.static("csv"));
 
 // Configuración de la sesión
 app.use(
@@ -43,7 +43,6 @@ app.use(
     saveUninitialized: false,
   })
 );
-
 
 // Registro
 app.post("/registro", (req, res) => {
@@ -66,12 +65,10 @@ app.post("/registro", (req, res) => {
   bcrypt.hash(password, 10, (err, hashedPassword) => {
     if (err) {
       console.error("Error al hashear la contraseña:", err);
-      return res
-        .status(500)
-        .json({
-          message:
-            "Ha ocurrido un error al registrar el usuario. Por favor, intenta más tarde.",
-        });
+      return res.status(500).json({
+        message:
+          "Ha ocurrido un error al registrar el usuario. Por favor, intenta más tarde.",
+      });
     }
 
     const checkUserSql =
@@ -82,12 +79,10 @@ app.post("/registro", (req, res) => {
       (checkUserErr, checkUserResult) => {
         if (checkUserErr) {
           console.error("Error al buscar usuario:", checkUserErr);
-          return res
-            .status(500)
-            .json({
-              message:
-                "Ha ocurrido un error al validar el registro. Por favor, intenta más tarde.",
-            });
+          return res.status(500).json({
+            message:
+              "Ha ocurrido un error al validar el registro. Por favor, intenta más tarde.",
+          });
         }
         if (checkUserResult.length > 0) {
           const usernameExists = checkUserResult.some(
@@ -97,20 +92,15 @@ app.post("/registro", (req, res) => {
             (user) => user.email === email
           );
           if (usernameExists) {
-            return res
-              .status(400)
-              .json({
-                message:
-                  "El nombre de usuario ya existe. Por favor, elige otro.",
-              });
+            return res.status(400).json({
+              message: "El nombre de usuario ya existe. Por favor, elige otro.",
+            });
           }
           if (emailExists) {
-            return res
-              .status(400)
-              .json({
-                message:
-                  "El correo electrónico ya está registrado. Por favor, utiliza otro.",
-              });
+            return res.status(400).json({
+              message:
+                "El correo electrónico ya está registrado. Por favor, utiliza otro.",
+            });
           }
         }
 
@@ -136,12 +126,10 @@ app.post("/registro", (req, res) => {
           (err, result) => {
             if (err) {
               console.error("Error al insertar usuario:", err);
-              return res
-                .status(500)
-                .json({
-                  message:
-                    "Ha ocurrido un error al insertar el usuario en la base de datos. Por favor, intenta más tarde.",
-                });
+              return res.status(500).json({
+                message:
+                  "Ha ocurrido un error al insertar el usuario en la base de datos. Por favor, intenta más tarde.",
+              });
             }
             console.log([
               username,
@@ -181,43 +169,40 @@ app.post("/", (req, res) => {
       (error, results, fields) => {
         if (error) {
           console.error("Error al buscar usuario:", error);
-          return res
-            .status(500)
-            .json({
-              login: false,
-              error:
-                "Ha ocurrido un error al iniciar sesión. Por favor, intenta más tarde.",
-            });
+          return res.status(500).json({
+            login: false,
+            error:
+              "Ha ocurrido un error al iniciar sesión. Por favor, intenta más tarde.",
+          });
         }
         if (results.length > 0) {
           const storedPassword = results[0].password;
           bcrypt.compare(password, storedPassword, function (err, isMatch) {
             if (err) {
               console.error("Error al verificar la contraseña:", err);
-              return res
-                .status(500)
-                .json({
-                  login: false,
-                  error:
-                    "Ha ocurrido un error al iniciar sesión. Por favor, intenta más tarde.",
-                });
+              return res.status(500).json({
+                login: false,
+                error:
+                  "Ha ocurrido un error al iniciar sesión. Por favor, intenta más tarde.",
+              });
             }
             if (isMatch === true) {
               req.session.loggedin = true;
               req.session.username = results[0].username;
               req.session.usuarioId = results[0].id;
               req.session.es_admin = results[0].es_admin; // Agrega esta línea para establecer el valor de es_admin en la sesión
-          
-              console.log('Valor de req.session.es_admin:', req.session.es_admin);
-          
+
+              console.log(
+                "Valor de req.session.es_admin:",
+                req.session.es_admin
+              );
+
               res.json({ login: true, id: results[0].id });
             } else {
-              res
-                .status(400)
-                .json({
-                  login: false,
-                  error: "Usuario o contraseña incorrectos",
-                });
+              res.status(400).json({
+                login: false,
+                error: "Usuario o contraseña incorrectos",
+              });
             }
           });
         } else {
@@ -228,12 +213,10 @@ app.post("/", (req, res) => {
       }
     );
   } else {
-    res
-      .status(400)
-      .json({
-        login: false,
-        error: "Por favor, introduce tu nombre de usuario y contraseña",
-      });
+    res.status(400).json({
+      login: false,
+      error: "Por favor, introduce tu nombre de usuario y contraseña",
+    });
   }
 });
 
@@ -256,56 +239,80 @@ const authenticateMiddleware = (req, res, next) => {
     res.status(401).json({ error: "No se ha iniciado sesión" });
   }
 };
-app.get('/usuarioadmin', authenticateMiddleware, (req, res) => {
+app.get("/usuarioadmin", authenticateMiddleware, (req, res) => {
   // Verificar si el usuario tiene permisos de administrador
   if (req.session.es_admin !== 1) {
-    console.log('El usuario no tiene permisos de administrador');
-    return res.status(403).json({ error: 'No tienes permiso para acceder a esta función' });
+    console.log();
+    ("El usuario no tiene permisos de administrador");
+    return res
+      .status(403)
+      .json({ error: "No tienes permiso para acceder a esta función" });
   }
 
-  console.log('Valor de req.session.es_admin:', req.session.es_admin);
-
   // Obtener los datos de todos los usuarios de la base de datos
-  const sql = 'SELECT * FROM usuarios';
-  db.query(sql, (err, results) => {
-    if (err) {
-      console.error('Error al obtener los usuarios:', err);
-      return res.status(500).json({ error: 'Ha ocurrido un error al obtener los usuarios' });
-    }
+  const sql = "SELECT * FROM usuarios";
+db.query(sql, (err, results) => {
+  if (err) {
+    console.error("Error al obtener los usuarios:", err);
+    return res
+      .status(500)
+      .json({ error: "Ha ocurrido un error al obtener los usuarios" });
+  }
 
-    // Especifica la ubicación y el nombre del archivo CSV
-    const csvFilePath = './csv/usuarios.csv';
+  // Especifica la ubicación y el nombre del archivo CSV
+  const csvFilePath = "./csv/usuarios.csv";
 
-    // Define las columnas del archivo CSV
-    const csvWriter = createCsvWriter({
-      path: csvFilePath,
-      header: [
-        { id: 'id', title: 'ID' },
-        { id: 'username', title: 'Nombre de usuario' },
-        { id: 'email', title: 'Correo electrónico' },
-        // Agrega las columnas adicionales que deseas incluir en el archivo CSV
-      ],
-    });
-
-    // Escribe los datos en el archivo CSV
-    csvWriter
-      .writeRecords(results)
-      .then(() => {
-        console.log('Archivo CSV generado');
-        // Devuelve la URL del archivo CSV para descargarlo en el cliente
-        const fullUrl = req.protocol + '://' + req.get('host') + '/csv/usuarios.csv';
-        res.json({ url: fullUrl });
-      })
-      .catch((err) => {
-        console.error('Error al generar el archivo CSV:', err);
-        return res.status(500).json({ error: 'Ha ocurrido un error al generar el archivo CSV' });
-      });
+  // Define las columnas del archivo CSV
+  const csvWriter = createCsvWriter({
+    path: csvFilePath,
+    header: [
+      { id: "id", title: "ID" },
+      { id: "username", title: "Nombre de usuario" },
+      { id: "email", title: "Correo electrónico" },
+      { id: "city", title: "Ciudad" },
+      { id: "country", title: "País" },
+      { id: "age", title: "Edad" },
+      { id: "university", title: "Universidad" }, 
+      { id: "languages", title: "Languages" },
+      { id: "hobbies", title: "Pasatiempos" },
+      { id: "extraknowledge", title: "Conocimientos adicionales" },
+    ],
   });
+
+  
+  const csvData = results.map((user) => ({
+    id: user.id,
+    username: user.username,
+    email: user.email,
+    city: user.city,
+    country: user.country,
+    age: user.age,
+    university: user.university,
+    languages: user.languages,
+    hobbies: user.hobbies,
+    extraknowledge: user.extraknowledge,
+  }));
+
+  csvWriter
+    .writeRecords(csvData)
+    .then(() => {
+      console.log("Archivo CSV generado");
+
+      const fullUrl =
+        req.protocol + "://" + req.get("host") + "/csv/usuarios.csv";
+      res.json({ url: fullUrl });
+    })
+    .catch((err) => {
+      console.error("Error al generar el archivo CSV:", err);
+      return res
+        .status(500)
+        .json({ error: "Ha ocurrido un error al generar el archivo CSV" });
+    });
+});
 });
 
-
 // Obtener la lista de usuarios registrados
-app.get("/usuarios/registrados",authenticateMiddleware, function (req, res) {
+app.get("/usuarios/registrados", authenticateMiddleware, function (req, res) {
   var userId = req.session.usuarioId;
   db.query(
     "SELECT usuarios.id, usuarios.username, usuarios.user_img,usuarios.country, usuarios.fullname, CASE WHEN amigos.idAmigo IS NOT NULL THEN 1 ELSE 0 END AS amigo FROM usuarios LEFT JOIN amigos ON usuarios.id = amigos.idAmigo AND amigos.iduser = ? WHERE usuarios.id != ?",
@@ -313,12 +320,10 @@ app.get("/usuarios/registrados",authenticateMiddleware, function (req, res) {
     function (error, results) {
       if (error) {
         console.error("Ha ocurrido un error:", error.message);
-        return res
-          .status(500)
-          .json({
-            message:
-              "Ha ocurrido un error al obtener la lista de usuarios registrados",
-          });
+        return res.status(500).json({
+          message:
+            "Ha ocurrido un error al obtener la lista de usuarios registrados",
+        });
       }
 
       res.status(200).json(results);
@@ -327,7 +332,7 @@ app.get("/usuarios/registrados",authenticateMiddleware, function (req, res) {
 });
 
 // Obtener la lista de amigos
-app.get("/amigos",authenticateMiddleware, function (req, res) {
+app.get("/amigos", authenticateMiddleware, function (req, res) {
   var userId = req.session.usuarioId;
   db.query(
     "SELECT usuarios.id, usuarios.username, usuarios.user_img, usuarios.fullname FROM usuarios WHERE usuarios.id != ? AND usuarios.id NOT IN (SELECT amigos.idAmigo FROM amigos WHERE amigos.iduser = ?)",
@@ -335,11 +340,9 @@ app.get("/amigos",authenticateMiddleware, function (req, res) {
     function (error, results) {
       if (error) {
         console.error("Ha ocurrido un error:", error.message);
-        return res
-          .status(500)
-          .json({
-            message: "Ha ocurrido un error al obtener la lista de amigos",
-          });
+        return res.status(500).json({
+          message: "Ha ocurrido un error al obtener la lista de amigos",
+        });
       }
       res.status(200).json(results);
     }
@@ -347,42 +350,46 @@ app.get("/amigos",authenticateMiddleware, function (req, res) {
 });
 
 // Agregar amigo
-app.post("/amigos/agregar/:idAmigo",authenticateMiddleware, function (req, res) {
-  var idAmigo = req.params.idAmigo;
-  var userId = req.session.usuarioId;
+app.post(
+  "/amigos/agregar/:idAmigo",
+  authenticateMiddleware,
+  function (req, res) {
+    var idAmigo = req.params.idAmigo;
+    var userId = req.session.usuarioId;
 
-  db.query(
-    "SELECT * FROM amigos WHERE iduser = ? AND idAmigo = ?",
-    [userId, idAmigo],
-    function (error, results) {
-      if (error) {
-        console.error("Ha ocurrido un error:", error.message);
-        return res
-          .status(500)
-          .json({ message: "Ha ocurrido un error al agregar al amigo" });
-      }
-
-      if (results.length > 0) {
-        return res.status(400).json({ message: "Ya son amigos" });
-      }
-
-      db.query(
-        "INSERT INTO amigos (iduser, idAmigo) VALUES (?, ?)",
-        [userId, idAmigo],
-        function (error, results) {
-          if (error) {
-            console.error("Ha ocurrido un error:", error.message);
-            return res
-              .status(500)
-              .json({ message: "Ha ocurrido un error al agregar al amigo" });
-          }
-
-          res.status(200).json({ message: "Amigo agregado correctamente" });
+    db.query(
+      "SELECT * FROM amigos WHERE iduser = ? AND idAmigo = ?",
+      [userId, idAmigo],
+      function (error, results) {
+        if (error) {
+          console.error("Ha ocurrido un error:", error.message);
+          return res
+            .status(500)
+            .json({ message: "Ha ocurrido un error al agregar al amigo" });
         }
-      );
-    }
-  );
-});
+
+        if (results.length > 0) {
+          return res.status(400).json({ message: "Ya son amigos" });
+        }
+
+        db.query(
+          "INSERT INTO amigos (iduser, idAmigo) VALUES (?, ?)",
+          [userId, idAmigo],
+          function (error, results) {
+            if (error) {
+              console.error("Ha ocurrido un error:", error.message);
+              return res
+                .status(500)
+                .json({ message: "Ha ocurrido un error al agregar al amigo" });
+            }
+
+            res.status(200).json({ message: "Amigo agregado correctamente" });
+          }
+        );
+      }
+    );
+  }
+);
 
 // Eliminar amigo
 app.delete("/amigos/eliminar/:idAmigo", function (req, res) {
@@ -421,12 +428,10 @@ app.get("/amigos/agregados", function (req, res) {
     function (error, results) {
       if (error) {
         console.error("Ha ocurrido un error:", error.message);
-        return res
-          .status(500)
-          .json({
-            message:
-              "Ha ocurrido un error al obtener la lista de amigos agregados",
-          });
+        return res.status(500).json({
+          message:
+            "Ha ocurrido un error al obtener la lista de amigos agregados",
+        });
       }
       res.status(200).json(results);
     }
@@ -453,18 +458,16 @@ app.post("/amigos/agregar/:idAmigo", function (req, res) {
 });
 
 // Obtener la lista de posts
-app.get("/posts",authenticateMiddleware, (req, res) => {
+app.get("/posts", authenticateMiddleware, (req, res) => {
   db.query(
     "SELECT p.id, p.title, p.content, p.usuarioId, p.createdAt, p.updatedAt, u.fullname, u.user_img FROM post AS p JOIN usuarios AS u ON p.usuarioId = u.id",
     (err, results) => {
       if (err) {
         console.error("Error al obtener los posts:", err);
-        res
-          .status(500)
-          .json({
-            message:
-              "Ha ocurrido un error al obtener los posts. Por favor, intenta más tarde.",
-          });
+        res.status(500).json({
+          message:
+            "Ha ocurrido un error al obtener los posts. Por favor, intenta más tarde.",
+        });
         return;
       }
       res.json(results);
@@ -473,7 +476,7 @@ app.get("/posts",authenticateMiddleware, (req, res) => {
 });
 
 // Crear un nuevo post
-app.post("/posts",authenticateMiddleware, (req, res) => {
+app.post("/posts", authenticateMiddleware, (req, res) => {
   const newPost = {
     user_img: req.body.user_img,
     title: req.body.title,
@@ -496,12 +499,10 @@ app.post("/posts",authenticateMiddleware, (req, res) => {
       (err, results) => {
         if (err) {
           console.error("Error al crear el post:", err);
-          res
-            .status(500)
-            .json({
-              message:
-                "Ha ocurrido un error al crear el post. Por favor, intenta más tarde.",
-            });
+          res.status(500).json({
+            message:
+              "Ha ocurrido un error al crear el post. Por favor, intenta más tarde.",
+          });
           return;
         }
         newPost.id = results.insertId;
@@ -516,19 +517,17 @@ app.post("/posts",authenticateMiddleware, (req, res) => {
 });
 
 // Eliminar un post por su ID
-app.delete("/posts/:id",authenticateMiddleware, (req, res) => {
+app.delete("/posts/:id", authenticateMiddleware, (req, res) => {
   const postId = req.params.id;
 
   const sql = "DELETE FROM post WHERE id = ?";
   db.query(sql, [postId], (err, result) => {
     if (err) {
       console.error("Error al eliminar el post:", err);
-      res
-        .status(500)
-        .json({
-          message:
-            "Ha ocurrido un error al eliminar el post. Por favor, intenta más tarde.",
-        });
+      res.status(500).json({
+        message:
+          "Ha ocurrido un error al eliminar el post. Por favor, intenta más tarde.",
+      });
       return;
     }
 
@@ -550,12 +549,10 @@ app.put("/posts/:id", (req, res) => {
   const updatedAt = new Date();
 
   if (!title && !content) {
-    res
-      .status(400)
-      .json({
-        message:
-          "Debes proporcionar al menos un campo (título o contenido) para editar el post.",
-      });
+    res.status(400).json({
+      message:
+        "Debes proporcionar al menos un campo (título o contenido) para editar el post.",
+    });
     return;
   }
 
@@ -564,12 +561,10 @@ app.put("/posts/:id", (req, res) => {
   db.query(sql, [title, content, updatedAt, postId], (err, result) => {
     if (err) {
       console.error("Error al editar el post:", err);
-      res
-        .status(500)
-        .json({
-          message:
-            "Ha ocurrido un error al editar el post. Por favor, intenta más tarde.",
-        });
+      res.status(500).json({
+        message:
+          "Ha ocurrido un error al editar el post. Por favor, intenta más tarde.",
+      });
       return;
     }
 
@@ -585,7 +580,7 @@ app.put("/posts/:id", (req, res) => {
 });
 
 // Obtener datos de perfil
-app.get("/perfil",authenticateMiddleware, function (req, res) {
+app.get("/perfil", authenticateMiddleware, function (req, res) {
   const loggedIn = req.session.loggedin;
   const username = req.session.username;
 
@@ -634,7 +629,7 @@ app.delete("/eliminarcuenta", function (req, res) {
 });
 
 // Endpoint para obtener el perfil del usuario
-app.get("/perfil",authenticateMiddleware, function (req, res) {
+app.get("/perfil", authenticateMiddleware, function (req, res) {
   const username = req.session.username;
 
   if (username) {
@@ -676,7 +671,7 @@ app.get("/perfil",authenticateMiddleware, function (req, res) {
 });
 
 // Endpoint para actualizar el perfil del usuario
-app.put("/perfil",authenticateMiddleware, function (req, res) {
+app.put("/perfil", authenticateMiddleware, function (req, res) {
   const username = req.session.username;
   const profileData = req.body;
 
@@ -689,7 +684,6 @@ app.put("/perfil",authenticateMiddleware, function (req, res) {
           console.log(error);
           res.status(500).send("Error al actualizar el perfil");
         } else {
-        
           res.send("Perfil actualizado correctamente");
         }
       }
@@ -714,7 +708,6 @@ app.get("/amigos/registrados", (req, res) => {
   });
 });
 
-
 app.get("/amigos/:userId", (req, res) => {
   const userId = req.params.userId;
   const query = "SELECT * FROM usuarios WHERE id = ?";
@@ -731,7 +724,7 @@ app.get("/amigos/:userId", (req, res) => {
     }
   });
 });
-app.get("/usuario",authenticateMiddleware, function (req, res) {
+app.get("/usuario", authenticateMiddleware, function (req, res) {
   const loggedIn = req.session.loggedin;
   const userId = req.session.usuarioId;
 

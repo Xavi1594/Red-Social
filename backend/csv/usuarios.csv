@@ -1,49 +1,49 @@
-ID,Nombre de usuario,Correo electrónico
-1,jose1234,jose123@gmail.com
-2,ana92,ana92@hotmail.com
-3,luisa20,luisa20@gmail.com
-4,carlos87,carlos87@hotmail.com
-5,maria45,maria45@gmail.com
-6,juan89,juan89@gmail.com
-7,patricia33,patricia33@hotmail.com
-8,sergio72,sergio72@gmail.com
-9,laura28,laura28@hotmail.com
-10,andres41,andres41@gmail.com
-11,clara56,clara56@hotmail.com
-12,david63,david63@gmail.com
-13,natalia19,natalia19@hotmail.com
-14,pablo79,pablo79@gmail.com
-15,sofia25,sofia25@hotmail.com
-16,alejandro88,alejandro88@gmail.com
-17,lucia32,lucia32@hotmail.com
-18,javier54,javier54@gmail.com
-19,luisa64,luisa64@hotmail.com
-20,marcos29,marcos29@gmail.com
-21,andrea49,andrea49@hotmail.com
-22,pedro99,pedro99@gmail.com
-23,laura17,laura17@hotmail.com
-24,juan67,juan67@gmail.com
-25,ana47,ana47@hotmail.com
-26,luis81,luis81@gmail.com
-27,carlos43,carlos43@hotmail.com
-28,maria66,maria66@gmail.com
-29,juan72,juan72@hotmail.com
-30,luisa97,luisa97@gmail.com
-31,carolina82,carolina82@hotmail.com
-32,jose47,jose47@gmail.com
-33,ana52,ana52@hotmail.com
-34,pedro87,pedro87@gmail.com
-35,carla45,carla45@hotmail.com
-36,marcos92,marcos92@gmail.com
-37,andrea59,andrea59@hotmail.com
-38,pedro94,pedro94@gmail.com
-39,carolina73,carolina73@hotmail.com
-40,jose89,jose89@gmail.com
-41,ana71,ana71@hotmail.com
-42,lucas56,lucas56@gmail.com
-43,carla78,carla78@hotmail.com
-44,maria83,maria83@gmail.com
-45,juan99,juan99@hotmail.com
-46,Fernando Alonso,elnano33@gmail.com
-47,Rodri,rodriayala@gmail.com
-48,Xavi1,xavi@xavi.com
+ID,Nombre de usuario,Correo electrónico,Ciudad,País,Edad,Universidad,Languages,Pasatiempos,Conocimientos adicionales
+1,jose1234,jose123@gmail.com,Madrid,España,33,Universidad Complutense de Madrid,"Español, Inglés, chino","Leer, Nadar",Marketing Digital
+2,ana92,ana92@hotmail.com,Barcelona,España,29,Universitat de Barcelona,"Español, Catalán, Inglés","Bailar, Viajar",Diseño en React
+3,luisa20,luisa20@gmail.com,Sevilla,España,33,Universidad de Sevilla,"Español, Inglés","Pintar, Jardinería",Programación Java
+4,carlos87,carlos87@hotmail.com,Valencia,España,32,Universidad Politécnica de Valencia,"Español, Inglés","Fotografía, Cocinar",Gestión de Proyectos
+5,maria45,maria45@gmail.com,Málaga,España,27,Universidad de Málaga,"Español, Inglés, Francés","Escalada, Yoga",Análisis de Datos
+6,juan89,juan89@gmail.com,Bilbao,España,30,Universidad del País Vasco,"Español, Euskera, Inglés","Guitarra, Ajedrez",Desarrollo Web
+7,patricia33,patricia33@hotmail.com,Zaragoza,España,28,Universidad de Zaragoza,"Español, Inglés","Bailar, Cocinar",Redes Sociales
+8,sergio72,sergio72@gmail.com,Murcia,España,31,Universidad de Murcia,"Español, Inglés","Fútbol, Leer",Machine Learning
+9,laura28,laura28@hotmail.com,Granada,España,29,Universidad de Granada,"Español, Inglés","Pintar, Viajar",Marketing Digital
+10,andres41,andres41@gmail.com,Alicante,España,35,Universidad de Alicante,"Español, Inglés","Cocinar, Escalada",Diseño Web
+11,clara56,clara56@hotmail.com,Valladolid,España,33,Universidad de Valladolid,"Español, Inglés","Yoga, Fotografía",Programación Python
+12,david63,david63@gmail.com,Palma de Mallorca,España,28,Universidad de las Islas Baleares,"Español, Inglés","Surf, Leer",Análisis Financiero
+13,natalia19,natalia19@hotmail.com,Córdoba,España,24,Universidad de Córdoba,"Español, Inglés","Danza, Viajar",Desarrollo de Apps
+14,pablo79,pablo79@gmail.com,Bilbao,España,42,Universidad del País Vasco,"Español, Inglés","Guitarra, Cocinar",Gestión de Proyectos
+15,sofia25,sofia25@hotmail.com,Valencia,España,27,Universidad Politécnica de Valencia,"Español, Inglés","Pintar, Jardinería",Diseño Gráfico
+16,alejandro88,alejandro88@gmail.com,Madrid,España,33,Universidad Complutense de Madrid,"Español, Inglés","Fotografía, Cocinar",Marketing Digital
+17,lucia32,lucia32@hotmail.com,Barcelona,España,29,Universitat de Barcelona,"Español, Catalán, Inglés","Bailar, Viajar",Programación Java
+18,javier54,javier54@gmail.com,Sevilla,España,35,Universidad de Sevilla,"Español, Inglés","Escalada, Yoga",Análisis de Datos
+19,luisa64,luisa64@hotmail.com,Valencia,España,32,Universidad Politécnica de Valencia,"Español, Inglés","Fotografía, Cocinar",Gestión de Proyectos
+20,marcos29,marcos29@gmail.com,Madrid,España,27,Universidad Complutense de Madrid,"Español, Inglés","Leer, Nadar",Marketing Digital
+21,andrea49,andrea49@hotmail.com,Barcelona,España,29,Universitat de Barcelona,"Español, Catalán, Inglés","Bailar, Viajar",Diseño Gráfico
+22,pedro99,pedro99@gmail.com,Sevilla,España,38,Universidad de Sevilla,"Español, Inglés","Pintar, Jardinería",Programación Java
+23,laura17,laura17@hotmail.com,Valencia,España,32,Universidad Politécnica de Valencia,"Español, Inglés","Fotografía, Cocinar",Gestión de Proyectos
+24,juan67,juan67@gmail.com,Madrid,España,27,Universidad Complutense de Madrid,"Español, Inglés","Leer, Nadar",Marketing Digital
+25,ana47,ana47@hotmail.com,Barcelona,España,29,Universitat de Barcelona,"Español, Catalán, Inglés","Bailar, Viajar",Diseño Gráfico
+26,luis81,luis81@gmail.com,Sevilla,España,35,Universidad de Sevilla,"Español, Inglés","Pintar, Jardinería",Programación Java
+27,carlos43,carlos43@hotmail.com,Valencia,España,32,Universidad Politécnica de Valencia,"Español, Inglés","Fotografía, Cocinar",Gestión de Proyectos
+28,maria66,maria66@gmail.com,Madrid,España,27,Universidad Complutense de Madrid,"Español, Inglés","Leer, Nadar",Marketing Digital
+29,juan72,juan72@hotmail.com,Barcelona,España,29,Universitat de Barcelona,"Español, Catalán, Inglés","Bailar, Viajar",Diseño Gráfico
+30,luisa97,luisa97@gmail.com,Sevilla,España,35,Universidad de Sevilla,"Español, Inglés","Pintar, Jardinería",Programación Java
+31,carolina82,carolina82@hotmail.com,Valencia,España,32,Universidad Politécnica de Valencia,"Español, Inglés","Fotografía, Cocinar",Gestión de Proyectos
+32,jose47,jose47@gmail.com,Madrid,España,27,Universidad Complutense de Madrid,"Español, Inglés","Leer, Nadar",Marketing Digital
+33,ana52,ana52@hotmail.com,Barcelona,España,29,Universitat de Barcelona,"Español, Catalán, Inglés","Bailar, Viajar",Diseño Gráfico
+34,pedro87,pedro87@gmail.com,Sevilla,España,35,Universidad de Sevilla,"Español, Inglés","Pintar, Jardinería",Programación Java
+35,carla45,carla45@hotmail.com,Valencia,España,32,Universidad Politécnica de Valencia,"Español, Inglés","Fotografía, Cocinar",Gestión de Proyectos
+36,marcos92,marcos92@gmail.com,Madrid,España,27,Universidad Complutense de Madrid,"Español, Inglés","Leer, Nadar",Marketing Digital
+37,andrea59,andrea59@hotmail.com,Barcelona,España,29,Universitat de Barcelona,"Español, Catalán, Inglés","Bailar, Viajar",Diseño Gráfico
+38,pedro94,pedro94@gmail.com,Sevilla,España,35,Universidad de Sevilla,"Español, Inglés","Pintar, Jardinería",Programación Java
+39,carolina73,carolina73@hotmail.com,Valencia,España,32,Universidad Politécnica de Valencia,"Español, Inglés","Fotografía, Cocinar",Gestión de Proyectos
+40,jose89,jose89@gmail.com,Madrid,España,27,Universidad Complutense de Madrid,"Español, Inglés","Leer, Nadar",Marketing Digital
+41,ana71,ana71@hotmail.com,Barcelona,España,29,Universitat de Barcelona,"Español, Catalán, Inglés","Bailar, Viajar",Diseño Gráfico
+42,lucas56,lucas56@gmail.com,Sevilla,España,35,Universidad de Sevilla,"Español, Inglés","Pintar, Jardinería",Programación Java
+43,carla78,carla78@hotmail.com,Valencia,España,32,Universidad Politécnica de Valencia,"Español, Inglés","Fotografía, Cocinar",Gestión de Proyectos
+44,maria83,maria83@gmail.com,Madrid,España,27,Universidad Complutense de Madrid,"Español, Inglés","Leer, Nadar",Marketing Digital
+45,juan99,juan99@hotmail.com,Barcelona,España,29,Universitat de Barcelona,"Español, Catalán, Inglés","Bailar, Viajar",Diseño Gráfico
+46,Fernando Alonso,elnano33@gmail.com,Ginebra,Suiza,33,Formula 1,Ingles,Formula 1,Padrear
+47,Rodri,rodriayala@gmail.com,Buenos Aires,Argentina,39,Informática,Inglés,Among us,Hacer promises
+48,Xavi1,xavi@xavi.com,Gijon,España,29,Ciencias políticas,Ingles,"Fútbol, series, cine, playa.",Contar hasta 33

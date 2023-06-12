@@ -1,8 +1,8 @@
 // NavbarComponent.js
-import React, { useState } from 'react';
-import 'bootstrap/dist/css/bootstrap.css';
-import { NavLink, useNavigate } from 'react-router-dom';
-import SearchBar from './SearchBar';
+import React, { useState } from "react";
+import "bootstrap/dist/css/bootstrap.css";
+import { NavLink, useNavigate } from "react-router-dom";
+import SearchBar from "./SearchBar";
 
 export const NavbarComponent = ({ onLogout }) => {
   const [isNavbarOpen, setNavbarOpen] = useState(false);
@@ -14,12 +14,11 @@ export const NavbarComponent = ({ onLogout }) => {
 
   const handleLogout = () => {
     onLogout();
-    navigate('/');
+    navigate("/");
   };
 
   const handleSearch = (searchTerm) => {
-    
-    console.log('Buscar amigos con término:', searchTerm);
+    console.log("Buscar amigos con término:", searchTerm);
   };
 
   return (
@@ -30,7 +29,7 @@ export const NavbarComponent = ({ onLogout }) => {
             <img
               src="socialy.jpg"
               alt="Logo"
-              style={{ width: '30px', marginRight: '5px' }}
+              style={{ width: "30px", marginRight: "5px" }}
             />
             Socialy
           </NavLink>
@@ -43,7 +42,7 @@ export const NavbarComponent = ({ onLogout }) => {
             <span className="navbar-toggler-icon"></span>
           </button>
           <div
-            className={`collapse navbar-collapse ${isNavbarOpen ? 'show' : ''}`}
+            className={`collapse navbar-collapse ${isNavbarOpen ? "show" : ""}`}
           >
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
               <li className="nav-item">
@@ -62,7 +61,7 @@ export const NavbarComponent = ({ onLogout }) => {
                 </NavLink>
               </li>
               <li className="nav-item">
-                <NavLink to={'/amigosagregados'} className="nav-link">
+                <NavLink to={"/amigosagregados"} className="nav-link">
                   Mis amigos
                 </NavLink>
               </li>
@@ -74,16 +73,12 @@ export const NavbarComponent = ({ onLogout }) => {
 
               <li className="nav-item">
                 <NavLink to="/usuarios" className="nav-link">
-                 lista
+                  Listado usuarios excel
                 </NavLink>
               </li>
 
               <li className="nav-item">
-                <NavLink
-                  to={'/'}
-                  className="nav-link"
-                  onClick={handleLogout}
-                >
+                <NavLink to={"/"} className="nav-link" onClick={handleLogout}>
                   Logout
                 </NavLink>
               </li>
