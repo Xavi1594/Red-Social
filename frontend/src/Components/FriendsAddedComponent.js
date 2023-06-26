@@ -1,64 +1,38 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from "react-router-dom";
+import React, { useEffect } from 'react';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { loadFriends, deleteFriend } from '../actions/friendsActions';
 
-export const FriendsAddedComponent = () => {
-  const [amigosAgregados, setAmigosAgregados] = useState([]);
-
+const FriendsAddedComponent = ({ friends, loadFriends, deleteFriend }) => {
+  console.log(friends); 
   useEffect(() => {
-    cargarAmigosAgregados();
+    loadFriends();
   }, []);
 
-  const cargarAmigosAgregados = () => {
-    fetch('http://localhost:3000/amigos/agregados', { credentials: 'include' })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw new Error('No se pudo obtener la lista de amigos agregados');
-      })
-      .then((amigosAgregados) => {
-        setAmigosAgregados(amigosAgregados);
-      })
-      .catch((error) => {
-        console.error('Ha ocurrido un error:', error.message);
-      });
+  const eliminarAmigo = (idAmigo) => {
+    deleteFriend(idAmigo);
+    alert('Amigo eliminado con éxito');
   };
 
-  const eliminarAmigo = (idAmigo) => {
-    fetch(`http://localhost:3000/amigos/eliminar/${idAmigo}`, {
-      method: 'DELETE',
-      credentials: 'include'
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw new Error('No se pudo eliminar al amigo');
-      })
-      .then((amigo) => {
-        cargarAmigosAgregados();
-        alert(`Amigo eliminado con éxito`);
-      })
-      .catch((error) => {
-        console.error('Ha ocurrido un error:', error.message);
-      });
-  };
+  if (!friends || friends.length === 0) {
+    return <div>Loading...</div>; // o algún otro indicador de carga
+  }
 
   return (
     <div className="container mt-5 amigosContainer">
       <div className="row mt-5">
         <div className="col-lg-12">
           <div className="agregados-section row">
-            {amigosAgregados.map((amigo) => {
+            {friends.map((amigo) => {
               return (
                 <div
                   key={amigo.id}
                   className="usuario-card amigo-card col-sm-6 col-md-4 col-lg-3 mx-auto"
                 >
                   <Link to={`/amigos/${amigo.id}`}>
-                  <h2 className="nombre-usuario">
-                    <strong>{amigo.fullname}</strong>
-                  </h2>
+                    <h2 className="nombre-usuario">
+                      <strong>{amigo.fullname}</strong>
+                    </h2>
                   </Link>
                   <img
                     src={amigo.user_img}
@@ -86,3 +60,14 @@ export const FriendsAddedComponent = () => {
     </div>
   );
 };
+
+const mapStateToProps = (state) => ({
+  friends: state.friends // Asegúrate de que el nombre del estado sea correcto
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  loadFriends: () => dispatch(loadFriends()),
+  deleteFriend: (id) => dispatch(deleteFriend(id)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(FriendsAddedComponent);

@@ -1,13 +1,18 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';
+import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import 'bootstrap/dist/css/bootstrap.css';
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
+import friendsReducer from './reducers/friendsReducer';
 
+const store = createStore(friendsReducer, applyMiddleware(thunk));
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
- 
+ReactDOM.render(
+  <Provider store={store}>
     <App />
- 
+  </Provider>,
+  document.getElementById('root')
 );
